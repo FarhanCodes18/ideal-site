@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission & Vision | Ideal Public School</title>
+  <meta name="description" content="Mission, Vision, and Values of Ideal Public School – Building excellence through education, innovation, and integrity.">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* Page-specific overrides */
+    .who-right-stack { display: flex; flex-direction: column; gap: 14px; }
+    .excellence-right { display: flex; flex-direction: column; justify-content: flex-start; }
+    
+    /* Journey Timeline */
+    .timeline { position: relative; padding-left: 40px; margin-top: 30px; }
+    .timeline::before { content:''; position:absolute; left:14px; top:0; bottom:0; width:2px; background:var(--grey-mid); border-radius:1px; }
+    .tl-item { position: relative; margin-bottom: 32px; }
+    .tl-dot { position:absolute; left:-34px; top:4px; width:18px; height:18px; border-radius:50%; border:3px solid var(--white); box-shadow: 0 0 0 2px var(--accent-blue); background:var(--accent-blue); }
+    .tl-item:nth-child(even) .tl-dot { background:var(--red); box-shadow:0 0 0 2px var(--red); }
+    .tl-item h4 { font-size:0.95rem; font-weight:700; color:var(--navy); margin-bottom:4px; }
+    .tl-item p  { font-size:0.85rem; color:var(--text-light); line-height:1.6; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR — Full Navigation (visible on every page)
+     ============================================================ -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+
+    <!-- Logo → Back to Main Site -->
+    <a href="../index.html" class="nav-logo" aria-label="Ideal Public School – Home">
+      <img src="../logo.jpeg" alt="School Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      <span>Ideal <span>Public</span> School</span>
+    </a>
+
+    <!-- Full Nav Links -->
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+
+      <!-- About Us Dropdown -->
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          About Us <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="school-overview.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-school"></i></span> School Overview
+          </a>
+          <a href="our-campus.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-building"></i></span> Our Campus
+          </a>
+          <a href="director-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-tie"></i></span> Director's Message
+          </a>
+          <a href="principal-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-graduate"></i></span> Principal's Message
+          </a>
+          <a href="mission-vision.html" class="nav-dropdown-item active" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-bullseye"></i></span> Mission &amp; Vision
+          </a>
+        </div>
+      </li>
+
+      <!-- Our Campus Dropdown -->
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          Our Campus <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="computer-lab.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-laptop"></i></span> Computer Lab</a>
+          <a href="library.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-book"></i></span> Library</a>
+          <a href="sports.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-volleyball-ball"></i></span> Sports</a>
+          <a href="gallery.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-images"></i></span> Gallery</a>
+          <a href="transport.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-bus"></i></span> Transport</a>
+        </div>
+      </li>
+
+      <li><a href="../index.html#faculty">Faculty</a></li>
+      <li><a href="../index.html#activities">Facilities</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="../index.html" class="nav-cta">Admissions</a></li>
+    </ul>
+
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="page-hero" id="home">
+  <div class="container">
+    <div class="hero-grid">
+
+      <!-- Left -->
+      <div class="hero-left reveal fade-left">
+        <div class="hero-badge">
+          <i class="fas fa-bullseye"></i> Our Purpose &amp; Direction
+        </div>
+
+        <h1 class="hero-heading">Mission<br>&amp; Vision</h1>
+
+        <div class="hero-underline">
+          <span></span><span></span>
+        </div>
+
+        <p class="hero-subtitle">
+          Building a future-ready generation through excellence, innovation, integrity, and compassionate leadership.
+        </p>
+
+        <a href="#philosophy" class="hero-cta">
+          Explore Our Philosophy <i class="fas fa-arrow-right"></i>
+        </a>
+
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html">Home</a>
+          <span class="sep">/</span>
+          <span class="current">Mission &amp; Vision</span>
+        </nav>
+      </div>
+
+      <!-- Right -->
+      <div class="hero-right reveal fade-right">
+        <div class="hero-img-card">
+          <img
+            src="006.JPG"
+            alt="Ideal Public School Vision"
+            loading="eager"
+            onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80'">
+
+          <!-- Floating Badge -->
+          <div class="achievement-badge">
+            <div class="badge-icon"><i class="fas fa-eye"></i></div>
+            <div class="badge-text">
+              <strong>Our Core</strong>
+              <span>Philosophy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     WHO WE ARE SECTION (Adapt to Mission, Vision, Values)
+     ============================================================ -->
+<section class="section" id="philosophy">
+  <div class="container">
+    <div class="who-grid">
+
+      <!-- Left -->
+      <div class="who-left reveal fade-left">
+        <div class="section-badge">
+          <i class="fas fa-star"></i> CORE PILLARS
+        </div>
+
+        <h2 class="section-title">Vision, Mission<br>&amp; Strategic Path.</h2>
+        <div class="section-underline"></div>
+
+        <p class="section-subtitle">
+          Ideal Public School operates with a clear set of guiding principles, focusing on delivering top-tier learning options while maintaining ethical, values-driven development for every child.
+        </p>
+
+        <!-- Feature Cards -->
+        <div class="feature-cards stagger" style="margin-top:28px;">
+          <div class="feature-card">
+            <div class="fc-icon"><i class="fas fa-eye"></i></div>
+            <h4>Our Vision</h4>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon"><i class="fas fa-graduation-cap"></i></div>
+            <h4>Our Mission</h4>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon"><i class="fas fa-shield-alt"></i></div>
+            <h4>Our Values</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right — two stacked images -->
+      <div class="who-right reveal fade-right">
+        <div class="who-img-main">
+          <img
+            src="001.JPG"
+            alt="Students in Library" loading="lazy">
+        </div>
+        <div class="who-img-side">
+          <img
+            src="005.JPG"
+            alt="Students in Class" loading="lazy">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EXPERIENCE EXCELLENCE SECTION (Adapt to Objectives)
+     ============================================================ -->
+<section class="section excellence-section" id="objectives">
+  <div class="container">
+
+    <div class="excellence-grid">
+      <!-- Left -->
+      <div class="reveal fade-left">
+        <p class="excellence-label">Goals &amp; Milestones</p>
+        <h2 class="excellence-title">Strategic<br>Objectives</h2>
+        <p class="excellence-desc">
+          We establish concrete goals to guide our academic policies and campus growth, aiming to provide a high-caliber future for all learners.
+        </p>
+      </div>
+
+      <!-- Right — Feature Cards -->
+      <div class="ex-feature-cards stagger">
+        <div class="ex-card">
+          <div class="ex-icon"><i class="fas fa-award"></i></div>
+          <div>
+            <h4>Academic Benchmarking</h4>
+            <p>Striving for excellent CBSE scores and nurturing creative critical thinking among students.</p>
+          </div>
+        </div>
+        <div class="ex-card">
+          <div class="ex-icon"><i class="fas fa-building"></i></div>
+          <div>
+            <h4>Continuous Facility Upgrades</h4>
+            <p>Expanding and modernizing laboratories, the library, and introducing interactive technology.</p>
+          </div>
+        </div>
+        <div class="ex-card">
+          <div class="ex-icon"><i class="fas fa-users"></i></div>
+          <div>
+            <h4>Community Collaboration</h4>
+            <p>Fostering active engagement with parents and local mentors for holistic student guidance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar reveal zoom-in">
+      <div class="stat-item">
+        <div class="stat-number">
+          <span data-count="24" data-suffix="+">0+</span>
+        </div>
+        <div class="stat-label">Years Legacy</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">
+          <span data-count="2500" data-suffix="+">0+</span>
+        </div>
+        <div class="stat-label">Enrolled Students</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">
+          <span data-count="100" data-suffix="+">0+</span>
+        </div>
+        <div class="stat-label">Expert Faculty</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">
+          <span data-count="15" data-suffix="+">0+</span>
+        </div>
+        <div class="stat-label">Modern Labs</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     JOURNEY TIMELINE SECTION
+     ============================================================ -->
+<section class="section" id="journey">
+  <div class="container">
+    <div style="display:grid;grid-template-columns: 1fr 1fr; gap:60px; align-items:start;" class="reveal fade-up">
+      
+      <!-- Timeline list -->
+      <div>
+        <div class="section-badge"><i class="fas fa-road"></i> HISTORICAL TIMELINE</div>
+        <h2 class="section-title">24 Years of Legacy</h2>
+        <div class="section-underline"></div>
+        <p class="section-subtitle" style="margin-bottom:30px;">
+          From a small foundation to a recognized CBSE powerhouse, explore our growth timeline.
+        </p>
+        
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <h4>School Founded (2000)</h4>
+            <p>Ideal Public School was established in Chandori, Waraseoni with a goal to bring premium, values-based CBSE education to the region.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <h4>CBSE Affiliation (2005)</h4>
+            <p>Successfully achieved CBSE affiliation, establishing high academic and operational standards.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <h4>Campus &amp; Lab Expansion (2015)</h4>
+            <p>Constructed specialized science laboratories, expanded the computer labs, and created a large library facility.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <h4>Digital &amp; Smart Classrooms (2020)</h4>
+            <p>Equipped classrooms with digital systems and established an e-library portal for remote learning resources.</p>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <h4>Empowering 2500+ Students Today (2026)</h4>
+            <p>Now guiding over 2500 active students and employing 100+ professional staff members, shaping Balaghat's educational future.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right image showcase -->
+      <div>
+        <h3 class="section-title" style="margin-bottom:24px;">Journey Highlights</h3>
+        <div class="life-gallery" id="missionGalleryContainer">
+          <div class="life-item gallery-item" style="grid-column: span 2;">
+            <img src="002.JPG" alt="School Activities" style="height: 240px;" loading="lazy">
+          </div>
+          <div class="life-item gallery-item">
+            <img src="003.JPG" alt="Assembly Hall" loading="lazy">
+          </div>
+          <div class="life-item gallery-item">
+            <img src="004.JPG" alt="Exhibition" loading="lazy">
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-name">Ideal <span>Public</span> School</div>
+        <p>CBSE Affiliated (Affiliation No. 1030815) | Chandori, Waraseoni, Balaghat, M.P.</p>
+        <p style="margin-top:10px;">📞 +91 9329494047 | ✉ idealpublicschool@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="school-overview.html">School Overview</a></li>
+          <li><a href="our-campus.html">Our Campus</a></li>
+          <li><a href="director-message.html">Director's Message</a></li>
+          <li><a href="principal-message.html">Principal's Message</a></li>
+          <li><a href="mission-vision.html">Mission &amp; Vision</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Academics</h4>
+        <ul>
+          <li><a href="#">Nursery to Class XII</a></li>
+          <li><a href="#">Smart Classrooms</a></li>
+          <li><a href="#">Computer Labs</a></li>
+          <li><a href="#">Science Labs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="../index.html">Main Website</a></li>
+          <li><a href="#">Admissions</a></li>
+          <li><a href="#">Fee Structure</a></li>
+          <li><a href="#">Results</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ideal Public School. All rights reserved.</span>
+      <span>Chandori, Waraseoni · Balaghat, M.P.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Image Viewer Modal for full-size viewing -->
+<div id="imageViewerModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(15, 23, 42, 0.95); align-items: center; justify-content: center; flex-direction: column;">
+  <span class="close-btn" onclick="document.getElementById('imageViewerModal').style.display='none'" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">&times;</span>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+    <img id="fullSizeImage" src="" style="max-width: 90%; max-height: 80vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain;">
+    <h3 id="imageCaption" style="color: white; margin-top: 15px; font-family: sans-serif; font-weight: 400; letter-spacing: 1px; text-align: center; padding: 0 20px;"></h3>
+  </div>
+</div>
+
+<script src="../script.js?v=3.3"></script>
+</body>
+</html>

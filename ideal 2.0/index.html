@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ideal Public School | Chandori, Waraseoni</title>
+    <link rel="icon" type="image/png" href="logo.jpeg">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css?v=3.3">
+
+    <!-- Inline CSS removed and moved to style.css -->
+</head>
+<body>
+
+    <div id="emergencyBanner" class="emergency-banner">
+        <i class="fas fa-exclamation-triangle blink-icon"></i> 
+        <span id="emergencyText"></span>
+    </div>
+
+    <!-- 🔴 TOP RED TICKER MARQUEE BAR 🔴 -->
+    <div class="top-red-marquee">
+        <div class="marquee-container">
+            <span class="marquee-text">🚨 ADMISSION OPEN FOR SESSION 2026-27 | SCHOLARSHIPS AVAILABLE FOR DESERVING STUDENTS | AFFILIATED TO C.B.S.E (AFFILIATION NO. 1030815) | LIMITED SEATS AVAILABLE · REGISTER ONLINE TODAY! 🚨</span>
+        </div>
+    </div>
+
+    <!-- 🔵 TOP DARK BLUE INFO BAR 🔵 -->
+    <div class="top-blue-info-bar">
+        <div class="info-left">
+            <a href="mailto:idealpublicschool@gmail.com" class="info-email"><i class="fas fa-envelope"></i> idealpublicschool@gmail.com</a>
+            <a href="tel:+919329494047" class="info-phone-primary"><i class="fas fa-phone-alt"></i> +91 9329494047</a>
+            <a href="tel:+917566314101" class="info-phone-secondary"><i class="fas fa-phone-alt"></i> +91 7566314101</a>
+        </div>
+        <div class="info-right">
+            <a href="download brocher.pdf" download class="btn-download-brochure"><i class="fas fa-download"></i> Download Brochure</a>
+            <span class="blinking-text">Admission Open 2026-27</span>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📞 ADMISSION SUPPORT QUICK CALLBACK MODAL 📞 -->
+    <div id="callbackModal" class="modal">
+        <div class="callback-modal-content">
+            <span class="callback-close" onclick="closeCallbackModal()">&times;</span>
+            <div class="callback-header">Admission Support</div>
+            <h2 class="callback-title">Get A Quick Call Back</h2>
+            <p class="callback-subtitle">Fill details for course guidance, scholarship, and fees.</p>
+            <form id="callbackForm" class="callback-form">
+                <div class="callback-row">
+                    <input type="text" id="callName" placeholder="Full Name *" required>
+                    <input type="tel" id="callPhone" placeholder="Phone Number *" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                </div>
+                <input type="email" id="callEmail" placeholder="Email Address *" required>
+                <input type="text" id="callAddress" placeholder="Address *" required>
+                <textarea id="callMessage" rows="3" placeholder="Message (optional)"></textarea>
+                <button type="submit" class="callback-submit-btn">Request Callback</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toppersModal" class="modal">
+        <div class="modal-content" style="max-width: 850px; max-height: 90vh; overflow-y: auto; background: #f8fafc;">
+            <span class="close-btn" onclick="document.getElementById('toppersModal').style.display='none'">&times;</span>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <i class="fas fa-trophy" style="font-size: 3rem; color: #dc2626; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(220,38,38,0.3);"></i>
+                <h2 style="color: var(--primary-blue); margin: 0; font-size: 2rem;">Hall of Fame</h2>
+                <p style="color: #64748b; margin-top: 5px; font-weight: 600;">Our Shining Stars of Previous Academic Session</p>
+            </div>
+            <div id="toppersContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px;"></div>
+        </div>
+    </div>
+
+    <div id="publicFeeModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; text-align: center; max-height: 90vh; overflow-y: auto;">
+            <span class="close-btn" onclick="closePublicFeeModal()">&times;</span>
+            <div class="modal-icon" style="margin-bottom: 15px;"><i class="fas fa-file-invoice-dollar" style="font-size: 3rem; color: #8b5cf6;"></i></div>
+            <h2 style="color: var(--primary-blue); margin-bottom: 10px;">School Fee Structure</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">Current Academic Session Fees</p>
+            <div id="publicFeeContainer" class="modal-table-wrapper" style="width: 100%; padding-bottom: 20px; overflow-x: auto; -webkit-overflow-scrolling: touch;"></div>
+        </div>
+    </div>
+
+    <div id="mandatoryModal" class="modal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto; text-align: left;">
+            <span class="close-btn" onclick="closeMandatoryModal()">&times;</span>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-file-contract" style="font-size: 3rem; color: #3b82f6; margin-bottom: 10px;"></i>
+                <h2 style="color: var(--primary-blue); margin: 0;">Mandatory Public Disclosure</h2>
+            </div>
+
+            <h3 style="color: var(--primary-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 20px; font-size: 1.4rem;">A. General Information</h3>
+            <div class="modal-table-wrapper">
+                <table class="disclosure-table">
+                    <tr><td>1. Name of the school</td><td><strong>Ideal Public School</strong></td></tr>
+                    <tr><td>2. Affiliation No. (if applicable)</td><td>1030815</td></tr>
+                    <tr><td>3. School Code (if applicable)</td><td>50461</td></tr>
+                    <tr><td>4. Complete address with pin code</td><td>Ward no 8, In front of jawahar navoday vidyalaya, Chandori, Waraseoni, Balaghat, Madhya Pradesh - 481331</td></tr>
+                    <tr><td>5. Principal Name & Qualification</td><td>Dr. Daya Raut (M.A., B.Ed.)</td></tr>
+                    <tr><td>6. Email ID</td><td>idealpublicschool47@gmail.com</td></tr>
+                    <tr><td>7. Contact Detail (Landline/Mobile)</td><td>+91 9329494047</td></tr>
+                </table>
+            </div>
+
+            <h3 style="color: var(--primary-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; font-size: 1.4rem;">B. Documents & Information</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">Click the search icon to view the submitted documents</p>
+            <div class="modal-table-wrapper">
+                <table class="disclosure-table">
+                    <tr><td>Copies of Affiliation/Upgradation letter & recent extension of Affiliation (if any)</td><td class="text-center"><a href="copies of affilation.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Copies of Societies/Trust/Company registration/renewal certificate as applicable</td><td class="text-center"><a href="Copies of SocietiesTrustCompany registrationrenewal certificate.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Copy of No Objection Certificate (NOC) issued (if applicable) by the State Govt/UT</td><td class="text-center"><a href="NOC.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Non Proprietary Certificate</td><td class="text-center"><a href="COPY OF NON PROPRIETARY CHARACTER,NONPROFIT COMPANY AFFIDAVIT.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Copies of Recognition Certificate under RTE Act 2009 and its renewal (if applicable)</td><td class="text-center"><a href="RecognitionCertificate_260617_174143.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Copy of valid Building Safety Certificate as per the national building code</td><td class="text-center"><a href="BUILDING SAFETY CERTIFICATE(ISSUED BY OFFICER NOT BELOW THE RANK OF ASSTT. ENGINEER IN PWD).pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Copy of valid Fire Safety Certificate issued by the competent authority</td><td class="text-center"><a href="FIRE SAFETY CERTIFICATE(ISSUED BY OFFICER).pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Copy of valid DEO Certificate issued by the competent authority</td><td class="text-center"><a href="deo.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+        
+                </table>
+            </div>
+
+            <h3 style="color: var(--primary-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; font-size: 1.4rem;">C. Result and Academics</h3>
+            <div class="modal-table-wrapper">
+                <table class="disclosure-table">
+                    <tr><td>Fee Structure of School</td><td class="text-center"><a href="fees sturcture 2026-27 for website.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Annual Academic Calendar</td><td class="text-center"><a href="download brocher.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>List of School Management Committee (SMC)</td><td class="text-center"><a href="smc 2026.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Last 3-Year Result of the Board Examination</td><td class="text-center"><a href="last 3 year result 2026.pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                    <tr><td>Details of Book Store and Dress Store Facilities Available in the Campus</td><td class="text-center"><a href="BOOK.CLOTH STORE (1).pdf" target="_blank" class="view-doc-btn"><i class="fas fa-search"></i></a></td></tr>
+                </table>
+            </div>
+
+            <h3 style="color: var(--primary-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; font-size: 1.4rem;">D. Staff (Teaching)</h3>
+            <div class="modal-table-wrapper">
+                <table class="disclosure-table">
+                    <tr><td>1. Principal</td><td>Dr. Daya Raut</td></tr>
+                    <tr><td>2. Total No. of Teachers</td><td>45+</td></tr>
+                    <tr><td>- PGT</td><td>16</td></tr>
+                    <tr><td>- TGT</td><td>14</td></tr>
+                    <tr><td>- PRT</td><td>15</td></tr>
+                </table>
+            </div>
+
+            <h3 style="color: var(--primary-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; font-size: 1.4rem;">E. School Infrastructure</h3>
+            <div class="modal-table-wrapper">
+                <table class="disclosure-table">
+                    <tr><td>1. Total Campus Area of the school (in Sq Mtr)</td><td>10926 sq mtr</td></tr>
+                    <tr><td>2. No and size of the classrooms (in Sq Mtr)</td><td>24 and 940 sq mtr</td></tr>
+                    <tr><td>3. No and size of the laboratories including computer labs (in Sq Mtr)</td><td>5 and 310 sq mtr</td></tr>
+                    <tr><td>4. Internet Facility (Y/N)</td><td>Yes</td></tr>
+                    <tr><td>5. No of Girls Toilets</td><td>04</td></tr>
+                    <tr><td>6. No of Boys Toilets</td><td>04</td></tr>
+                    <tr><td>7. Link of YouTube video of the inspection of school covering the infrastructure of the school</td><td class="text-center"><a href="LINK_TO_YOUTUBE_VIDEO" target="_blank" class="view-doc-btn"><i class="fab fa-youtube" style="color: #ef4444;"></i></a></td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="noticeModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('noticeModal').style.display='none'">&times;</span><div class="modal-icon"><i class="fas fa-bell"></i></div><h2>Important Notice</h2><p id="noticeModalText">Welcome to Ideal Public School!</p><button class="btn-primary" onclick="document.getElementById('noticeModal').style.display='none'">Got it!</button></div></div>
+    
+    <div id="admissionModal" class="modal">
+        <div class="modal-content admission-content" style="max-height: 90vh; overflow-y: auto;">
+            <span class="close-btn" onclick="closeAdmissionForm()">&times;</span>
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px; text-align: center;">📝 Apply for Admission</h2>
+            <form id="admissionForm" class="admission-form">
+                <div class="input-group"><input type="text" id="admName" placeholder="Student's Full Name" required></div>
+                <div class="input-row">
+                    <input type="tel" id="admMobile" placeholder="Mobile Number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" title="Enter exactly 10 digits" required>
+                    <input type="email" id="admEmail" placeholder="Gmail Address" required>
+                </div>
+                <div class="input-row">
+                    <select id="admClass" required>
+                        <option value="" disabled selected>Select Class</option><option value="Nursery">Nursery / KG</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option>
+                    </select>
+                    <input type="number" id="admAge" placeholder="Student Age" min="3" max="20" required>
+                </div>
+                <div class="input-group">
+                    <select id="admGender" required><option value="" disabled selected>Select Gender</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select>
+                </div>
+                <div class="input-group"><textarea id="admAddress" rows="3" placeholder="Full Home Address" required></textarea></div>
+                <button type="submit" id="admSubmitBtn" class="btn-primary" style="width: 100%; margin-top: 10px;">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="eLibraryModal" class="modal"><div class="modal-content" style="max-width: 650px; max-height: 90vh; overflow-y: auto;"><span class="close-btn" onclick="closeELibrary()">&times;</span><h2 style="color: var(--primary-blue); text-align: center;"><i class="fas fa-book-reader"></i> Digital E-Library</h2><div id="userLibraryContainer" style="margin-top: 20px;"><p style="text-align:center; color:#64748b;">Loading Books... ⏳</p></div></div></div>
+    
+    <div id="resultModal" class="modal"><div class="modal-content" style="max-width: 550px; text-align: center; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center;"><span class="close-btn" onclick="closeResultModal()">&times;</span><h2 style="color: var(--primary-blue); margin-bottom: 10px;">Check Your Result</h2><p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">Enter your roll number to view performance.</p><div class="search-wrapper" style="width: 100%;"><input type="text" id="searchRollNumber" placeholder="Enter Your Roll Number..."><button onclick="findMyResult()" class="btn-animated-search"><i class="fas fa-search"></i> Search</button></div><div id="singleResultContainer" style="margin-top: 25px; width: 100%; display: block; overflow-x: auto; padding-bottom: 20px;"></div></div></div>
+    
+    <div id="noticeBoardModal" class="modal"><div class="modal-content" style="max-width: 600px; max-height: 85vh; overflow-y: auto;"><span class="close-btn" onclick="closeNoticeBoard()">&times;</span><h2 style="color: var(--primary-blue); text-align: center;"><i class="fas fa-bullhorn"></i> Official Notice Board</h2><div id="userNoticeContainer" style="margin-top: 20px;"><p style="text-align:center; color:#64748b;">Loading Notices... ⏳</p></div></div></div>
+
+    <div id="imageViewerModal" class="modal" style="background-color: rgba(15, 23, 42, 0.95); z-index: 9999;"><span class="close-btn" onclick="document.getElementById('imageViewerModal').style.display='none'" style="color: white; right: 20px; top: 20px; background: rgba(255,255,255,0.2);">&times;</span><div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%;"><img id="fullSizeImage" src="" style="max-width: 90%; max-height: 80vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"><h3 id="imageCaption" style="color: white; margin-top: 15px; font-weight: 400; letter-spacing: 1px;"></h3></div></div>
+
+    <div id="studentIdModal" class="modal" style="padding-top: 2vh; align-items: flex-start;">
+        <div class="modal-content" style="max-width: 450px; background: #f8fafc; position: relative; max-height: 95vh; overflow-y: auto; margin-top: 20px;">
+            <span class="close-btn" onclick="closeStudentId()">&times;</span>
+            <div id="idGenFormBox">
+                <h2 style="color: var(--primary-blue); margin-bottom: 5px; text-align: center; font-size: 1.5rem;">🪪 Digital ID Generator</h2>
+                <p style="text-align:center; font-size:13px; color:#64748b; margin-bottom:15px;">Fill details to generate your digital ID card instantly.</p>
+                <form id="idGenForm" class="admission-form">
+                    <div class="input-group" style="margin-bottom: 10px;"><input type="text" id="genIdName" placeholder="Student Full Name" required></div>
+                    <div class="input-row" style="margin-bottom: 10px;">
+                        <input type="text" id="genIdRoll" placeholder="Roll Number" required>
+                        <select id="genIdClass" required><option value="" disabled selected>Select Class</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 10px;"><input type="date" id="genIdDob" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; color: #334155;"></div>
+                    <label class="custom-file-upload" style="margin-bottom: 15px;">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="photoFileName">Click to Upload Passport Photo</span>
+                        <input type="file" id="genIdPhoto" accept="image/*" required onchange="document.getElementById('photoFileName').innerText = this.files[0].name">
+                    </label>
+                    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px; font-size: 1.1rem; padding: 12px;">Generate My ID Card ✨</button>
+                </form>
+            </div>
+            <div id="idCardDisplay" style="display: none; text-align: center;">
+                <h3 style="color: #16a34a; margin-bottom: 15px; font-size: 1.3rem;"><i class="fas fa-check-circle"></i> VIP ID Generated!</h3>
+                <div id="idCardToCapture" style="background: white; width: 340px; margin: 0 auto; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.18); overflow: hidden; border: 1px solid #cbd5e1; position: relative; font-family: 'Poppins', sans-serif;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 250px; height: 250px; background-image: url('logo.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; opacity: 0.12; z-index: 1;"></div>
+                    <div style="background: linear-gradient(135deg, #0f172a, #1e293b); padding: 25px 15px 45px 15px; color: white; position: relative; z-index: 2; text-align: center; border-bottom: 5px solid #dc2626;">
+                        <h3 style="margin: 0; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <img src="logo.jpeg" alt="Logo" class="id-card-logo-img"> IDEAL PUBLIC SCHOOL
+                        </h3>
+                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8; letter-spacing: 0.5px;">Chandori, Waraseoni</p>
+                    </div>
+                    <div style="text-align: center; margin-top: -50px; position: relative; z-index: 3;"><img id="idCardPhoto" src="" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.15); background: white;"></div>
+                    <div style="padding: 10px 25px 5px 25px; position: relative; z-index: 2; text-align: center;">
+                        <h2 id="idCardName" style="color: #0f172a; margin: 5px 0 10px 0; font-size: 1.5rem; font-weight: 700; line-height: 1.2;">Student Name</h2>
+                        <div style="margin-bottom: 20px;"><span id="idCardClass" style="background: #10b981; color: white; padding: 6px 20px; border-radius: 25px; font-size: 1rem; font-weight: 600; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">Class</span></div>
+                        <div style="background: rgba(255, 255, 255, 0.75); border-radius: 12px; padding: 15px; text-align: left; border: 1px solid #e2e8f0; box-shadow: inset 0 0 10px rgba(0,0,0,0.02);">
+                            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #1e293b; display: flex; align-items: center; gap: 10px;"><i class="fas fa-id-card-clip" style="color: #3b82f6; font-size: 1.2rem; width: 20px; text-align: center;"></i><strong>Roll No:</strong> <span id="idCardRoll" style="margin-left: auto; font-weight: 700; font-size: 1.1rem; color: #0f172a;"></span></p>
+                            <p style="margin: 0; font-size: 1rem; color: #1e293b; display: flex; align-items: center; gap: 10px;"><i class="fas fa-calendar-check" style="color: #dc2626; font-size: 1.2rem; width: 20px; text-align: center;"></i><strong>D.O.B:</strong> <span id="idCardDob" style="margin-left: auto; font-weight: 700; color: #0f172a;"></span></p>
+                        </div>
+                    </div>
+                    <div style="padding: 10px 25px 25px 25px; position: relative; z-index: 2; text-align: right;">
+                        <div style="font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: #0f172a; transform: rotate(-5deg); margin-bottom: -5px; padding-right: 10px;">A.R Qureshi</div>
+                        <div style="border-top: 1.5px solid #64748b; width: 140px; margin-left: auto;"></div>
+                        <p style="margin: 5px 0 0 0; font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Director's Sign</p>
+                    </div>
+                    <div style="background: #0f172a; height: 6px; width: 100%; position: absolute; bottom: 0; left: 0; z-index: 2;"></div>
+                </div>
+                <div style="margin-top: 25px; display: flex; justify-content: center; gap:15px; flex-wrap: wrap;">
+                    <button onclick="downloadIdCard()" class="btn-primary" style="padding: 12px 25px; font-size: 1.1rem; background: #dc2626; color: #ffffff;"><i class="fas fa-download"></i> Download PNG</button>
+                    <button onclick="resetIdForm()" class="btn-primary" style="background:#ef4444; padding: 12px 25px; font-size: 1.1rem;"><i class="fas fa-redo-alt"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <header>
+        <div class="logo"><img src="logo.jpeg" alt="Logo" class="logo-img"> Ideal Public School</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <nav id="navMenu">
+            <!-- Close button visible only on mobile inside the drawer -->
+            <span class="nav-close-btn" id="navCloseBtn" aria-label="Close Menu">&times;</span>
+            <a href="#home">Home</a>
+
+            <!-- =============================================
+                 ABOUT US — Multi-level Dropdown Nav Item
+                 ============================================= -->
+            <div class="nav-dropdown" id="aboutDropdown">
+                <!-- Trigger link -->
+                <a href="#about" class="nav-dropdown-trigger" id="aboutTrigger"
+                   aria-haspopup="true" aria-expanded="false" role="button">
+                    About Us
+                    <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+                </a>
+                <!-- Dropdown Panel -->
+                <div class="nav-dropdown-panel" id="aboutPanel" role="menu" aria-label="About Us submenu">
+                    <a href="school-website/school-overview.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-school"></i></span>
+                        <span class="dd-label">School Overview</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/our-campus.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-building"></i></span>
+                        <span class="dd-label">Our Campus</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/director-message.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-user-tie"></i></span>
+                        <span class="dd-label">Director's Message</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/principal-message.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-user-graduate"></i></span>
+                        <span class="dd-label">Principal's Message</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/mission-vision.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-bullseye"></i></span>
+                        <span class="dd-label">Mission &amp; Vision</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Our Campus Dropdown -->
+            <div class="nav-dropdown" id="campusDropdown">
+                <!-- Trigger link -->
+                <a href="#" class="nav-dropdown-trigger" id="campusTrigger"
+                   aria-haspopup="true" aria-expanded="false" role="button">
+                    Our Campus
+                    <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+                </a>
+                <!-- Dropdown Panel -->
+                <div class="nav-dropdown-panel" id="campusPanel" role="menu" aria-label="Our Campus submenu">
+                    <a href="school-website/computer-lab.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-desktop"></i></span>
+                        <span class="dd-label">Computer Lab</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/library.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-book"></i></span>
+                        <span class="dd-label">Library</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/sports.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-volleyball-ball"></i></span>
+                        <span class="dd-label">Sports</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/gallery.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-images"></i></span>
+                        <span class="dd-label">Gallery</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a href="school-website/transport.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-bus"></i></span>
+                        <span class="dd-label">Transport</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <a href="#faculty">Faculty</a>
+            <a href="#activities">Facilities</a>
+            <a href="#services">Services</a>
+            <a href="javascript:void(0)" onclick="openMandatoryModal()">Public Disclosure</a>
+            <a href="teacher.html" class="admin-link" style="background:#10b981; margin-right: 5px;"><i class="fas fa-chalkboard-teacher"></i> Teacher</a>
+        </nav>
+    </header>
+
+    <!-- 🌟 HOMEPAGE HERO SLIDER 🌟 -->
+    <div class="hero-slider-section" id="heroSliderSection">
+        <div class="slider-track" id="sliderTrack"></div>
+        <button class="slider-arrow slider-prev" id="sliderPrev" onclick="sliderPrev()" aria-label="Previous Banner"><i class="fas fa-chevron-left"></i></button>
+        <button class="slider-arrow slider-next" id="sliderNext" onclick="sliderNext()" aria-label="Next Banner"><i class="fas fa-chevron-right"></i></button>
+        <div class="slider-dots" id="sliderDots"></div>
+        <div class="slider-progress" id="sliderProgress"></div>
+    </div>
+
+    <section class="hero" id="home" style="display:none;"><!-- Hidden: replaced by slider above -->
+        <div class="hero-text fade-in-up">
+            <div class="cbse-badge"><i class="fas fa-certificate"></i> Affiliated to C.B.S.E <span>| Affiliation No - 1030815</span></div>
+            <h1><span style="color:#dc2626; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Ideal Public School</span></h1>
+            <p class="location">Chandori, Waraseoni</p>
+            <p style="font-size:1.1rem; max-width: 600px; margin: 0 auto 30px auto; opacity: 0.9;">Empowering Minds, Shaping the Future.</p>
+            <a href="#about" class="btn-primary">Discover More</a>
+        </div>
+    </section>
+
+    <div class="notice-bar">
+        <div class="notice-label">Updates</div>
+        <div class="marquee-container"><p class="marquee-text" id="mainMarquee">⭐ Loading Live Updates...</p></div>
+    </div>
+
+    <!-- 🌟 ABOUT INSTITUTION SECTION 🌟 -->
+    <section id="about" class="about-institution-section fade-in-up">
+        <div class="about-inst-container">
+            <!-- Left Column: Collage -->
+            <div class="about-inst-collage">
+                <div class="collage-col">
+                    <div class="collage-card card-tall">
+                        <img src="009.JPG" alt="Students in Classroom">
+                    </div>
+                    <div class="collage-card card-wide">
+                        <img src="010.JPG" alt="Science Lab">
+                    </div>
+                </div>
+                <div class="collage-col col-staggered">
+                    <div class="collage-card card-wide">
+                        <img src="011.JPG" alt="Interactive Learning">
+                    </div>
+                    <div class="collage-card card-tall relative-card">
+                        <img src="012.JPG" alt="Group Study">
+                        <!-- Red Overlay Badge -->
+                        <div class="trust-badge">
+                            <span class="trust-years">25+</span>
+                            <span class="trust-text">YEARS OF TRUST</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Content -->
+            <div class="about-inst-content">
+                <div class="inst-badge">
+                    <span class="inst-dot"></span>
+                    ABOUT OUR INSTITUTION
+                </div>
+                <h2 class="inst-title">Shaping Minds of Tomorrow Since 1999</h2>
+                <p class="inst-description">
+                    At Ideal Public School, we take pride in our state-of-the-art infrastructure, highly qualified faculty, and strong academic curriculum, ensuring a bright future and holistic development for our students.
+                </p>
+                <div class="inst-bullets">
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-check"></i></span>
+                        <span class="bullet-text">State-of-the-art Infrastructure</span>
+                    </div>
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-check"></i></span>
+                        <span class="bullet-text">Experienced Faculty Members</span>
+                    </div>
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-check"></i></span>
+                        <span class="bullet-text">Co-curricular Activities</span>
+                    </div>
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-check"></i></span>
+                        <span class="bullet-text">Modern Labs &amp; Library</span>
+                    </div>
+                </div>
+                
+                <div class="inst-footer">
+                    <div class="cbse-circle-badge">
+                        <img src="logo.jpeg" alt="School Logo" class="cbse-logo-img">
+                        <span class="cbse-text">CBSE AFFILIATED</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="quick-links fade-in-up">
+        <div class="link-card" onclick="openAdmissionForm()"><i class="fas fa-file-signature"></i><h3>Apply Now</h3><p>Online Admission Form</p></div>
+        <div class="link-card" onclick="window.location.href='register.html'"><i class="fas fa-user-shield" style="color: #10b981;"></i><h3>Student Portal</h3><p>Login to your Dashboard</p></div>
+        <div class="link-card" onclick="document.getElementById('toppersModal').style.display='flex'"><i class="fas fa-trophy" style="color: #dc2626;"></i><h3>Our Toppers</h3><p>Hall of Fame</p></div>
+        <div class="link-card" onclick="openPublicFeeModal()"><i class="fas fa-rupee-sign" style="color: #8b5cf6;"></i><h3>Fee Structure</h3><p>Class-wise Details</p></div>
+        <div class="link-card" onclick="openMandatoryModal()"><i class="fas fa-file-contract" style="color: #3b82f6;"></i><h3>Mandatory Disclosure</h3><p>Public Information & Docs</p></div>
+    </section>
+
+    <section class="dashboard">
+        <div class="stat-box fade-in-up"><i class="fas fa-user-graduate"></i><h2><span class="counter" data-target="1500">0</span>+</h2><p>Students</p></div>
+        <div class="stat-box fade-in-up" style="transition-delay: 0.2s;"><i class="fas fa-chalkboard-teacher"></i><h2><span class="counter" data-target="60">0</span>+</h2><p>Teachers</p></div>
+        <div class="stat-box fade-in-up" style="transition-delay: 0.4s;"><i class="fas fa-award"></i><h2><span class="counter" data-target="25">0</span>+</h2><p>Years</p></div>
+    </section>
+
+
+
+
+    <section id="faculty" class="faculty-section">
+        <!-- Floating background blobs -->
+        <div class="faculty-blob faculty-blob-1"></div>
+        <div class="faculty-blob faculty-blob-2"></div>
+        <div class="faculty-blob faculty-blob-3"></div>
+
+        <div class="faculty-header">
+            <h2 class="faculty-title">Our Distinguished <span>Faculty</span></h2>
+            <div class="header-underline"></div>
+        </div>
+
+        <div class="faculty-slider-container">
+            <button class="faculty-nav-btn prev-btn" id="facultyPrevBtn" aria-label="Previous Slide">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <div class="faculty-slider-viewport" id="facultySliderViewport">
+                <div class="faculty-slider-track" id="facultySliderTrack">
+                    <!-- Slide 1 -->
+                    <div class="faculty-slide">
+                        <div class="faculty-card">
+                            <div class="faculty-img-wrap">
+                                <img src="vijay sir.png" alt="Vijay Tiwde" loading="lazy" onerror="handleFacultyImageError(this)">
+                            </div>
+                            <div class="faculty-details">
+                                <span class="faculty-dept">Department of Chemistry</span>
+                                <h3 class="faculty-name">Vijay Tiwde</h3>
+                                <p class="faculty-designation">Chemistry PGT</p>
+                                <div class="faculty-social">
+                                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="mailto:vijaytiwde@idealpublicschool.info" class="social-icon" aria-label="Email"><i class="far fa-envelope"></i></a>
+                                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="faculty-slide">
+                        <div class="faculty-card">
+                            <div class="faculty-img-wrap">
+                                <img src="mam7.png" alt="Deepika Mishra" loading="lazy" onerror="handleFacultyImageError(this)">
+                            </div>
+                            <div class="faculty-details">
+                                <span class="faculty-dept">Department of Biology</span>
+                                <h3 class="faculty-name">Deepika Mishra</h3>
+                                <p class="faculty-designation">Biology PGT</p>
+                                <div class="faculty-social">
+                                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="mailto:deepikamishra@idealpublicschool.info" class="social-icon" aria-label="Email"><i class="far fa-envelope"></i></a>
+                                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 -->
+                    <div class="faculty-slide">
+                        <div class="faculty-card">
+                            <div class="faculty-img-wrap">
+                                <img src="IMRAN SIR.png" alt="Imran Qureshi" loading="lazy" onerror="handleFacultyImageError(this)">
+                            </div>
+                            <div class="faculty-details">
+                                <span class="faculty-dept">Department of Social Studies</span>
+                                <h3 class="faculty-name">Imran Qureshi</h3>
+                                <p class="faculty-designation">Sst PGT</p>
+                                <div class="faculty-social">
+                                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="mailto:imranqureshi@idealpublicschool.info" class="social-icon" aria-label="Email"><i class="far fa-envelope"></i></a>
+                                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 4 -->
+                    <div class="faculty-slide">
+                        <div class="faculty-card">
+                            <div class="faculty-img-wrap">
+                                <img src="MAJGHYE SIR.png" alt="Shubas Machghaye" loading="lazy" onerror="handleFacultyImageError(this)">
+                            </div>
+                            <div class="faculty-details">
+                                <span class="faculty-dept">Department of Mathematics</span>
+                                <h3 class="faculty-name">Shubas Machghaye</h3>
+                                <p class="faculty-designation">Maths PGT</p>
+                                <div class="faculty-social">
+                                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="mailto:shubasmachghaye@idealpublicschool.info" class="social-icon" aria-label="Email"><i class="far fa-envelope"></i></a>
+                                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 5 -->
+                    <div class="faculty-slide">
+                        <div class="faculty-card">
+                            <div class="faculty-img-wrap">
+                                <img src="NAZAM ANSARI.png" alt="Nazam Ansari" loading="lazy" onerror="handleFacultyImageError(this)">
+                            </div>
+                            <div class="faculty-details">
+                                <span class="faculty-dept">Department of Physics</span>
+                                <h3 class="faculty-name">Nazam Ansari</h3>
+                                <p class="faculty-designation">Physics PGT</p>
+                                <div class="faculty-social">
+                                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="mailto:nazamansari@idealpublicschool.info" class="social-icon" aria-label="Email"><i class="far fa-envelope"></i></a>
+                                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 6 -->
+                    <div class="faculty-slide">
+                        <div class="faculty-card">
+                            <div class="faculty-img-wrap">
+                                <img src="mam4.png" alt="Sunita Patle" loading="lazy" onerror="handleFacultyImageError(this)">
+                            </div>
+                            <div class="faculty-details">
+                                <span class="faculty-dept">Department of Hindi</span>
+                                <h3 class="faculty-name">Sunita Patle</h3>
+                                <p class="faculty-designation">Hindi PGT</p>
+                                <div class="faculty-social">
+                                    <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="mailto:sunitapatle@idealpublicschool.info" class="social-icon" aria-label="Email"><i class="far fa-envelope"></i></a>
+                                    <a href="#" class="social-icon" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="faculty-nav-btn next-btn" id="facultyNextBtn" aria-label="Next Slide">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="faculty-slider-dots" id="facultySliderDots"></div>
+    </section>
+
+    <!-- 🌟 VIDEO SHOWCASE & STATISTICS SECTION 🌟 -->
+    <section id="discover-more" class="discover-section fade-in-up">
+        <div class="discover-container">
+            <!-- Left Column: Content -->
+            <div class="discover-content">
+                <div class="discover-badge">
+                    <span class="discover-dot"></span>
+                    DISCOVER IDEAL
+                </div>
+                <h2 class="discover-title">Excellence in Education, Impacting Tomorrow.</h2>
+                <p class="discover-lead">
+                    At Ideal Public School, we blend academic excellence with innovative learning to create an environment where young minds thrive and futures are built.
+                </p>
+                <p class="discover-text">
+                    Watch this video to see how we inspire minds, encourage innovation, and shape a better tomorrow.
+                </p>
+                
+                <div class="discover-bullets">
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-graduation-cap"></i></span>
+                        <div class="bullet-info">
+                            <h4>Academic Excellence</h4>
+                            <p>Quality education that builds strong foundations.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-lightbulb"></i></span>
+                        <div class="bullet-info">
+                            <h4>Innovation Driven</h4>
+                            <p>Promoting research, creativity and real-world solutions.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-handshake"></i></span>
+                        <div class="bullet-info">
+                            <h4>Holistic Development</h4>
+                            <p>Nurturing skills, values and leadership qualities.</p>
+                        </div>
+                    </div>
+                    <div class="bullet-item">
+                        <span class="bullet-icon"><i class="fas fa-users"></i></span>
+                        <div class="bullet-info">
+                            <h4>Stronger Together</h4>
+                            <p>A vibrant community that supports and grows together.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Portrait Card -->
+            <div class="discover-video-card">
+                <div class="video-preview-wrapper" data-video-url="school_video.mp4" onclick="playShowcaseVideo(this)">
+                    <video class="video-thumbnail" muted preload="metadata" id="videoThumbPreview">
+                        <source src="school_video.mp4" type="video/mp4">
+                    </video>
+                    <!-- Play Overlay -->
+                    <div class="video-overlay" id="videoPlayOverlay">
+                        <div class="play-btn-pulse">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <!-- Hidden video player container -->
+                    <div class="video-player-container" id="videoPlayerContainer"></div>
+                </div>
+                <div class="video-card-details">
+                    <span class="card-detail-tag">EMPOWERING MINDS. BUILDING FUTURES.</span>
+                    <h3 class="card-detail-title">The Ideal Story</h3>
+                    <p class="card-detail-sub">Passion. Innovation. Purpose.</p>
+                    <p class="card-detail-text">
+                        Our journey is defined by the achievements of our students, the dedication of our faculty and the trust of our community. Press play and be a part of our story.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Banner: Statistics -->
+        <div class="discover-stats-banner">
+            <div class="stat-banner-item">
+                <span class="stat-banner-icon"><i class="fas fa-school"></i></span>
+                <div class="stat-banner-info">
+                    <h3>25+</h3>
+                    <p class="stat-label">Years of Excellence</p>
+                    <p class="stat-desc">A legacy of trust, quality and continuous growth.</p>
+                </div>
+            </div>
+            <div class="stat-banner-divider"></div>
+            <div class="stat-banner-item">
+                <span class="stat-banner-icon"><i class="fas fa-smile"></i></span>
+                <div class="stat-banner-info">
+                    <h3>2500+</h3>
+                    <p class="stat-label">Happy Students</p>
+                    <p class="stat-desc">Empowering thousands of minds to succeed.</p>
+                </div>
+            </div>
+            <div class="stat-banner-divider"></div>
+            <div class="stat-banner-item">
+                <span class="stat-banner-icon"><i class="fas fa-chalkboard-teacher"></i></span>
+                <div class="stat-banner-info">
+                    <h3>60+</h3>
+                    <p class="stat-label">Expert Faculty</p>
+                    <p class="stat-desc">Experienced educators committed to excellence.</p>
+                </div>
+            </div>
+            <div class="stat-banner-divider"></div>
+            <div class="stat-banner-item">
+                <span class="stat-banner-icon"><i class="fas fa-trophy"></i></span>
+                <div class="stat-banner-info">
+                    <h3>100%</h3>
+                    <p class="stat-label">Board Success Rate</p>
+                    <p class="stat-desc">Exceptional academic results year after year.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="activities" class="section-container fade-in-up">
+        <h2 class="section-title">School <span>Facilities</span></h2>
+        <div class="grid">
+            <div class="card activity-card"><img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=500&q=80" alt="Swimming Pool"><div class="overlay"><h3>Swimming Pool</h3></div></div>
+            <div class="card activity-card"><img src="science lab.jpg" alt="Science Lab"><div class="overlay"><h3>Science Lab</h3></div></div>
+            <div class="card activity-card"><img src="computer lab.jpg" alt="Computer Lab"><div class="overlay"><h3>Computer Lab</h3></div></div>
+            <div class="card activity-card"><img src="kindergarden .JPG" alt="Kinder garden "><div class="overlay"><h3>Kinder garden </h3></div></div>
+            <div class="card activity-card"><img src="music lab .JPG" alt="Music lab "><div class="overlay"><h3>Music lab </h3></div></div>
+
+            <div class="card activity-card"><img src="volleyball ground .JPG" alt="volleyball Ground"><div class="overlay"><h3>volleyball Ground</h3></div></div>
+        </div>
+    </section>
+
+    <section class="section-container bg-light fade-in-up" id="live-gallery">
+        <h2 class="section-title">Latest <span>Gallery</span> Updates</h2>
+        <div class="grid" id="dynamicGalleryContainer">
+            <p style="text-align: center; width: 100%; color: #64748b;">Loading Photos Live... ⏳</p>
+        </div>
+    </section>
+
+    <!-- 🌟 CAMPUS NEWS & EVENTS SECTION 🌟 -->
+    <section class="news-section fade-in-up" id="news">
+        <div class="news-header">
+            <div class="news-badge"><span class="dot"></span> Campus Highlights</div>
+            <h2>Ideal Public : <span class="red">Events & News</span></h2>
+            <p>Stay updated with the latest campus highlights, technical breakthroughs, and upcoming events. Immerse yourself in the vibrant life of Ideal Public School.</p>
+        </div>
+        <div class="news-slider-wrapper">
+            <!-- 
+                📷 SET NEWS BANNER IMAGES FOR BOTH CLASSES HERE:
+                Modify 'data-class10-toppers-img' and 'data-class12-achievements-img' attributes below:
+            -->
+            <div class="news-slider-track" id="newsSliderTrack" data-class10-toppers-img="class10_toppers_banner.jpg" data-class12-achievements-img="lavi.png"></div>
+            <button class="news-arrow news-prev" id="newsPrev" onclick="newsPrev()" aria-label="Previous News"><i class="fas fa-chevron-left"></i></button>
+            <button class="news-arrow news-next" id="newsNext" onclick="newsNext()" aria-label="Next News"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="news-dots" id="newsDots"></div>
+    </section>
+
+    <!-- 🌟 PLACEMENT SPOTLIGHT SECTION 🌟 -->
+    <section class="placement-section fade-in-up" id="placements">
+        <div class="placement-header">
+            <div class="placement-badge"><span class="dot"></span> Placement Spotlight</div>
+            <h2>Our Recent <span class="red">Class12th </span> <span class="blue">Achievers</span></h2>
+        </div>
+        <div class="placement-carousel-wrapper" id="placementCarouselWrapper">
+            <div class="pc-fade-left"></div>
+            <div class="placement-carousel" id="placementCarousel"></div>
+            <div class="pc-fade-right"></div>
+            <button class="pc-arrow pc-prev" id="pcPrev" onclick="pcPrev()" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+            <button class="pc-arrow pc-next" id="pcNext" onclick="pcNext()" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="pc-dots" id="pcDots"></div>
+    </section>
+
+    <section id="services" class="section-container fade-in-up">
+        <h2 class="section-title">Our Essential <span>Services</span></h2>
+        <div class="grid">
+            <div class="link-card" onclick="openELibrary()"><i class="fas fa-book-reader" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 15px;"></i><h3>E-Library</h3><p>Access study materials, PDFs and Video Lectures.</p></div>
+            <div class="link-card" onclick="openStudentId()"><i class="fas fa-id-badge" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 15px;"></i><h3>Digital Student ID</h3><p>Generate your Virtual ID Card instantly.</p></div>
+            <div class="link-card" onclick="openResultModal()"><i class="fas fa-poll" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 15px;"></i><h3>Examination Results</h3><p>Check your academic performance instantly.</p></div>
+            <div class="link-card" onclick="openNoticeBoard()"><i class="fas fa-bullhorn" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 15px;"></i><h3>Notice Board</h3><p>Stay updated with the latest school announcements.</p></div>
+        </div>
+    </section>
+
+    <section id="complaints" class="section-container bg-light fade-in-up">
+        <h2 class="section-title">Smart <span>Complaint Box</span></h2>
+        <div class="contact-form-container" style="max-width: 700px; margin: 0 auto; border-top: 5px solid #ef4444; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <form id="complaintForm" class="admission-form">
+                <div class="input-row">
+                    <input type="text" id="compName" placeholder="Your Name" required>
+                    <select id="compType" required><option value="Academic">Academic</option><option value="Other">Other</option></select>
+                </div>
+                <div class="input-group" style="margin-top: 15px;"><input type="text" id="compSubject" placeholder="Subject" required></div>
+                <div class="input-group" style="margin-top: 15px;"><textarea id="compMessage" rows="4" placeholder="Describe issue..." required></textarea></div>
+                <button type="submit" class="btn-primary" style="background: #ef4444; width: 100%; margin-top: 15px;">Submit Complaint</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="contact" class="section-container fade-in-up">
+        <h2 class="section-title">Get In <span>Touch</span></h2>
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <h3>Contact Information</h3>
+                <p><i class="fas fa-map-marker-alt"></i> Ward no 8 , In front of jawahar navoday vidyalaya,Chandori ,Waraseoni</p>
+                <p><i class="fas fa-phone"></i> +91 9329494047</p>
+                <p><i class="fas fa-envelope"></i> idealpublicschool47@gmail.com</p>
+                <p><i class="fab fa-instagram" style="color: #E1306C; font-size: 1.2rem;"></i> <a href="https://instagram.com/i.p.schandori" target="_blank" style="color: white; text-decoration: none;">i.p.s.chandori</a></p>
+                <p><i class="fas fa-globe" style="color: #3b82f6;"></i> <a href="http://www.idealpublicschool.info" target="_blank" style="color: white; text-decoration: none;">www.idealpublicschool.info</a></p>
+            </div>
+            <div class="contact-form-container">
+                <form id="contactUsForm" action="https://formspree.io/f/xyknplbb" method="POST">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Email Address" required>
+                    <textarea name="message" rows="4" placeholder="How can we help you?" required></textarea>
+                    <button type="submit" class="btn-primary">Send Message <i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer><p>&copy; 2026 Ideal Public School. Empowering the future.</p></footer>
+    
+    <div id="toastMessage" class="toast-notification"><i class="fas fa-check-circle"></i> <span id="toastText">Success!</span></div>
+
+    <script src="script.js?v=3.3"></script>
+
+</body>
+</html>

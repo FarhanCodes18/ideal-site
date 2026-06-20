@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Portal - Ideal Public School</title>
+    <link rel="icon" type="image/png" href="logo.jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #f1f5f9; color: #334155; display: flex; justify-content: center; min-height: 100vh; padding: 30px 20px; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .login-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; width: 100%; max-width: 420px; margin: auto; margin-top: 15vh; border-top: 6px solid #10b981; }
+        .login-container h2 { color: #0f172a; margin-bottom: 10px; font-weight: 700; font-size: 1.8rem; }
+        .login-container input, .login-container select { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; text-align: center; outline: none; background: #f8fafc; transition: 0.3s; font-family: inherit; color: #334155; }
+        .login-container input:focus, .login-container select:focus { border-color: #10b981; background: white; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        .btn { background: #10b981; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 10px; }
+        .btn:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3); }
+        .error-msg { color: #ef4444; font-size: 14px; display: none; margin-bottom: 15px; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 5px; }
+        .dashboard-container { display: none; width: 100%; max-width: 1000px; margin: 0 auto; animation: fadeIn 0.4s ease-in-out; }
+        .top-header { background: white; display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-bottom: 4px solid #10b981; }
+        .top-header h2 { color: #0f172a; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 700; }
+        .logout-btn { background: #fee2e2; color: #ef4444; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .logout-btn:hover { background: #ef4444; color: white; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+        .admin-card { background: white; padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); position: relative; overflow: hidden; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .admin-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+        .admin-card::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; }
+        .card-green::before { background: #10b981; } .card-purple::before { background: #8b5cf6; } .card-teal::before { background: #0d9488; } .card-pink::before { background: #ec4899; }
+        .admin-card h3 { color: #0f172a; font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .admin-card p.desc { color: #64748b; font-size: 0.9rem; margin-bottom: 20px; }
+        .input-group { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        input, select, textarea { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none; background: #f8fafc; transition: all 0.3s ease; font-family: 'Poppins', sans-serif; resize: vertical; }
+        input:focus, select:focus, textarea:focus { border-color: #10b981; background: white; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        .input-group input, .input-group select { flex: 1; min-width: 200px; margin-bottom: 0; }
+        select:disabled { background-color: #e2e8f0; color: #475569; cursor: not-allowed; font-weight: 600; border-color: #cbd5e1; }
+        .preview-area { margin-top: 25px; border-top: 1px dashed #cbd5e1; padding-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        th { background: #f8fafc; color: #475569; font-weight: 600; position: sticky; top: 0; }
+        tr:hover { background: #f8fafc; }
+        .delete-btn-sm { background: #fee2e2; color: #ef4444; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 0.8rem; transition: all 0.2s ease; }
+        .delete-btn-sm:hover { background: #ef4444; color: white; transform: translateY(-1px); box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2); }
+        .btn-teal { background: #0d9488; } .btn-teal:hover { background: #0f766e; }
+        .btn-purple { background: #8b5cf6; } .btn-purple:hover { background: #7c3aed; }
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; overflow-x: auto; }
+        .tab-btn { background: #f1f5f9; color: #64748b; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; }
+        .tab-btn:hover:not(.active) { background: #e2e8f0; color: #334155; }
+        .tab-btn.active { background: #0d9488; color: white; box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2); }
+        .att-select { padding: 6px; border-radius: 5px; border: 1px solid #cbd5e1; font-weight: bold; outline: none; }
+        .att-P { color: #10b981; background: #dcfce7; border-color: #86efac; }
+        .att-A { color: #ef4444; background: #fee2e2; border-color: #fca5a5; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .toast-notification { visibility: hidden; min-width: 250px; background-color: #10b981; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 15px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); font-weight: 600; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        .toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
+        .toast-error { background-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3); }
+        @media screen and (max-width: 768px) {
+            html, body {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                margin: 0 !important;
+                padding: 15px 10px !important;
+                position: relative !important;
+            }
+            .dashboard-container {
+                width: 100% !important;
+                padding: 0 !important;
+            }
+            .top-header {
+                flex-direction: column !important;
+                padding: 20px !important;
+                gap: 15px !important;
+                text-align: center;
+            }
+            .top-header h2 {
+                font-size: 1.3rem !important;
+            }
+            .top-header div {
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 10px !important;
+            }
+            .logout-btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .login-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 30px 20px !important;
+                margin-top: 5vh !important;
+            }
+            .admin-card {
+                padding: 20px 15px !important;
+            }
+            .input-group {
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+            .input-group input, .input-group select, .input-group button {
+                width: 100% !important;
+                flex: none !important;
+                margin-bottom: 0 !important;
+            }
+            .preview-area {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            table {
+                width: 100% !important;
+                min-width: 500px !important;
+            }
+            .tab-menu {
+                gap: 5px !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            .tab-btn {
+                padding: 8px 12px !important;
+                font-size: 0.85rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginScreen">
+        <h2><i class="fas fa-chalkboard-teacher" style="color:#10b981;"></i> Teacher Portal</h2>
+        <p style="color: #64748b; margin-bottom: 20px; font-size: 0.9rem;">Select your Class and enter Password</p>
+        <p class="error-msg" id="errorMsg"><i class="fas fa-exclamation-circle"></i> Invalid Password!</p>
+        <select id="teacherClassLogin"><option value="" disabled selected>-- Select Your Class --</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select>
+        <input type="password" id="teacherPassword" placeholder="Enter Class Password">
+        <button class="btn" onclick="checkTeacherLogin()">Login Securely <i class="fas fa-arrow-right"></i></button>
+        <p style="text-align: center; margin-top: 15px;"><a href="index.html" style="color: #64748b; font-size: 0.85rem; text-decoration: none;"><i class="fas fa-home"></i> Back to Main Website</a></p>
+    </div>
+
+    <div class="dashboard-container" id="dashboardScreen">
+        <div class="top-header">
+            <h2><i class="fas fa-book-open"></i> Teacher Panel</h2>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <span id="welcomeName" style="font-weight:600; color:#10b981; background: #dcfce7; padding: 8px 20px; border-radius: 20px;"></span>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="admin-card card-teal">
+            <h3><i class="fas fa-chalkboard-teacher" style="color: #0d9488;"></i> My Class Hub</h3>
+            <p class="desc">Mark attendance, send assignments, and view students.</p>
+            <div class="tab-menu">
+                <button class="tab-btn active" id="btn-tab-attendance" onclick="switchClassTab('attendance')"><i class="fas fa-clipboard-user"></i> Attendance</button>
+                <button class="tab-btn" id="btn-tab-students" onclick="switchClassTab('students')"><i class="fas fa-users"></i> Students</button>
+                <button class="tab-btn" id="btn-tab-assign" onclick="switchClassTab('assign')"><i class="fas fa-tasks"></i> Assignments</button>
+            </div>
+            <div id="tab-attendance"><div class="input-group"><select id="attClassSelect" style="flex: 0.3;"></select> <input type="date" id="attDate" style="flex: 0.4;" required><button class="btn btn-teal" style="width: auto;" onclick="loadStudentsForAttendance()"><i class="fas fa-search"></i> Load My Class</button></div><div class="preview-area" id="attStudentsList" style="max-height: 350px; overflow-y: auto;"><p style="text-align: center;">Select a date to mark attendance.</p></div><button class="btn btn-teal" id="saveAttBtn" style="display:none; margin-top: 15px;" onclick="saveAttendance()"><i class="fas fa-save"></i> Save Attendance</button></div>
+            <div id="tab-students" style="display: none;"><div class="input-group"><select id="manageClassSelect"></select> <button class="btn btn-teal" style="width: auto;" onclick="loadClassStudentsForManagement()"><i class="fas fa-list"></i> View My Students</button></div><div class="preview-area" id="manageStudentsList" style="max-height: 350px; overflow-y: auto;"></div></div>
+            <div id="tab-assign" style="display: none;"><div class="input-group"><select id="assignClass"></select> <input type="text" id="assignSubject" placeholder="Subject"><input type="date" id="assignDue"></div><textarea id="assignDesc" rows="2" placeholder="Write assignment details..."></textarea><div class="input-group" style="margin-top: 10px;"><input type="url" id="assignPdf" placeholder="Paste PDF/Material Link"></div><button class="btn btn-teal" style="width: auto; margin-top: 15px;" onclick="addAssignment()"><i class="fas fa-paper-plane"></i> Send Live Assignment</button><div class="preview-area" id="adminAssignPreview"></div></div>
+        </div>
+
+        <div class="admin-card card-purple">
+            <h3><i class="fas fa-poll"></i> Upload Student Results Live</h3>
+            <p class="desc">Add marks/grades to display on student portal instantly.</p>
+            <div class="input-group">
+                <input type="text" id="resultRoll" placeholder="Roll No" style="flex: 0.5;"><input type="text" id="resultName" placeholder="Student Name">
+                <select id="resultClass"></select> <input type="text" id="resultExam" placeholder="Exam (e.g. Term 1)">
+                <input type="text" id="resultScore" placeholder="Score (e.g. 85%)">
+            </div>
+            <button class="btn btn-purple" style="width: auto;" onclick="addResult()"><i class="fas fa-plus-circle"></i> Publish Live Result</button>
+            <div class="preview-area" id="adminResultPreview"></div>
+        </div>
+
+        <div class="admin-card card-pink">
+            <h3><i class="fas fa-calendar-minus" style="color: #ec4899;"></i> Live Leave Applications</h3>
+            <p class="desc">Approve or reject leave requests.</p>
+            <div id="adminLeavesPreview" class="preview-area" style="max-height: 400px; overflow-y: auto; border: none; padding: 0; background: transparent;"></div>
+        </div>
+    </div>
+
+    <div id="toastMessage" class="toast-notification"><i class="fas fa-info-circle"></i> <span id="toastText">Message goes here</span></div>
+
+    <script>
+        // 🌟 1. FIREBASE SETUP 🌟
+        const firebaseConfig = {
+            apiKey: "AIzaSyCK-PK_YPHMdTfhTOR-MVJjY3Fodqq5K_g",
+            authDomain: "ideal-public-school-59070.firebaseapp.com",
+            databaseURL: "https://ideal-public-school-59070-default-rtdb.firebaseio.com",
+            projectId: "ideal-public-school-59070",
+            storageBucket: "ideal-public-school-59070.firebasestorage.app",
+            messagingSenderId: "775234870692",
+            appId: "1:775234870692:web:39c85c60ada28f5d563531"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const classPasswords = { "Class 1st": "2026", "Class 2nd": "2026", "Class 3rd": "2026", "Class 4th": "2026", "Class 5th": "2026", "Class 6th": "2026", "Class 7th": "2026", "Class 8th": "2000", "Class 9th": "2021", "Class 10th": "2022", "Class 11th": "2023", "Class 12th": "2024" };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const session = sessionStorage.getItem("ideal_active_teacher");
+            if(session) { initializeDashboard(JSON.parse(session)); }
+        });
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById("toastMessage"); const toastText = document.getElementById("toastText");
+            if(toast) { toastText.innerText = message; toast.style.backgroundColor = isError ? "#ef4444" : "#10b981"; toast.classList.add("show"); setTimeout(()=> toast.classList.remove("show"), 3500); }
+        }
+
+        function checkTeacherLogin() {
+            const selectedClass = document.getElementById("teacherClassLogin").value, enteredPass = document.getElementById("teacherPassword").value;
+            if(!selectedClass) return showToast("Select your class!", true);
+            if (classPasswords[selectedClass] === enteredPass) { const teacherData = { cls: selectedClass }; sessionStorage.setItem("ideal_active_teacher", JSON.stringify(teacherData)); initializeDashboard(teacherData); } 
+            else { document.getElementById("errorMsg").style.display = "block"; }
+        }
+        document.getElementById("teacherPassword").addEventListener("keypress", function(e) { if (e.key === "Enter") { e.preventDefault(); checkTeacherLogin(); } });
+        function logout() { sessionStorage.removeItem("ideal_active_teacher"); location.reload(); }
+
+        function initializeDashboard(teacher) {
+            document.getElementById("loginScreen").style.display = "none"; document.getElementById("dashboardScreen").style.display = "block"; document.getElementById('attDate').valueAsDate = new Date();
+            document.getElementById("welcomeName").innerHTML = `<i class="fas fa-chalkboard-teacher"></i> ${teacher.cls} Admin`;
+            ['attClassSelect', 'manageClassSelect', 'assignClass', 'resultClass'].forEach(id => { const box = document.getElementById(id); if(box) { box.innerHTML = `<option value="${teacher.cls}" selected>${teacher.cls}</option>`; box.disabled = true; } });
+            
+            // Start listening to Firebase data
+            loadResultPreview(teacher.cls); loadAssignments(teacher.cls); loadLeavesPreview(teacher.cls);
+        }
+
+        function switchClassTab(tab) { document.getElementById('tab-attendance').style.display = tab === 'attendance' ? 'block' : 'none'; document.getElementById('tab-students').style.display = tab === 'students' ? 'block' : 'none'; document.getElementById('tab-assign').style.display = tab === 'assign' ? 'block' : 'none'; document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById('btn-tab-' + tab).classList.add('active'); }
+
+        // Local Functions (Students / Attendance)
+        function loadStudentsForAttendance() {
+            const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value, preview = document.getElementById('attStudentsList');
+            if(!date) return showToast("Select a date first!", true);
+            let students = JSON.parse(localStorage.getItem('ideal_student_users')) || [], attData = JSON.parse(localStorage.getItem('ideal_attendance')) || {}, classStudents = students.filter(s => s.cls === cls);
+            if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students registered in ${cls}.</p>`; document.getElementById('saveAttBtn').style.display = 'none'; return; }
+            let html = '<table><tr><th>Name</th><th>Mobile</th><th>Status</th></tr>'; classStudents.forEach(s => { let currentStatus = (attData[s.mobile] && attData[s.mobile][date]) ? attData[s.mobile][date] : 'Present'; html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td><select id="att_${s.mobile}" class="att-select ${currentStatus === 'Present' ? 'att-P' : 'att-A'}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':'att-A')"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option></select></td></tr>`; });
+            preview.innerHTML = html + '</table>'; document.getElementById('saveAttBtn').style.display = 'block';
+        }
+        function saveAttendance() { const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value; let students = JSON.parse(localStorage.getItem('ideal_student_users')) || [], attData = JSON.parse(localStorage.getItem('ideal_attendance')) || {}, classStudents = students.filter(s => s.cls === cls); classStudents.forEach(s => { let status = document.getElementById(`att_${s.mobile}`).value; if(!attData[s.mobile]) attData[s.mobile] = {}; attData[s.mobile][date] = status; }); localStorage.setItem('ideal_attendance', JSON.stringify(attData)); showToast('Attendance Saved!'); }
+        function loadClassStudentsForManagement() { const cls = document.getElementById('manageClassSelect').value, preview = document.getElementById('manageStudentsList'); let classStudents = (JSON.parse(localStorage.getItem('ideal_student_users')) || []).filter(s => s.cls === cls); if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students found.</p>`; return; } let html = '<table><tr><th>Name</th><th>Mobile</th><th>Gender</th></tr>'; classStudents.forEach(s => { html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td style="font-size:13px; color:#64748b;">${s.gender}</td></tr>`; }); preview.innerHTML = html + '</table>'; }
+
+        // 🌟 FIREBASE LIVE ASSIGNMENTS 🌟
+        function addAssignment() {
+            const cls = document.getElementById('assignClass').value, sub = document.getElementById('assignSubject').value.trim(), due = document.getElementById('assignDue').value, desc = document.getElementById('assignDesc').value.trim(), pdf = document.getElementById('assignPdf').value.trim();
+            if(cls && sub && desc) { 
+                db.ref('ideal_assignments').push({ class: cls, subject: sub, date: due || 'No deadline', desc: desc, pdf: pdf }).then(() => {
+                    showToast('Assignment Live on App!'); document.getElementById('assignSubject').value = ''; document.getElementById('assignDesc').value = ''; document.getElementById('assignPdf').value = '';
+                });
+            } else showToast("Fill Subject and Details.", true);
+        }
+        function loadAssignments(teacherClass) { 
+            db.ref('ideal_assignments').on('value', snap => {
+                let data = snap.val(), html = '<table><tr><th>Subject</th><th>Deadline</th><th>PDF Link</th><th>Action</th></tr>'; 
+                let found = false;
+                if(data) {
+                    Object.keys(data).reverse().forEach(id => {
+                        let a = data[id];
+                        if(a.class === teacherClass) {
+                            found = true;
+                            html += `<tr><td><strong>${a.subject}</strong></td><td>${a.date}</td><td>${a.pdf ? `<a href="${a.pdf}" target="_blank" style="color:#3b82f6; font-weight:bold;">View Material</a>` : '-'}</td><td><button onclick="deleteAssignment('${id}')" class="delete-btn-sm">Delete</button></td></tr>`; 
+                        }
+                    });
+                }
+                if(!found) document.getElementById('adminAssignPreview').innerHTML = '<p style="text-align:center; color:#64748b;">No assignments given.</p>';
+                else document.getElementById('adminAssignPreview').innerHTML = html + '</table>'; 
+            });
+        }
+        function deleteAssignment(id) { if(confirm("Delete this assignment?")) db.ref('ideal_assignments/' + id).remove().then(() => showToast("Deleted Live!", true)); }
+
+        // 🌟 FIREBASE LIVE RESULTS 🌟
+        function addResult() { 
+            const roll = document.getElementById('resultRoll').value.trim(), name = document.getElementById('resultName').value.trim(), cls = document.getElementById('resultClass').value, exam = document.getElementById('resultExam').value.trim(), score = document.getElementById('resultScore').value.trim();
+            if(!roll || !name || !score || !exam) return showToast("Fill all details!", true);
+            db.ref('ideal_results').push({ roll: roll, name: name, cls: cls, exam: exam, score: score }).then(() => { document.getElementById('resultRoll').value=''; document.getElementById('resultName').value=''; document.getElementById('resultScore').value=''; showToast("Result Published Live!"); });
+        }
+        function loadResultPreview(teacherClass) { 
+            db.ref('ideal_results').on('value', snap => {
+                let data = snap.val(), html = '<table><tr><th>Roll / Exam</th><th>Name</th><th>Score</th><th>Del</th></tr>';
+                let found = false;
+                if(data) { 
+                    Object.keys(data).forEach(id => { 
+                        let r = data[id]; 
+                        if(r.cls === teacherClass) {
+                            found = true;
+                            html += `<tr><td>${r.roll}<br><span style="font-size:11px; color:#3b82f6;">${r.exam}</span></td><td><strong>${r.name}</strong></td><td><span style="color:#10b981; font-weight:bold;">${r.score}</span></td><td><button onclick="deleteResult('${id}')" class="delete-btn-sm">Del</button></td></tr>`; 
+                        }
+                    }); 
+                } 
+                if(!found) document.getElementById('adminResultPreview').innerHTML = '<p style="text-align:center;">No results uploaded.</p>';
+                else document.getElementById('adminResultPreview').innerHTML = html + '</table>'; 
+            });
+        }
+        function deleteResult(id) { if(confirm("Delete Result?")) db.ref('ideal_results/' + id).remove().then(() => showToast("Deleted Live!", true)); }
+
+        // 🌟 FIREBASE LIVE LEAVES 🌟
+        function loadLeavesPreview(teacherClass) {
+            db.ref('ideal_leaves').on('value', snap => {
+                let data = snap.val(), html = '<table><tr><th>Student</th><th>Dates</th><th>Reason</th><th>Status</th><th>Action</th></tr>';
+                let found = false;
+                if(data) {
+                    Object.keys(data).reverse().forEach(id => {
+                        let l = data[id];
+                        if(l.cls === teacherClass) {
+                            found = true;
+                            let statusColor = l.status === 'Approved' ? '#10b981' : (l.status === 'Rejected' ? '#dc2626' : '#3b82f6');
+                            html += `<tr><td><strong>${l.studentName}</strong><br><span style="font-size:11px; color:#64748b;">${l.studentMobile}</span></td><td style="font-size:12px;">${l.fromDate} to<br>${l.toDate}</td><td style="font-size:12px; max-width: 150px;">${l.reason}</td><td style="color:${statusColor}; font-weight:bold; font-size:13px;">${l.status}</td><td>
+                            ${l.status === 'Pending' ? `<button onclick="updateLeave('${id}', 'Approved')" style="background:#10b981; color:white; border:none; padding:4px 8px; border-radius:5px; cursor:pointer; font-size:11px; margin-bottom:5px; width:100%;">Approve</button><br><button onclick="updateLeave('${id}', 'Rejected')" style="background:#dc2626; color:white; border:none; padding:4px 8px; border-radius:5px; cursor:pointer; font-size:11px; margin-bottom:5px; width:100%;">Reject</button>` : `<span style="font-size:11px; color:#94a3b8; display:block; margin-bottom:5px;">Processed</span>`}
+                            </td></tr>`;
+                        }
+                    });
+                }
+                if(!found) document.getElementById('adminLeavesPreview').innerHTML = `<p style="text-align:center; color:#64748b;">No leave applications from ${teacherClass}.</p>`; 
+                else document.getElementById('adminLeavesPreview').innerHTML = html + '</table>';
+            });
+        }
+        function updateLeave(id, status) { db.ref('ideal_leaves/' + id).update({ status: status }).then(() => showToast("Leave " + status + " Live!")); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+/* ==============================================================
+   mobile.css - Fluid Responsive Layout Overrides
+   ============================================================== */
+
+@media screen and (max-width: 768px) {
+    /* 1. Reset page locks to support 100% screen width and disable horizontal scroll overflow */
+    html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+        overflow-x: hidden !important; 
+        overflow-y: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+    }
+
+    /* 2. Fluid layout containers width */
+    .dashboard-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 15px !important;
+        box-sizing: border-box !important;
+    }
+
+    .auth-container, .login-container {
+        width: 90% !important;
+        max-width: 450px !important;
+        margin: 5vh auto !important;
+    }
+
+    /* 3. Stack inputs, rows, and header columns vertically */
+    .input-group, .row, .top-header, .profile-banner {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .input-group input, .input-group select, .input-group button {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    /* 4. Center-align profile cards */
+    .profile-banner {
+        text-align: center !important;
+        padding: 20px !important;
+    }
+
+    /* 5. Responsive features grid columns */
+    .features-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+    }
+
+    /* 6. Fully responsive modal boxes */
+    .modal-content {
+        width: 95% !important;
+        max-width: 95% !important;
+        margin: auto !important;
+    }
+}

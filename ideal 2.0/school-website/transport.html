@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Transportation | Ideal Public School</title>
+  <meta name="description" content="Safe and reliable school bus transportation services at Ideal Public School. Review bus routes, safety protocols, timings, and contact guidelines.">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* Custom Route Table styles to fit premium design */
+    .route-table-wrapper {
+      overflow-x: auto;
+      margin-top: 30px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--grey-mid);
+    }
+    .route-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .route-table th {
+      background: var(--navy);
+      color: var(--white);
+      padding: 16px 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+    .route-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--grey-light);
+      color: var(--text-mid);
+    }
+    .route-table tr:last-child td {
+      border-bottom: none;
+    }
+    .route-table tr:nth-child(even) {
+      background: var(--off-white);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <img src="../logo.jpeg" alt="School Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      <span>Ideal <span>Public</span> School</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          About Us <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="school-overview.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-school"></i></span> School Overview</a>
+          <a href="our-campus.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-building"></i></span> Our Campus</a>
+          <a href="director-message.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-user-tie"></i></span> Director's Message</a>
+          <a href="principal-message.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-user-graduate"></i></span> Principal's Message</a>
+          <a href="mission-vision.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-bullseye"></i></span> Mission &amp; Vision</a>
+        </div>
+      </li>
+      <li class="nav-dropdown open-active">
+        <button class="nav-dropdown-trigger-btn active" aria-haspopup="true" aria-expanded="true">
+          Our Campus <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="computer-lab.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-laptop"></i></span> Computer Lab</a>
+          <a href="library.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-book"></i></span> Library</a>
+          <a href="sports.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-volleyball-ball"></i></span> Sports</a>
+          <a href="gallery.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-images"></i></span> Gallery</a>
+          <a href="transport.html" class="nav-dropdown-item active" role="menuitem"><span class="dd-icon"><i class="fas fa-bus"></i></span> Transport</a>
+        </div>
+      </li>
+      <li><a href="../index.html#faculty">Faculty</a></li>
+      <li><a href="../index.html#activities">Facilities</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="../index.html" class="nav-cta">📝 Admissions</a></li>
+    </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-left reveal fade-left">
+        <h1 class="hero-heading">Transport</h1>
+        <div class="hero-underline"><span></span><span></span></div>
+        <p class="hero-subtitle">
+          "Safe and reliable transportation for students."
+        </p>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="../index.html">Home</a>
+          <span class="sep">/</span>
+          <span class="text-light">Our Campus</span>
+          <span class="sep">/</span>
+          <span class="current">Transport</span>
+        </nav>
+      </div>
+      <div class="hero-right reveal fade-right" style="justify-content:flex-end;">
+        <div class="hero-img-card">
+          <img src="https://images.unsplash.com/photo-1557223562-6c77ef16210f?auto=format&fit=crop&w=800&q=80" alt="School Bus Front" loading="eager">
+          <div class="achievement-badge">
+            <div class="badge-icon"><i class="fas fa-bus"></i></div>
+            <div class="badge-text">
+              <strong>GPS Tracked</strong>
+              <span>100% Monitored Routes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUS FACILITIES SECTION -->
+<section class="section" id="bus-facilities">
+  <div class="container">
+    <div class="who-grid">
+      <div class="who-left reveal fade-left">
+        <div class="section-badge"><i class="fas fa-shield-alt"></i> TRANSIT COMFORT</div>
+        <h2 class="section-title">Bus Facilities</h2>
+        <div class="section-underline"></div>
+        <p class="section-subtitle">
+          We prioritize the safety and convenience of our pupils. Our transport fleet consists of modern, GPS-enabled buses covering all major neighborhoods, operated by background-verified drivers and accompanied by trained conductors and female attendants.
+        </p>
+        <div class="feature-cards stagger" style="margin-top: 28px;">
+          <div class="feature-card">
+            <div class="fc-icon"><i class="fas fa-satellite"></i></div>
+            <h4>Real-time GPS</h4>
+            <p style="font-size:0.75rem; color:var(--text-light); margin-top:5px;">Live tracking and routing controls for parental peace of mind.</p>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon"><i class="fas fa-user-shield"></i></div>
+            <h4>Trained Crew</h4>
+            <p style="font-size:0.75rem; color:var(--text-light); margin-top:5px;">First-aid qualified staff and background-verified drivers.</p>
+          </div>
+          <div class="feature-card">
+            <div class="fc-icon"><i class="fas fa-camera"></i></div>
+            <h4>CCTV Monitored</h4>
+            <p style="font-size:0.75rem; color:var(--text-light); margin-top:5px;">Internal surveillance to ensure absolute discipline and protection.</p>
+          </div>
+        </div>
+      </div>
+      <div class="who-right reveal fade-right">
+        <div class="who-img-main" style="grid-column: span 2;">
+          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80" alt="School buses lined up" loading="lazy" style="height:360px; width:100%; border-radius:var(--radius-lg); object-fit:cover;">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERACTIVE CORRIDOR MAP SECTION -->
+<section class="section" id="interactive-map-section">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:40px;">
+      <div class="section-badge"><i class="fas fa-route"></i> LIVE ROUTE COVERAGE</div>
+      <h2 class="section-title">Interactive Corridor Map</h2>
+      <p class="section-subtitle" style="margin: 10px auto 0;">Hover over our primary nodes to explore the connectivity across the Balaghat region.</p>
+    </div>
+
+    <div class="interactive-map-card reveal zoom-in">
+      <div class="map-canvas-container">
+        <!-- SVG Canvas -->
+        <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet" class="map-svg">
+          <defs>
+            <!-- Gradient for Route Path -->
+            <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#1e3a5f" />
+              <stop offset="50%" stop-color="#4f46e5" />
+              <stop offset="100%" stop-color="#dc2626" />
+            </linearGradient>
+            <!-- Shadow Filter for Stops -->
+            <filter id="stopShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.25" />
+            </filter>
+          </defs>
+
+          <!-- Curved Route Line -->
+          <path d="M 100,280 C 250,100 450,120 550,260 C 650,400 800,320 900,140" fill="none" stroke="url(#routeGrad)" stroke-width="6" stroke-linecap="round" class="route-line-back" />
+          <path d="M 100,280 C 250,100 450,120 550,260 C 650,400 800,320 900,140" fill="none" stroke="url(#routeGrad)" stroke-width="6" stroke-linecap="round" class="route-line" />
+
+          <!-- Interactive Stops (Dots) -->
+          <!-- Dot 1: Balaghat Crossing -->
+          <g class="map-stop-node active" data-route="R-01" data-name="Balaghat Crossing" transform="translate(100, 280)">
+            <circle r="16" class="outer-pulse" />
+            <circle r="7" class="inner-dot" />
+          </g>
+          <!-- Dot 2: Garra Stop -->
+          <g class="map-stop-node" data-route="R-02" data-name="Garra Stop" transform="translate(160, 225)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 3: Lalbarra Stand -->
+          <g class="map-stop-node" data-route="R-03" data-name="Lalbarra Stand" transform="translate(220, 181)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 4: Waraseoni Main Stand -->
+          <g class="map-stop-node" data-route="R-04" data-name="Waraseoni Main Stand" transform="translate(280, 158)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 5: Mandi Gate -->
+          <g class="map-stop-node" data-route="R-05" data-name="Mandi Gate" transform="translate(360, 150)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 6: Shankar Mandir Stop -->
+          <g class="map-stop-node" data-route="R-06" data-name="Shankar Mandir Stop" transform="translate(460, 180)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 7: Chandori Local -->
+          <g class="map-stop-node" data-route="R-07" data-name="Chandori Local" transform="translate(550, 260)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 8: Panchayat Bhavan -->
+          <g class="map-stop-node" data-route="R-08" data-name="Panchayat Bhavan" transform="translate(636, 309)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 9: School Bypass Junction -->
+          <g class="map-stop-node" data-route="R-09" data-name="School Bypass Junction" transform="translate(725, 315)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 10: Rampaily Gate -->
+          <g class="map-stop-node" data-route="R-10" data-name="Rampaily Gate" transform="translate(817, 247)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+          <!-- Dot 11: Katangi Junction Stand -->
+          <g class="map-stop-node" data-route="R-11" data-name="Katangi Junction Stand" transform="translate(870, 178)">
+            <circle r="14" class="outer-pulse" />
+            <circle r="6" class="inner-dot" />
+          </g>
+
+          <!-- Dot 12: School Campus -->
+          <g class="map-stop-node" data-route="R-12" data-name="Ideal Public School Campus" transform="translate(900, 140)">
+            <circle r="16" class="outer-pulse" />
+            <circle r="7" class="inner-dot" />
+          </g>
+
+          <!-- Animated Bus directly inside SVG -->
+          <g>
+            <g transform="translate(-20, -12)">
+              <!-- Bus body (yellow-gold school bus with navy-blue text/accents) -->
+              <rect x="2" y="3" width="36" height="15" rx="3" fill="#facc15" />
+              <rect x="2" y="12" width="36" height="6" fill="#eab308" />
+              <rect x="30" y="3" width="8" height="15" rx="2" fill="#0f172a" />
+              <!-- Wheels -->
+              <circle cx="10" cy="18" r="4" fill="#0f172a" stroke="#fff" stroke-width="1.5" />
+              <circle cx="28" cy="18" r="4" fill="#0f172a" stroke="#fff" stroke-width="1.5" />
+              <!-- Windows -->
+              <rect x="6" y="6" width="5" height="5" rx="1" fill="#1e293b" />
+              <rect x="13" y="6" width="5" height="5" rx="1" fill="#1e293b" />
+              <rect x="20" y="6" width="5" height="5" rx="1" fill="#1e293b" />
+              <!-- Windshield -->
+              <path d="M 27,6 L 33,6 L 33,11 L 27,11 Z" fill="#93c5fd" />
+              <!-- Light -->
+              <circle cx="36" cy="14" r="1.5" fill="#f59e0b" />
+            </g>
+            <animateMotion 
+              path="M 100,280 C 250,100 450,120 550,260 C 650,400 800,320 900,140" 
+              dur="10s" 
+              repeatCount="indefinite" 
+              rotate="auto" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- Stop Info Panel (updated by JS) -->
+      <div class="map-info-panel">
+        <div class="mip-icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="mip-content">
+          <span class="mip-route-id" id="selectedRouteNum">R-01</span>
+          <h3 class="mip-stop-name" id="selectedRouteName">Balaghat Crossing</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTES & TIMINGS SECTION -->
+<section class="section bg-off" id="routes-timings">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:40px;">
+      <div class="section-badge"><i class="fas fa-map-signs"></i> BUS ROUTING</div>
+      <h2 class="section-title">Routes &amp; Timings</h2>
+      <p class="section-subtitle" style="margin: 10px auto 0;">Details of primary neighborhoods covered by our school transportation system:</p>
+    </div>
+
+    <div class="route-table-wrapper reveal zoom-in">
+      <table class="route-table">
+        <thead>
+          <tr>
+            <th>Route No.</th>
+            <th>Primary Areas / Stops</th>
+            <th>Morning Pickup</th>
+            <th>Afternoon Drop</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Route 01</strong></td>
+            <td>Waraseoni Main Stand, Mandi Gate, Shankar Mandir Stop</td>
+            <td>07:30 AM</td>
+            <td>02:15 PM</td>
+          </tr>
+          <tr>
+            <td><strong>Route 02</strong></td>
+            <td>Balaghat Road Crossing, Lalbarra Stand, Garra Stop</td>
+            <td>07:15 AM</td>
+            <td>02:30 PM</td>
+          </tr>
+          <tr>
+            <td><strong>Route 03</strong></td>
+            <td>Chandori Local, Panchayat Bhavan, School Bypass Junction</td>
+            <td>07:45 AM</td>
+            <td>02:00 PM</td>
+          </tr>
+          <tr>
+            <td><strong>Route 04</strong></td>
+            <td>Rampaily Gate, Katangi Junction Stand, Railway Crossing</td>
+            <td>07:05 AM</td>
+            <td>02:40 PM</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY & GUIDELINES -->
+<section class="section" id="safety-guidelines">
+  <div class="container">
+    <div class="campus-section-inner reveal fade-up">
+      <div class="campus-img">
+        <img src="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=800&q=80" alt="School Bus Safety" loading="lazy">
+      </div>
+      <div class="campus-content">
+        <div class="section-badge"><i class="fas fa-clipboard-list"></i> TRANSIT CODE</div>
+        <h3>Safety Measures &amp; Guidelines</h3>
+        <div class="section-underline"></div>
+        <p>To guarantee a secure travel experience, students and parents must respect the following guidelines:</p>
+        <ul class="campus-list">
+          <li><i class="fas fa-check"></i> Students must arrive at their designated stops 5 minutes before scheduled pickup times.</li>
+          <li><i class="fas fa-check"></i> Boarding and deboarding should only be done when the bus is completely stationary.</li>
+          <li><i class="fas fa-check"></i> Strict behavior code must be maintained inside the bus; shouting or standing is forbidden.</li>
+          <li><i class="fas fa-check"></i> Parents must produce the authorization ID card to receive nursery and primary students.</li>
+          <li><i class="fas fa-check"></i> Any change in pickup/drop routes must be reported to the transport desk 48 hours in advance.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSPORT IMAGE GALLERY -->
+<section class="section bg-off" id="transport-gallery">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:40px;">
+      <div class="section-badge"><i class="fas fa-images"></i> FLEET GALLERY</div>
+      <h2 class="section-title">Transit Gallery</h2>
+      <div class="section-underline" style="margin: 10px auto 0;"></div>
+    </div>
+    
+    <div class="campus-gallery-grid stagger" id="transportGalleryContainer">
+      <!-- Dynamic live gallery images will be rendered here -->
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="section" id="helpdesk">
+  <div class="container" style="text-align:center;">
+    <div class="reveal fade-up" style="max-width:700px; margin:0 auto 30px;">
+      <div class="section-badge"><i class="fas fa-headset"></i> TRANSPORTATION DESK</div>
+      <h2 class="section-title">Need IT or Lab Assistance?</h2>
+      <p class="section-subtitle" style="margin: 10px auto 0;">Our support team is here to help you with any infrastructure, laboratory, or technical queries.</p>
+    </div>
+    
+    <div class="reveal zoom-in" style="margin-top: 30px;">
+      <button class="hero-cta" id="openHelpdeskBtn" style="border:none; cursor:pointer;">
+        Contact Transport Incharge <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- HELPDESK MODAL -->
+<div class="helpdesk-modal" id="helpdeskModal" role="dialog" aria-modal="true" aria-labelledby="helpdeskModalTitle">
+  <div class="helpdesk-modal-overlay" id="helpdeskModalOverlay"></div>
+  <div class="helpdesk-modal-wrapper">
+    <button class="helpdesk-modal-close" id="closeHelpdeskBtn" aria-label="Close Modal">&times;</button>
+    
+    <img src="../IMRAN SIR.png" alt="Imran Sir" class="helpdesk-modal-photo" onerror="this.src='https://images.unsplash.com/photo-1566492031773-4f4e44671857?auto=format&fit=crop&w=400&q=80'">
+    
+    <div class="helpdesk-modal-info">
+      <h3 id="helpdeskModalTitle">Imran Sir</h3>
+      <p class="modal-designation">Transport Incharge</p>
+    </div>
+    
+    <div class="helpdesk-modal-details">
+      <div class="helpdesk-modal-detail-item">
+        <i class="fas fa-phone-alt"></i>
+        <span>+91 9329494047</span>
+      </div>
+      <div class="helpdesk-modal-detail-item">
+        <i class="fas fa-envelope"></i>
+        <span>idealpublicschool@gmail.com</span>
+      </div>
+    </div>
+    
+    <div class="helpdesk-modal-actions">
+      <a href="https://wa.me/919329494047?text=Hello%20Transport%20Incharge%2C%20I%20need%20assistance..." target="_blank" class="btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+      </a>
+      <a href="tel:+919329494047" class="btn-call">
+        <i class="fas fa-phone-alt"></i> Call Now
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-name">Ideal <span>Public</span> School</div>
+        <p>CBSE Affiliated (Affiliation No. 1030815) | Chandori, Waraseoni, Balaghat, M.P.</p>
+        <p style="margin-top:10px;">📞 +91 9329494047 | ✉ idealpublicschool@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="school-overview.html">School Overview</a></li>
+          <li><a href="our-campus.html">Our Campus</a></li>
+          <li><a href="director-message.html">Director's Message</a></li>
+          <li><a href="principal-message.html">Principal's Message</a></li>
+          <li><a href="mission-vision.html">Mission &amp; Vision</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Campus</h4>
+        <ul>
+          <li><a href="computer-lab.html">Computer Lab</a></li>
+          <li><a href="library.html">Library</a></li>
+          <li><a href="sports.html">Sports</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="transport.html">Transport</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="../index.html">Main Website</a></li>
+          <li><a href="#">Admissions</a></li>
+          <li><a href="#">Fee Structure</a></li>
+          <li><a href="#">Results</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ideal Public School. All rights reserved.</span>
+      <span>Chandori, Waraseoni · Balaghat, M.P.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Image Viewer Modal for full-size viewing -->
+<div id="imageViewerModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(15, 23, 42, 0.95); align-items: center; justify-content: center; flex-direction: column;">
+  <span class="close-btn" onclick="document.getElementById('imageViewerModal').style.display='none'" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">&times;</span>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+    <img id="fullSizeImage" src="" style="max-width: 90%; max-height: 80vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain;">
+    <h3 id="imageCaption" style="color: white; margin-top: 15px; font-family: sans-serif; font-weight: 400; letter-spacing: 1px; text-align: center; padding: 0 20px;"></h3>
+  </div>
+</div>
+
+<script src="../script.js?v=3.3"></script>
+</body>
+</html>
