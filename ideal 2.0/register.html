@@ -14,6 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -255,6 +256,11 @@
             </div>
             <label class="custom-file-upload"><i class="fas fa-camera-retro"></i><span id="regFileName" style="font-size: 13px;">Upload Photo</span><input type="file" id="regPhoto" accept="image/*" required onchange="document.getElementById('regFileName').innerText = this.files[0].name"></label>
             <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="Create Password" required></div>
+            
+            <div id="recaptcha-container" style="margin-bottom: 15px; display: flex; justify-content: center;">
+                <div class="g-recaptcha" data-sitekey="6LdEOjAtAAAAAOVHxWeWi5L5zScbfoGM2zaaLkAh"></div>
+            </div>
+            
             <button class="btn" id="regBtn" style="background: #10b981;" onclick="handleRegister()">Register Live</button>
             <p class="switch-text">Already registered? <span onclick="toggleAuth('login')">Login Here</span></p>
         </div>
@@ -424,12 +430,21 @@
             if(!name || !mobile || !email || !cls || !password || !photoFile) return alert("Fill all details!");
             if(mobile.length !== 10) return alert("Mobile number must be exactly 10 digits!");
             
+            // Check Google reCAPTCHA
+            const recaptchaResponse = grecaptcha.getResponse();
+            if (!recaptchaResponse) {
+                alert("Please verify the reCAPTCHA first!");
+                return;
+            }
+            
             btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Processing..."; btn.disabled = true;
 
             // Check if exist in Firebase RTDB
             db.ref('ideal_student_users/' + mobile).once('value', snap => {
                 if(snap.exists()) {
-                    alert("Mobile number already registered!"); btn.innerText = "Register Live"; btn.disabled = false; return;
+                    alert("Mobile number already registered!"); btn.innerText = "Register Live"; btn.disabled = false;
+                    grecaptcha.reset();
+                    return;
                 }
                 
                 compressAndSaveImage(photoFile, function(compressedBase64) {
@@ -449,8 +464,8 @@
                             fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
 
                             document.getElementById('regSuccess').style.display = 'block';
-                            setTimeout(() => { document.getElementById('loginMobile').value = mobile; toggleAuth('login'); btn.innerText = "Register Live"; btn.disabled = false; document.getElementById('regSuccess').style.display = 'none'; }, 1500);
-                        }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; });
+                            setTimeout(() => { document.getElementById('loginMobile').value = mobile; toggleAuth('login'); btn.innerText = "Register Live"; btn.disabled = false; document.getElementById('regSuccess').style.display = 'none'; grecaptcha.reset(); }, 1500);
+                        }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
                     };
 
                     // Try to register in Firebase Auth first
@@ -466,6 +481,7 @@
                                 alert("Auth Account Creation Error: " + authError.message);
                                 btn.innerText = "Register Live";
                                 btn.disabled = false;
+                                grecaptcha.reset();
                             }
                         });
                 });
