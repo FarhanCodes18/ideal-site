@@ -526,6 +526,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else { toppersContainer.innerHTML = '<p style="text-align:center; color:#64748b; width: 100%; grid-column: 1 / -1; margin-top:20px;">Results are being compiled. Toppers will be announced soon!</p>'; }
             }
         });
+
+        // J. Live Student Reviews (Home Page Carousel)
+        db.ref('ideal_reviews_approved').on('value', (snap) => {
+            let reviews = [];
+            snap.forEach(child => { reviews.push({ key: child.key, ...child.val() }); });
+            renderReviews(reviews);
+        });
     } else {
         const galleryContainer = document.getElementById('dynamicGalleryContainer');
         if (galleryContainer) galleryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
@@ -1345,8 +1352,8 @@ function initSlider(banners) {
             },
             {
                 image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1600&q=80',
-                title: 'Admissions Open 2025–26',
-                subtitle: 'Nursery to Class XII — Enroll Your Child Today!',
+                title: 'Admissions Open 2026-27',
+                subtitle: 'Nursery to Class XII - Enroll Your Child Today!',
                 btnText: '📝 Apply for Admission',
                 btnUrl: 'javascript:openAdmissionForm()'
             },
@@ -2167,3 +2174,191 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+
+// ============================================================
+// 🌟 STUDENT REVIEWS CAROUSEL ENGINE 🌟
+// ============================================================
+let reviewsOffset = 0;
+let reviewsTotal = 0;
+let reviewsVisible = 3;
+let reviewsAutoTimer = null;
+
+function getReviewsVisible() {
+    if (window.innerWidth <= 580) return 1;
+    if (window.innerWidth <= 900) return 2;
+    return 3;
+}
+
+function renderReviews(reviews) {
+    const carousel = document.getElementById('reviewsCarousel');
+    if (!carousel) return;
+
+    reviewsTotal = reviews.length;
+    reviewsOffset = 0;
+    reviewsVisible = getReviewsVisible();
+
+    clearInterval(reviewsAutoTimer);
+
+    if (reviewsTotal === 0) {
+        carousel.innerHTML = '<p style="text-align: center; width: 100%; color: #64748b; padding: 40px 0;">No student reviews yet. Be the first to share your feedback!</p>';
+        return;
+    }
+
+    let html = '';
+    reviews.forEach(r => {
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            starsHtml += `<i class="${i <= (r.rating || 5) ? 'fas' : 'far'} fa-star" style="color: #f59e0b; font-size: 0.9rem;"></i>`;
+        }
+        const initial = (r.name || 'S').charAt(0).toUpperCase();
+        html += `
+            <div class="review-card">
+                <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${initial}</div>
+                    <div>
+                        <h4 style="margin: 0; color: #0f172a; font-size: 1rem; font-weight: 700;">${r.name || 'Student'}</h4>
+                        <p style="margin: 2px 0 5px; color: #64748b; font-size: 0.8rem;">${r.class || ''}</p>
+                        <div>${starsHtml}</div>
+                    </div>
+                </div>
+                <p style="color: #334155; font-size: 0.93rem; line-height: 1.65; font-style: italic; flex-grow: 1;">"${r.text || ''}"</p>
+                <div style="position: absolute; top: 15px; right: 20px; font-size: 2.5rem; color: #e2e8f0; font-family: serif; line-height: 1;">"</div>
+            </div>`;
+    });
+    carousel.innerHTML = html;
+    carousel.style.transform = 'translateX(0)';
+
+    // Auto-slide only if more than reviewsVisible items
+    if (reviewsTotal > reviewsVisible) {
+        reviewsAutoTimer = setInterval(() => slideReviews(1), 3000);
+    }
+}
+
+function slideReviews(dir) {
+    const carousel = document.getElementById('reviewsCarousel');
+    if (!carousel) return;
+
+    reviewsVisible = getReviewsVisible();
+    const maxOffset = reviewsTotal - reviewsVisible;
+    if (maxOffset <= 0) return;
+
+    reviewsOffset += dir;
+    if (reviewsOffset > maxOffset) reviewsOffset = 0;
+    if (reviewsOffset < 0) reviewsOffset = maxOffset;
+
+    // Each card takes (100% + gap) / visible
+    const cardWidth = carousel.querySelector('.review-card');
+    if (!cardWidth) return;
+    const gap = 25;
+    const cardWidthPx = cardWidth.offsetWidth + gap;
+    carousel.style.transform = `translateX(-${reviewsOffset * cardWidthPx}px)`;
+
+    // Reset auto timer on manual click
+    clearInterval(reviewsAutoTimer);
+    if (reviewsTotal > reviewsVisible) {
+        reviewsAutoTimer = setInterval(() => slideReviews(1), 3000);
+    }
+}
+
+window.addEventListener('resize', () => {
+    reviewsOffset = 0;
+    const carousel = document.getElementById('reviewsCarousel');
+    if (carousel) carousel.style.transform = 'translateX(0)';
+    clearInterval(reviewsAutoTimer);
+    reviewsVisible = getReviewsVisible();
+    if (reviewsTotal > reviewsVisible) {
+        reviewsAutoTimer = setInterval(() => slideReviews(1), 3000);
+    }
+});
+
+// ============================================================
+// 🌟 STUDENT FEEDBACK MODAL ENGINE 🌟
+// ============================================================
+let selectedRating = 5;
+
+function openFeedbackModal() {
+    const modal = document.getElementById('feedbackModal');
+    if (modal) modal.style.display = 'flex';
+    selectedRating = 5;
+    resetRatingHover();
+    // Pre-fill stars to 5
+    document.querySelectorAll('.rating-stars-interactive i').forEach((star, i) => {
+        star.className = i < 5 ? 'fas fa-star' : 'far fa-star';
+        star.style.color = i < 5 ? '#f59e0b' : '#cbd5e1';
+    });
+}
+
+function closeFeedbackModal() {
+    const modal = document.getElementById('feedbackModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function setRating(val) {
+    selectedRating = val;
+    const ratingInput = document.getElementById('feedRatingValue');
+    if (ratingInput) ratingInput.value = val;
+    document.querySelectorAll('.rating-stars-interactive i').forEach((star, i) => {
+        star.className = i < val ? 'fas fa-star' : 'far fa-star';
+        star.style.color = i < val ? '#f59e0b' : '#cbd5e1';
+    });
+}
+
+function hoverRating(val) {
+    document.querySelectorAll('.rating-stars-interactive i').forEach((star, i) => {
+        star.className = i < val ? 'fas fa-star' : 'far fa-star';
+        star.style.color = i < val ? '#f59e0b' : '#cbd5e1';
+    });
+}
+
+function resetRatingHover() {
+    setRating(selectedRating);
+}
+
+function submitFeedback(e) {
+    e.preventDefault();
+    const name = document.getElementById('feedName').value.trim();
+    const cls = document.getElementById('feedClass').value;
+    const text = document.getElementById('feedText').value.trim();
+    const rating = parseInt(document.getElementById('feedRatingValue').value) || 5;
+
+    if (!name || !text) return showToast('Please fill all fields!', true);
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = 'Submitting... ⏳';
+    submitBtn.disabled = true;
+
+    const reviewData = {
+        name,
+        class: cls,
+        text,
+        rating,
+        status: 'pending',
+        timestamp: Date.now()
+    };
+
+    if (!db) {
+        showToast('Feedback saved locally! (No internet connection)', false);
+        closeFeedbackModal();
+        e.target.reset();
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+        return;
+    }
+
+    db.ref('ideal_reviews_pending').push(reviewData)
+        .then(() => {
+            showToast('Thank you! Your feedback has been submitted for review. 🌟');
+            closeFeedbackModal();
+            e.target.reset();
+            selectedRating = 5;
+        })
+        .catch(err => {
+            showToast('Error submitting feedback. Please try again.', true);
+            console.error('Feedback error:', err);
+        })
+        .finally(() => {
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        });
+}

@@ -16,7 +16,110 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css?v=3.3">
 
-    <!-- Inline CSS removed and moved to style.css -->
+    <style>
+        .reviews-section {
+            padding: 80px 20px;
+            background: #f8fafc;
+        }
+        .reviews-carousel-wrapper {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+        /* This is the clipping viewport — hides overflow cards */
+        .reviews-carousel-viewport {
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .reviews-carousel {
+            display: flex;
+            gap: 25px;
+            transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        .review-card {
+            /* Exactly 3 cards visible: (100% - 2 gaps) / 3 */
+            flex: 0 0 calc((100% - 50px) / 3);
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.07);
+            border-color: #3b82f6;
+        }
+        .reviews-section .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+        .reviews-section .carousel-arrow:hover {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+        .reviews-section .prev-arrow { left: 0; }
+        .reviews-section .next-arrow { right: 0; }
+
+        /* Soft white fade overlays on left & right edges */
+        .reviews-fade-left,
+        .reviews-fade-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .reviews-fade-left {
+            left: 50px; /* align with viewport start */
+            background: linear-gradient(to right, rgba(248,250,252,1) 0%, rgba(248,250,252,0) 100%);
+        }
+        .reviews-fade-right {
+            right: 50px; /* align with viewport end */
+            background: linear-gradient(to left, rgba(248,250,252,1) 0%, rgba(248,250,252,0) 100%);
+        }
+
+        /* Responsive: 2 cards on tablet, 1 on mobile */
+        @media (max-width: 900px) {
+            .review-card {
+                flex: 0 0 calc((100% - 25px) / 2);
+            }
+        }
+        @media (max-width: 580px) {
+            .review-card {
+                flex: 0 0 100%;
+            }
+            .reviews-fade-left,
+            .reviews-fade-right {
+                width: 30px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -98,7 +201,7 @@
             <span class="close-btn" onclick="closeMandatoryModal()">&times;</span>
             
             <div style="text-align: center; margin-bottom: 20px;">
-                <i class="fas fa-file-contract" style="font-size: 3rem; color: #3b82f6; margin-bottom: 10px;"></i>
+                <i class="fas fa-file-contract" style="font-size: 3rem; color: #327aee; margin-bottom: 10px;"></i>
                 <h2 style="color: var(--primary-blue); margin: 0;">Mandatory Public Disclosure</h2>
             </div>
 
@@ -107,11 +210,11 @@
                 <table class="disclosure-table">
                     <tr><td>1. Name of the school</td><td><strong>Ideal Public School</strong></td></tr>
                     <tr><td>2. Affiliation No. (if applicable)</td><td>1030815</td></tr>
-                    <tr><td>3. School Code (if applicable)</td><td>50461</td></tr>
+                    <tr><td>3. School Code (if applicable)</td><td>50780</td></tr>
                     <tr><td>4. Complete address with pin code</td><td>Ward no 8, In front of jawahar navoday vidyalaya, Chandori, Waraseoni, Balaghat, Madhya Pradesh - 481331</td></tr>
-                    <tr><td>5. Principal Name & Qualification</td><td>Dr. Daya Raut (M.A., B.Ed.)</td></tr>
+                    <tr><td>5. Principal Name & Qualification</td><td>Mr. Jitesh Nair (M.A., B.Ed.)</td></tr>
                     <tr><td>6. Email ID</td><td>idealpublicschool47@gmail.com</td></tr>
-                    <tr><td>7. Contact Detail (Landline/Mobile)</td><td>+91 9329494047</td></tr>
+                    <tr><td>7. Contact Detail (Landline/Mobile)</td><td>+91 8770869569</td></tr>
                 </table>
             </div>
 
@@ -145,7 +248,7 @@
             <h3 style="color: var(--primary-blue); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 30px; font-size: 1.4rem;">D. Staff (Teaching)</h3>
             <div class="modal-table-wrapper">
                 <table class="disclosure-table">
-                    <tr><td>1. Principal</td><td>Dr. Daya Raut</td></tr>
+                    <tr><td>1. Principal</td><td>Mr. Jitesh Nair</td></tr>
                     <tr><td>2. Total No. of Teachers</td><td>45+</td></tr>
                     <tr><td>- PGT</td><td>16</td></tr>
                     <tr><td>- TGT</td><td>14</td></tr>
@@ -305,6 +408,11 @@
                         <span class="dd-label">Principal's Message</span>
                         <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
                     </a>
+                    <a href="school-website/vice-principal-message.html" class="nav-dropdown-item" role="menuitem">
+                        <span class="dd-icon"><i class="fas fa-user-shield"></i></span>
+                        <span class="dd-label">Vice Principal's Message</span>
+                        <i class="fas fa-chevron-right dd-arrow" aria-hidden="true"></i>
+                    </a>
                     <a href="school-website/mission-vision.html" class="nav-dropdown-item" role="menuitem">
                         <span class="dd-icon"><i class="fas fa-bullseye"></i></span>
                         <span class="dd-label">Mission &amp; Vision</span>
@@ -351,7 +459,7 @@
                 </div>
             </div>
             
-            <a href="#faculty">Faculty</a>
+            <a href="school-website/careers.html">Careers</a>
             <a href="#activities">Facilities</a>
             <a href="#services">Services</a>
             <a href="javascript:void(0)" onclick="openMandatoryModal()">Public Disclosure</a>
@@ -781,6 +889,31 @@
         <div class="pc-dots" id="pcDots"></div>
     </section>
 
+    <!-- 🌟 STUDENT REVIEWS / TESTIMONIALS SECTION 🌟 -->
+    <section class="reviews-section fade-in-up" id="reviews">
+        <div class="reviews-header" style="text-align: center; margin-bottom: 40px;">
+            <div class="reviews-badge" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px;"><span class="dot" style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; display: inline-block;"></span> Student Voices</div>
+            <h2 style="font-size: 2.5rem; color: #0f172a; margin-top: 15px; font-weight: 800;">What Our <span style="color: #3b82f6;">Students</span> <span style="color: #ef4444;">Say</span></h2>
+        </div>
+        
+        <div class="reviews-carousel-wrapper">
+            <div class="reviews-fade-left"></div>
+            <div class="reviews-carousel-viewport">
+                <div class="reviews-carousel" id="reviewsCarousel">
+                    <p style="text-align: center; width: 100%; color: #64748b;">Loading Student Voices... ⏳</p>
+                </div>
+            </div>
+            <div class="reviews-fade-right"></div>
+            
+            <button class="carousel-arrow prev-arrow" onclick="slideReviews(-1)" aria-label="Previous Review"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-arrow next-arrow" onclick="slideReviews(1)" aria-label="Next Review"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <div class="reviews-footer" style="text-align: center; margin-top: 35px;">
+            <button class="btn-primary" onclick="openFeedbackModal()" style="background: #ef4444; color: white; display: inline-flex; align-items: center; gap: 10px; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; transition: 0.3s; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);"><i class="fas fa-comment-dots"></i> Share Your Feedback</button>
+        </div>
+    </section>
+
     <section id="services" class="section-container fade-in-up">
         <h2 class="section-title">Our Essential <span>Services</span></h2>
         <div class="grid">
@@ -831,6 +964,59 @@
     <footer><p>&copy; 2026 Ideal Public School. Empowering the future.</p></footer>
     
     <div id="toastMessage" class="toast-notification"><i class="fas fa-check-circle"></i> <span id="toastText">Success!</span></div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="modal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); align-items: center; justify-content: center; backdrop-filter: blur(8px); padding: 20px;">
+        <div class="modal-content" style="background: white; padding: 35px; border-radius: 24px; width: 100%; max-width: 500px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.15);">
+            <span class="close-btn" onclick="closeFeedbackModal()" style="position: absolute; right: 20px; top: 20px; font-size: 1.2rem; cursor: pointer; color: #64748b; background: #f1f5f9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s;">&times;</span>
+            <h2 style="color: #0f172a; margin-bottom: 5px; text-align: center; font-weight: 700; font-size: 1.6rem;"><i class="fas fa-comment-dots" style="color: #ef4444;"></i> Share Your Feedback</h2>
+            <p style="text-align: center; font-size: 0.9rem; color: #64748b; margin-bottom: 25px;">Your feedback will be published on our home page after admin approval.</p>
+            
+            <form id="feedbackForm" onsubmit="submitFeedback(event)" class="admission-form">
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <input type="text" id="feedName" placeholder="Your Full Name" required style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; outline: none; background: #f8fafc; font-family: inherit;">
+                </div>
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <select id="feedClass" required style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; outline: none; background: #f8fafc; font-family: inherit;">
+                        <option value="" disabled selected>Select Your Class / Role</option>
+                        <option value="Class 1st">Class 1st</option>
+                        <option value="Class 2nd">Class 2nd</option>
+                        <option value="Class 3rd">Class 3rd</option>
+                        <option value="Class 4th">Class 4th</option>
+                        <option value="Class 5th">Class 5th</option>
+                        <option value="Class 6th">Class 6th</option>
+                        <option value="Class 7th">Class 7th</option>
+                        <option value="Class 8th">Class 8th</option>
+                        <option value="Class 9th">Class 9th</option>
+                        <option value="Class 10th">Class 10th</option>
+                        <option value="Class 11th">Class 11th</option>
+                        <option value="Class 12th">Class 12th</option>
+                        <option value="Parent">Parent</option>
+                        <option value="Alumni">Alumni</option>
+                        <option value="Teacher">Teacher / Staff</option>
+                    </select>
+                </div>
+                
+                <div class="rating-container" style="text-align: center; margin-bottom: 20px;">
+                    <label style="display: block; font-size: 0.9rem; font-weight: 600; color: #475569; margin-bottom: 8px;">Your Rating</label>
+                    <div class="rating-stars-interactive" style="display: inline-flex; gap: 8px; font-size: 1.8rem; color: #cbd5e1; cursor: pointer;">
+                        <i class="far fa-star" data-rating="1" onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetRatingHover()"></i>
+                        <i class="far fa-star" data-rating="2" onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetRatingHover()"></i>
+                        <i class="far fa-star" data-rating="3" onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetRatingHover()"></i>
+                        <i class="far fa-star" data-rating="4" onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetRatingHover()"></i>
+                        <i class="far fa-star" data-rating="5" onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetRatingHover()"></i>
+                    </div>
+                    <input type="hidden" id="feedRatingValue" value="5" required>
+                </div>
+                
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <textarea id="feedText" rows="4" placeholder="Write your testimonial/feedback..." required style="width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; outline: none; background: #f8fafc; resize: none; font-family: inherit;"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="background: #ef4444; width: 100%; padding: 12px; font-size: 1rem; border-radius: 10px; border: none; color: white; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);">Submit for Review Live</button>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js?v=3.3"></script>
 

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Careers | Ideal Public School</title>
+  <meta name="description" content="Join our team at Ideal Public School. Explore vacancies for PGT, TGT, and PRT teachers, view our selection process steps, and apply today.">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ── Careers Page Styles ── */
+    .careers-page { background: #f8fafc; }
+    
+    /* Hero */
+    .c-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #0f172a 100%);
+      padding: 70px 0 80px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .c-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 50px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .c-hero-text h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .c-hero-text h1 span { color: #60a5fa; }
+    .c-hero-text p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.7;
+      margin-bottom: 25px;
+      max-width: 500px;
+    }
+    .c-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #93c5fd;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .c-hero-text .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .c-hero-text .breadcrumb-bar a { color: rgba(255,255,255,0.6); text-decoration: none; }
+    .c-hero-text .breadcrumb-bar a:hover { color: #fff; }
+    .c-hero-text .breadcrumb-bar .sep { opacity: 0.4; }
+    .c-hero-text .breadcrumb-bar .cur { color: #93c5fd; font-weight: 600; }
+
+    .c-hero-gfx {
+      display: flex;
+      justify-content: center;
+    }
+    .c-gfx-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(12px);
+      text-align: center;
+      max-width: 320px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .c-gfx-icon {
+      font-size: 3rem;
+      color: #60a5fa;
+      margin-bottom: 15px;
+    }
+    .c-gfx-card h3 { font-size: 1.25rem; margin-bottom: 8px; font-weight: 700; }
+    .c-gfx-card p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; }
+
+    /* Sections Layout */
+    .c-section { padding: 80px 0; }
+    .c-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    
+    .c-sec-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .c-sec-subtitle {
+      font-size: 1.05rem;
+      color: #64748b;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 50px auto;
+    }
+
+    /* Vacancy Grid */
+    .v-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    .v-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .v-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+      border-color: #3b82f6;
+    }
+    .v-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 5px; height: 100%;
+      background: #3b82f6;
+    }
+    .v-tag {
+      background: #eff6ff;
+      color: #2563eb;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .v-card h3 { font-size: 1.3rem; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+    .v-card .qualification { font-size: 0.85rem; color: #475569; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .v-card .subjects { font-size: 0.95rem; color: #334155; line-height: 1.5; font-weight: 500; }
+
+    /* Timeline recruitment steps */
+    .t-wrapper {
+      position: relative;
+      max-width: 800px;
+      margin: 40px auto 0 auto;
+    }
+    .t-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0; left: 40px; width: 4px;
+      background: #e2e8f0;
+    }
+    .t-step {
+      position: relative;
+      margin-bottom: 45px;
+      padding-left: 80px;
+    }
+    .t-step:last-child { margin-bottom: 0; }
+    .t-number {
+      position: absolute;
+      left: 20px; top: 0;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: #3b82f6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: 4px solid #fff;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+      z-index: 2;
+    }
+    .t-content {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .t-content h3 { font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .t-content p { font-size: 0.95rem; color: #64748b; line-height: 1.6; }
+
+    /* Download Box */
+    .d-box {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 50px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      margin-top: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .d-box::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(96,165,250,0.1) 0%, transparent 70%);
+    }
+    .d-box h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; }
+    .d-box p { font-size: 1rem; color: #93c5fd; max-width: 600px; margin: 0 auto 30px auto; line-height: 1.6; }
+    .d-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ef4444;
+      color: white;
+      padding: 15px 35px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    }
+    .d-btn:hover {
+      background: #dc2626;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Form Container */
+    .form-wrapper {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.04);
+      border-top: 5px solid #2563eb;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      background: #f8fafc;
+      font-family: inherit;
+      color: #0f172a;
+      transition: all 0.3s;
+    }
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      border-color: #2563eb;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .c-submit-btn {
+      background: #2563eb;
+      color: white;
+      padding: 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+    }
+    .c-submit-btn:hover {
+      background: #1d4ed8;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .c-hero-inner { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+      .c-hero-text p { margin-left: auto; margin-right: auto; }
+      .c-hero-gfx { display: none; }
+      .t-wrapper::before { left: 20px; }
+      .t-step { padding-left: 55px; }
+      .t-number { left: 0; }
+      .form-grid { grid-template-columns: 1fr; }
+      .d-box { padding: 30px 20px; }
+      .form-wrapper { padding: 25px 20px; }
+    }
+  </style>
+</head>
+<body class="careers-page">
+
+<!-- ============================
+     NAVBAR
+     ============================ -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="../index.html" class="nav-logo" aria-label="Ideal Public School – Home">
+      <img src="../logo.jpeg" alt="School Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      <span>Ideal <span>Public</span> School</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          About Us <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="school-overview.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-school"></i></span> School Overview
+          </a>
+          <a href="our-campus.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-building"></i></span> Our Campus
+          </a>
+          <a href="director-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-tie"></i></span> Director's Message
+          </a>
+          <a href="principal-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-graduate"></i></span> Principal's Message
+          </a>
+          <a href="vice-principal-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-shield"></i></span> Vice Principal's Message
+          </a>
+          <a href="mission-vision.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-bullseye"></i></span> Mission &amp; Vision
+          </a>
+        </div>
+      </li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          Our Campus <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="computer-lab.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-laptop"></i></span> Computer Lab</a>
+          <a href="library.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-book"></i></span> Library</a>
+          <a href="sports.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-volleyball-ball"></i></span> Sports</a>
+          <a href="gallery.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-images"></i></span> Gallery</a>
+          <a href="transport.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-bus"></i></span> Transport</a>
+        </div>
+      </li>
+      <li><a href="careers.html" class="active">Careers</a></li>
+      <li><a href="../index.html#activities">Facilities</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="../index.html" class="nav-cta">Admissions</a></li>
+    </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================
+     HERO SECTION
+     ============================ -->
+<section class="c-hero">
+  <div class="c-hero-inner">
+    <div class="c-hero-text">
+      <div class="c-hero-badge"><i class="fas fa-briefcase"></i> Work with Us</div>
+      <h1>Build Your Career with <span>Ideal Public School</span></h1>
+      <p>Nurture the minds of tomorrow. Join a community of educators committed to excellence, growth, and student success.</p>
+      <nav class="breadcrumb-bar" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="sep">/</span>
+        <span class="cur">Careers</span>
+      </nav>
+    </div>
+    <div class="c-hero-gfx">
+      <div class="c-gfx-card">
+        <div class="c-gfx-icon"><i class="fas fa-award"></i></div>
+        <h3>Join Our Team</h3>
+        <p>Experienced faculty, state-of-the-art facilities, and competitive growth opportunities.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================
+     HOW TO APPLY (TIMELINE STEPS)
+     ============================ -->
+<section class="c-section" style="background: #f1f5f9;">
+  <div class="c-container">
+    <h2 class="c-sec-title">How To Apply</h2>
+    <p class="c-sec-subtitle">Follow these simple steps to submit your profile for review at Ideal Public School.</p>
+    
+    <div class="t-wrapper">
+      <!-- Step 1 -->
+      <div class="t-step">
+        <div class="t-number">1</div>
+        <div class="t-content">
+          <h3>Verify Eligibility Criteria</h3>
+          <p>Review standard eligibility criteria for academic or administrative positions (degrees, teaching certifications, and specialization experience).</p>
+        </div>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="t-step">
+        <div class="t-number">2</div>
+        <div class="t-content">
+          <h3>Download the Recruitment Form</h3>
+          <p>Download our official **Teacher Recruitment Application Form** PDF using the link below. Print and fill it out completely in block letters.</p>
+        </div>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="t-step">
+        <div class="t-number">3</div>
+        <div class="t-content">
+          <h3>Fill in Details &amp; Prepare Documents</h3>
+          <p>Provide your personal details, academic history, qualifications, and previous teaching experience. Attach copies of your degree certificates and a passport-size photo.</p>
+        </div>
+      </div>
+      
+      <!-- Step 4 -->
+      <div class="t-step">
+        <div class="t-number">4</div>
+        <div class="t-content">
+          <h3>Submit the Application</h3>
+          <p>Scan and email the filled application form along with your resume/CV to <a href="mailto:idealpublicschool47@gmail.com" style="color: #2563eb; font-weight: 600;">idealpublicschool47@gmail.com</a>, or submit it physically at the school office reception.</p>
+        </div>
+      </div>
+      
+      <!-- Step 5 -->
+      <div class="t-step">
+        <div class="t-number">5</div>
+        <div class="t-content">
+          <h3>Demo Class &amp; Interview</h3>
+          <p>Shortlisted candidates will be contacted by our administration for a scheduled panel interview and a 15-minute demonstration class in their subject field.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download CTA Block -->
+    <div class="d-box">
+      <h3>Official Recruitment Form</h3>
+      <p>Print the official document to fill out manually and submit it to the administration office.</p>
+      <a href="../teacher application form (1) (1) (1).pdf" download class="d-btn">
+        <i class="fas fa-file-download"></i> Download Printable Application Form (PDF)
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     ONLINE APPLICATION FORM
+     ============================ -->
+<section class="c-section">
+  <div class="c-container">
+    <h2 class="c-sec-title">Quick Online Application</h2>
+    <p class="c-sec-subtitle">Have no printer nearby? Send your initial details digitally, and our recruitment team will get in touch.</p>
+    
+    <div class="form-wrapper">
+      <form id="careerOnlineForm" onsubmit="submitCareerForm(event)">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="cName">Full Name *</label>
+            <input type="text" id="cName" placeholder="Your Full Name" required>
+          </div>
+          <div class="form-group">
+            <label for="cPhone">Mobile Number *</label>
+            <input type="tel" id="cPhone" placeholder="10-digit number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+          </div>
+          <div class="form-group">
+            <label for="cEmail">Email Address *</label>
+            <input type="email" id="cEmail" placeholder="example@email.com" required>
+          </div>
+          <div class="form-group">
+            <label for="cPosition">Position Applied For *</label>
+            <select id="cPosition" required>
+              <option value="" disabled selected>Select Position</option>
+              <option value="PGT">PGT (Post Graduate Teacher)</option>
+              <option value="TGT">TGT (Trained Graduate Teacher)</option>
+              <option value="PRT">PRT (Primary Teacher)</option>
+              <option value="Co-curricular">Co-curricular Coach</option>
+              <option value="Administrative">Administrative/Support</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="cSubject">Subject / Department Specialty *</label>
+            <input type="text" id="cSubject" placeholder="e.g. Mathematics, Chemistry, Physical Education" required>
+          </div>
+          <div class="form-group full-width">
+            <label for="cMessage">Teaching Experience / Short Cover Letter</label>
+            <textarea id="cMessage" rows="4" placeholder="Briefly describe your years of experience and why you'd like to join us..."></textarea>
+          </div>
+        </div>
+        <button type="submit" id="cSubmitBtn" class="c-submit-btn">Submit Application</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     FOOTER
+     ============================ -->
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-name">Ideal <span>Public</span> School</div>
+        <p>CBSE Affiliated (Affiliation No. 1030815) | Chandori, Waraseoni, Balaghat, M.P.</p>
+        <p style="margin-top:10px;">📞 +91 9329494047 | ✉ idealpublicschool@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="school-overview.html">School Overview</a></li>
+          <li><a href="our-campus.html">Our Campus</a></li>
+          <li><a href="director-message.html">Director's Message</a></li>
+          <li><a href="principal-message.html">Principal's Message</a></li>
+          <li><a href="vice-principal-message.html">Vice Principal's Message</a></li>
+          <li><a href="mission-vision.html">Mission &amp; Vision</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Academics</h4>
+        <ul>
+          <li><a href="#">Nursery to Class XII</a></li>
+          <li><a href="#">Smart Classrooms</a></li>
+          <li><a href="#">Computer Labs</a></li>
+          <li><a href="#">Science Labs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="../index.html">Main Website</a></li>
+          <li><a href="#">Admissions</a></li>
+          <li><a href="#">Fee Structure</a></li>
+          <li><a href="#">Results</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ideal Public School. All rights reserved.</span>
+      <span>Chandori, Waraseoni · Balaghat, M.P.</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toastMessage" class="toast-notification" style="position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 10000; align-items: center; gap: 10px;">
+  <i class="fas fa-check-circle"></i> <span id="toastText">Success!</span>
+</div>
+
+<script src="../script.js?v=3.3"></script>
+<script>
+  // Careers Specific Form Handler
+  function submitCareerForm(e) {
+    e.preventDefault();
+    const name = document.getElementById('cName').value.trim();
+    const phone = document.getElementById('cPhone').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const position = document.getElementById('cPosition').value;
+    const specialty = document.getElementById('cSubject').value.trim();
+    const message = document.getElementById('cMessage').value.trim();
+    
+    if (phone.length !== 10) {
+      alert("Mobile number must be exactly 10 digits!");
+      return;
+    }
+    
+    const submitBtn = document.getElementById('cSubmitBtn');
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = "Submitting Details... ⏳";
+    submitBtn.disabled = true;
+    
+    const careerData = {
+      date: new Date().toLocaleDateString('en-GB'),
+      name: name,
+      phone: phone,
+      email: email,
+      position: position,
+      specialty: specialty,
+      message: message,
+      timestamp: Date.now()
+    };
+    
+    // Check if Firebase is loaded
+    if (typeof db !== 'undefined' && db !== null) {
+      db.ref('ideal_careers').push(careerData)
+        .then(() => {
+          showToastMessage("Application submitted successfully! Our HR team will call you back. ✅");
+          document.getElementById('careerOnlineForm').reset();
+        })
+        .catch(err => {
+          console.error(err);
+          showToastMessage("Network error. Please try again later.", true);
+        })
+        .finally(() => {
+          submitBtn.innerText = originalText;
+          submitBtn.disabled = false;
+        });
+    } else {
+      // Offline fallback
+      setTimeout(() => {
+        showToastMessage("Application recorded locally! Please email your PDF form as well. ✅");
+        document.getElementById('careerOnlineForm').reset();
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+      }, 1000);
+    }
+  }
+
+  function showToastMessage(msg, isError = false) {
+    const toast = document.getElementById('toastMessage');
+    const toastText = document.getElementById('toastText');
+    if (toast && toastText) {
+      toastText.innerText = msg;
+      toast.style.background = isError ? "#ef4444" : "#10b981";
+      toast.style.display = "flex";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 4000);
+    } else {
+      alert(msg);
+    }
+  }
+</script>
+</body>
+</html>

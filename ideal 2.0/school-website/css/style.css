@@ -659,3 +659,111 @@ ul {
   .hero-img-card img { height: 260px; }
   .stats-bar { grid-template-columns: 1fr; }
 }
+
+/* --- Premium Message Letter Card Styling --- */
+.message-letter-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-xl);
+  padding: 45px 50px;
+  box-shadow: var(--shadow-xl), 0 4px 30px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  margin-top: 30px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.message-letter-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--navy);
+  border-radius: 4px 0 0 4px;
+}
+
+.message-letter-card.director-card::before {
+  background: var(--red);
+}
+
+.message-letter-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.12);
+}
+
+.message-quote-icon {
+  font-size: 5rem;
+  color: rgba(15, 23, 42, 0.04);
+  font-family: Georgia, serif;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  line-height: 1;
+  user-select: none;
+}
+
+.message-text-content {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  line-height: 1.8;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 35px;
+}
+
+.message-text-content p {
+  margin-bottom: 20px;
+}
+
+.message-text-content p:last-child {
+  margin-bottom: 0;
+}
+
+.message-signature-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  border-top: 1px solid var(--grey-light);
+  padding-top: 25px;
+  position: relative;
+  z-index: 2;
+}
+
+.message-signature-block .sig-handwritten {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.6rem;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 4px;
+  transform: rotate(-2deg);
+  display: inline-block;
+  padding-right: 10px;
+}
+
+.message-signature-block .sig-role-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-light);
+}
+
+/* Responsiveness for Message Card */
+@media (max-width: 768px) {
+  .message-letter-card {
+    padding: 35px 24px;
+    margin-top: 20px;
+  }
+  .message-text-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 25px;
+  }
+  .message-signature-block .sig-handwritten {
+    font-size: 2.2rem;
+  }
+}

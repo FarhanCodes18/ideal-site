@@ -434,9 +434,16 @@
                 
                 compressAndSaveImage(photoFile, function(compressedBase64) {
                     const saveToDatabase = () => {
-                        let sData = { name, mobile, email, gender, cls, password, photo: compressedBase64 };
+                        let sData = { name, mobile, email, gender, cls, password, date: new Date().toLocaleDateString('en-GB') };
                         // Save to Live Database
-                        db.ref('ideal_student_users/' + mobile).set(sData).then(() => {
+                        db.ref('ideal_student_users/' + mobile).set(sData)
+                        .then(() => {
+                            return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
+                        })
+                        .then(() => {
+                            return db.ref('ideal_student_photos/' + mobile).set(compressedBase64);
+                        })
+                        .then(() => {
                             let formBody = new URLSearchParams(); formBody.append("date", new Date().toLocaleDateString('en-GB')); formBody.append("name", name); formBody.append("mobile", mobile); formBody.append("email", email); formBody.append("gender", gender); formBody.append("class", cls); formBody.append("password", password);
                             fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
                             fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
@@ -494,6 +501,7 @@
                             // Check if password has been changed/reset, sync to RTDB
                             if (studentData.password !== password) {
                                 db.ref('ideal_student_users/' + mobile).update({ password: password });
+                                db.ref('ideal_students_by_class/' + studentData.cls + '/' + mobile).update({ password: password });
                                 studentData.password = password;
                             }
                             sessionStorage.setItem("ideal_active_student", JSON.stringify(studentData));
@@ -592,7 +600,16 @@
         function showDashboard(studentData) {
             document.getElementById('authBox').style.display = 'none'; document.getElementById('studentDashboard').style.display = 'block';
             document.getElementById('dashName').innerText = studentData.name; document.getElementById('dashMobile').innerText = studentData.mobile; document.getElementById('dashClass').innerText = studentData.cls;
-            document.getElementById('dashPhoto').src = studentData.photo || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            document.getElementById('dashPhoto').src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            if (studentData.photo) {
+                document.getElementById('dashPhoto').src = studentData.photo;
+            } else {
+                db.ref('ideal_student_photos/' + studentData.mobile).once('value', pSnap => {
+                    if (pSnap.exists()) {
+                        document.getElementById('dashPhoto').src = pSnap.val();
+                    }
+                });
+            }
             loadStudentData(studentData);
         }
 

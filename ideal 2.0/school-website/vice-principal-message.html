@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vice Principal's Message | Ideal Public School</title>
+  <meta name="description" content="Message from the Vice Principal of Ideal Public School – Mrs. Arshiya Qureshi – on education, discipline, values, and student growth.">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Vice Principal Page Styles ── */
+    .vp-page { background: #f8fafc; }
+
+    .vp-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #4c1d95 60%, #1e1b4b 100%);
+      padding: 70px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .vp-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(196,181,253,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .vp-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .vp-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .vp-hero-text .page-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #ddd6fe;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .vp-hero-text h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .vp-hero-text h1 span { color: #c084fc; }
+    .vp-hero-text p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.7;
+      margin-bottom: 30px;
+      max-width: 440px;
+    }
+    .vp-hero-text .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .vp-hero-text .breadcrumb-bar a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+    .vp-hero-text .breadcrumb-bar a:hover { color: #fff; }
+    .vp-hero-text .breadcrumb-bar .sep { opacity: 0.4; }
+    .vp-hero-text .breadcrumb-bar .cur { color: #c084fc; font-weight: 600; }
+
+    /* Profile card */
+    .vp-profile-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .vp-photo-wrap {
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 4px solid rgba(196,181,253,0.5);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .vp-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .vp-name {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .vp-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #c084fc;
+      margin-bottom: 20px;
+    }
+    .vp-contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(196,181,253,0.15);
+      border: 1px solid rgba(196,181,253,0.3);
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #ddd6fe;
+      text-decoration: none;
+      transition: all 0.3s;
+      margin-bottom: 8px;
+    }
+    .vp-contact-pill:hover {
+      background: rgba(196,181,253,0.3);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .vp-contact-pill i { font-size: 0.85rem; }
+
+    /* About section */
+    .vp-about {
+      padding: 80px 0;
+      background: #fff;
+    }
+    .vp-about-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .vp-section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #0f172a 0%, #4c1d95 100%);
+      color: #ffffff;
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 12px rgba(76,29,149,0.15);
+    }
+    .vp-section-tag i { color: #ddd6fe; }
+    .vp-about-inner h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .vp-divider {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 35px;
+    }
+    .vp-divider span:first-child { width: 40px; height: 4px; background: #4c1d95; border-radius: 2px; }
+    .vp-divider span:last-child  { width: 20px; height: 4px; background: #dc2626; border-radius: 2px; }
+
+    /* Message card */
+    .vp-msg-card {
+      background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
+      border: 1px solid #ddd6fe;
+      border-left: 5px solid #6d28d9;
+      border-radius: 20px;
+      padding: 44px 48px;
+      box-shadow: 0 20px 50px rgba(109,40,217,0.07);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+    }
+    .vp-msg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 35px 70px rgba(109,40,217,0.10);
+    }
+    .vp-msg-card::before {
+      content: '\201C';
+      position: absolute;
+      top: -10px; right: 24px;
+      font-size: 9rem;
+      color: rgba(109,40,217,0.05);
+      font-family: Georgia, serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .vp-msg-card p {
+      font-size: 1.05rem;
+      color: #334155;
+      line-height: 1.85;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 2;
+    }
+    .vp-msg-card p:last-of-type { margin-bottom: 0; }
+    .vp-msg-card strong { color: #0f172a; }
+
+    /* Signature */
+    .vp-signature {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-top: 30px;
+      padding-top: 22px;
+      border-top: 1px solid #ddd6fe;
+      position: relative;
+      z-index: 2;
+    }
+    .vp-signature .sig-script {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.4rem;
+      color: #4c1d95;
+      line-height: 1;
+      transform: rotate(-2deg);
+      display: inline-block;
+      padding-right: 10px;
+    }
+    .vp-signature .sig-role {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .vp-hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .vp-hero-text h1 { font-size: 2rem; }
+      .vp-msg-card { padding: 30px 24px; }
+      .vp-photo-wrap { width: 140px; height: 140px; }
+    }
+  </style>
+</head>
+<body class="vp-page">
+
+<!-- ============================
+     NAVBAR
+     ============================ -->
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="container nav-inner">
+    <a href="../index.html" class="nav-logo" aria-label="Ideal Public School – Home">
+      <img src="../logo.jpeg" alt="School Logo" class="nav-logo-img" onerror="this.style.display='none'">
+      <span>Ideal <span>Public</span> School</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          About Us <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="school-overview.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-school"></i></span> School Overview
+          </a>
+          <a href="our-campus.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-building"></i></span> Our Campus
+          </a>
+          <a href="director-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-tie"></i></span> Director's Message
+          </a>
+          <a href="principal-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-graduate"></i></span> Principal's Message
+          </a>
+          <a href="vice-principal-message.html" class="nav-dropdown-item active" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-shield"></i></span> Vice Principal's Message
+          </a>
+          <a href="mission-vision.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-bullseye"></i></span> Mission &amp; Vision
+          </a>
+        </div>
+      </li>
+      <li class="nav-dropdown">
+        <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
+          Our Campus <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
+        </button>
+        <div class="nav-dropdown-panel" role="menu">
+          <a href="computer-lab.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-laptop"></i></span> Computer Lab</a>
+          <a href="library.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-book"></i></span> Library</a>
+          <a href="sports.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-volleyball-ball"></i></span> Sports</a>
+          <a href="gallery.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-images"></i></span> Gallery</a>
+          <a href="transport.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-bus"></i></span> Transport</a>
+        </div>
+      </li>
+      <li><a href="careers.html">Careers</a></li>
+      <li><a href="../index.html#activities">Facilities</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+      <li><a href="../index.html" class="nav-cta">Admissions</a></li>
+    </ul>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================
+     HERO — Photo + Name + Contact
+     ============================ -->
+<section class="vp-hero" id="home">
+  <div class="vp-hero-inner">
+
+    <!-- Left: Text -->
+    <div class="vp-hero-text reveal fade-left">
+      <div class="page-tag"><i class="fas fa-user-shield"></i> Vice Principal's Message</div>
+      <h1>Mrs. <span>Arshiya Qureshi</span></h1>
+      <p>Vice Principal, Ideal Public School — fostering student discipline, creative thinking, and a nurturing learning environment for global standard citizens.</p>
+      <nav class="breadcrumb-bar" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="sep">/</span>
+        <span class="cur">Vice Principal's Message</span>
+      </nav>
+    </div>
+
+    <!-- Right: Profile Card -->
+    <div class="reveal fade-right">
+      <div class="vp-profile-card">
+        <div class="vp-photo-wrap">
+          <img
+            src="../qureshi mam1.png"
+            alt="Mrs. Arshiya Qureshi - Vice Principal"
+            loading="eager"
+            onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80'">
+        </div>
+        <div class="vp-name">Mrs. Arshiya Qureshi</div>
+        <div class="vp-title">Vice Principal · Ideal Public School</div>
+        <a href="tel:+919329494047" class="vp-contact-pill">
+          <i class="fas fa-phone-alt"></i> +91 9329494047
+        </a>
+        <a href="mailto:idealpublicschool@gmail.com" class="vp-contact-pill">
+          <i class="fas fa-envelope"></i> idealpublicschool@gmail.com
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================
+     ABOUT US / MESSAGE SECTION
+     ============================ -->
+<section class="vp-about" id="vice-principal-desk">
+  <div class="vp-about-inner">
+    <div class="vp-section-tag reveal fade-up"><i class="fas fa-star"></i> From the Desk of Vice Principal</div>
+    <h2 class="reveal fade-up">Academic Excellence,<br>Discipline &amp; Growth.</h2>
+    <div class="vp-divider reveal fade-up"><span></span><span></span></div>
+
+    <div class="vp-msg-card reveal fade-up">
+      <p><strong>Dear Students, Parents, and Well-wishers,</strong></p>
+      <p>Welcome to Ideal Public School. As Vice Principal, my focus is to work hand-in-hand with our staff and community to ensure our students receive a well-rounded and structured education. We strongly believe that <strong>education is a pathway to self-realisation and character building.</strong></p>
+      <p>At Ideal Public School, we nurture discipline, resilience, and curiosity. Our goal is to encourage students to excel not just academically, but also in values, critical thinking, sports, and cultural practices. We provide a space where every student feels safe to learn, explore, and reach their full potential.</p>
+      <p>I invite you all to collaborate in our journey towards building a brighter, more innovative, and compassionate future for our youth.</p>
+
+      <div class="vp-signature">
+        <span class="sig-script">Arshiya Qureshi</span>
+        <span class="sig-role">Vice Principal, Ideal Public School</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================
+     FOOTER
+     ============================ -->
+<footer class="site-footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-name">Ideal <span>Public</span> School</div>
+        <p>CBSE Affiliated (Affiliation No. 1030815) | Chandori, Waraseoni, Balaghat, M.P.</p>
+        <p style="margin-top:10px;">📞 +91 9329494047 | ✉ idealpublicschool@gmail.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <ul>
+          <li><a href="school-overview.html">School Overview</a></li>
+          <li><a href="our-campus.html">Our Campus</a></li>
+          <li><a href="director-message.html">Director's Message</a></li>
+          <li><a href="principal-message.html">Principal's Message</a></li>
+          <li><a href="vice-principal-message.html">Vice Principal's Message</a></li>
+          <li><a href="mission-vision.html">Mission &amp; Vision</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Academics</h4>
+        <ul>
+          <li><a href="#">Nursery to Class XII</a></li>
+          <li><a href="#">Smart Classrooms</a></li>
+          <li><a href="#">Computer Labs</a></li>
+          <li><a href="#">Science Labs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="../index.html">Main Website</a></li>
+          <li><a href="#">Admissions</a></li>
+          <li><a href="#">Fee Structure</a></li>
+          <li><a href="#">Results</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ideal Public School. All rights reserved.</span>
+      <span>Chandori, Waraseoni · Balaghat, M.P.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js?v=3.3"></script>
+</body>
+</html>

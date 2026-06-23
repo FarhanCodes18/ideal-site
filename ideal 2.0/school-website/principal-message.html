@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Principal's Message | Ideal Public School</title>
-  <meta name="description" content="Message from the Principal of Ideal Public School – Dr. Daya Raut – on education, values, and student excellence.">
+  <meta name="description" content="Message from the Principal of Ideal Public School – Mr. Jitesh Nair – on education, values, and student excellence.">
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -12,30 +12,285 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* Page-specific overrides */
-    .who-right-stack { display: flex; flex-direction: column; gap: 14px; }
-    .excellence-right { display: flex; flex-direction: column; justify-content: flex-start; }
+    /* ── Principal Page Styles ── */
+    .principal-page { background: #f8fafc; }
+
+    .lp-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1e293b 100%);
+      padding: 70px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .lp-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(147,197,253,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .lp-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .lp-hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .lp-hero-text .page-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #93c5fd;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .lp-hero-text h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .lp-hero-text h1 span { color: #93c5fd; }
+    .lp-hero-text p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.7;
+      margin-bottom: 30px;
+      max-width: 440px;
+    }
+    .lp-hero-text .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .lp-hero-text .breadcrumb-bar a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+    .lp-hero-text .breadcrumb-bar a:hover { color: #fff; }
+    .lp-hero-text .breadcrumb-bar .sep { opacity: 0.4; }
+    .lp-hero-text .breadcrumb-bar .cur { color: #93c5fd; font-weight: 600; }
+
+    /* Profile card */
+    .lp-profile-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 36px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .lp-photo-wrap {
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      border: 4px solid rgba(147,197,253,0.5);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .lp-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 50%;
+      display: block;
+    }
+    .lp-name {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .lp-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin-bottom: 20px;
+    }
+    .lp-contact-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(147,197,253,0.15);
+      border: 1px solid rgba(147,197,253,0.3);
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #bfdbfe;
+      text-decoration: none;
+      transition: all 0.3s;
+      margin-bottom: 8px;
+    }
+    .lp-contact-pill:hover {
+      background: rgba(147,197,253,0.3);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .lp-contact-pill i { font-size: 0.85rem; }
+
+    /* About section */
+    .lp-about {
+      padding: 80px 0;
+      background: #fff;
+    }
+    .lp-about-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .lp-section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 12px rgba(15,23,42,0.15);
+    }
+    .lp-section-tag i { color: #93c5fd; }
+    .lp-about-inner h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .lp-divider {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 35px;
+    }
+    .lp-divider span:first-child { width: 40px; height: 4px; background: #0f172a; border-radius: 2px; }
+    .lp-divider span:last-child  { width: 20px; height: 4px; background: #dc2626; border-radius: 2px; }
+
+    /* Message card */
+    .lp-msg-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid #e2e8f0;
+      border-left: 5px solid #1e3a8a;
+      border-radius: 20px;
+      padding: 44px 48px;
+      box-shadow: 0 20px 50px rgba(15,23,42,0.07);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+    }
+    .lp-msg-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 35px 70px rgba(15,23,42,0.10);
+    }
+    .lp-msg-card::before {
+      content: '\201C';
+      position: absolute;
+      top: -10px; right: 24px;
+      font-size: 9rem;
+      color: rgba(30,58,138,0.05);
+      font-family: Georgia, serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .lp-msg-card p {
+      font-size: 1.05rem;
+      color: #334155;
+      line-height: 1.85;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 2;
+    }
+    .lp-msg-card p:last-of-type { margin-bottom: 0; }
+    .lp-msg-card strong { color: #0f172a; }
+
+    /* Signature */
+    .lp-signature {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-top: 30px;
+      padding-top: 22px;
+      border-top: 1px solid #e2e8f0;
+      position: relative;
+      z-index: 2;
+    }
+    .lp-signature .sig-script {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.4rem;
+      color: #0f172a;
+      line-height: 1;
+      transform: rotate(-2deg);
+      display: inline-block;
+      padding-right: 10px;
+    }
+    .lp-signature .sig-role {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .lp-hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .lp-hero-text h1 { font-size: 2rem; }
+      .lp-msg-card { padding: 30px 24px; }
+      .lp-photo-wrap { width: 140px; height: 140px; }
+    }
   </style>
 </head>
-<body>
+<body class="principal-page">
 
-<!-- ============================================================
-     NAVBAR — Full Navigation (visible on every page)
-     ============================================================ -->
+<!-- ============================
+     NAVBAR
+     ============================ -->
 <nav class="site-nav" role="navigation" aria-label="Main navigation">
   <div class="container nav-inner">
-
-    <!-- Logo → Back to Main Site -->
     <a href="../index.html" class="nav-logo" aria-label="Ideal Public School – Home">
       <img src="../logo.jpeg" alt="School Logo" class="nav-logo-img" onerror="this.style.display='none'">
       <span>Ideal <span>Public</span> School</span>
     </a>
-
-    <!-- Full Nav Links -->
     <ul class="nav-links" id="navLinks">
       <li><a href="../index.html">Home</a></li>
-
-      <!-- About Us Dropdown -->
       <li class="nav-dropdown">
         <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
           About Us <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
@@ -53,13 +308,17 @@
           <a href="principal-message.html" class="nav-dropdown-item active" role="menuitem">
             <span class="dd-icon"><i class="fas fa-user-graduate"></i></span> Principal's Message
           </a>
+          <a href="vice-principal-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-shield"></i></span> Vice Principal's Message
+          </a>
+          <a href="vice-principal-message.html" class="nav-dropdown-item" role="menuitem">
+            <span class="dd-icon"><i class="fas fa-user-shield"></i></span> Vice Principal's Message
+          </a>
           <a href="mission-vision.html" class="nav-dropdown-item" role="menuitem">
             <span class="dd-icon"><i class="fas fa-bullseye"></i></span> Mission &amp; Vision
           </a>
         </div>
       </li>
-
-      <!-- Our Campus Dropdown -->
       <li class="nav-dropdown">
         <button class="nav-dropdown-trigger-btn" aria-haspopup="true" aria-expanded="false">
           Our Campus <i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>
@@ -72,248 +331,83 @@
           <a href="transport.html" class="nav-dropdown-item" role="menuitem"><span class="dd-icon"><i class="fas fa-bus"></i></span> Transport</a>
         </div>
       </li>
-
-      <li><a href="../index.html#faculty">Faculty</a></li>
+      <li><a href="careers.html">Careers</a></li>
       <li><a href="../index.html#activities">Facilities</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
       <li><a href="../index.html" class="nav-cta">Admissions</a></li>
     </ul>
-
     <button class="nav-hamburger" id="navHamburger" aria-label="Toggle Menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
-<!-- ============================================================
-     HERO SECTION
-     ============================================================ -->
-<section class="page-hero" id="home">
-  <div class="container">
-    <div class="hero-grid">
+<!-- ============================
+     HERO — Photo + Name + Contact
+     ============================ -->
+<section class="lp-hero" id="home">
+  <div class="lp-hero-inner">
 
-      <!-- Left -->
-      <div class="hero-left reveal fade-left">
-        <div class="hero-badge">
-          <i class="fas fa-user-graduate"></i> Dr. Daya Raut · Principal
-        </div>
+    <!-- Left: Text -->
+    <div class="lp-hero-text reveal fade-left">
+      <div class="page-tag"><i class="fas fa-user-graduate"></i> Principal's Message</div>
+      <h1>Mr. <span>Jitesh Nair</span></h1>
+      <p>Principal, Ideal Public School — dedicated to nurturing excellence, strong values, and the holistic growth of every student.</p>
+      <nav class="breadcrumb-bar" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="sep">/</span>
+        <span class="cur">Principal's Message</span>
+      </nav>
+    </div>
 
-        <h1 class="hero-heading">Principal's<br>Message</h1>
-
-        <div class="hero-underline">
-          <span></span><span></span>
-        </div>
-
-        <p class="hero-subtitle">
-          Nurturing excellence, inspiring courage, and guiding every student toward their highest potential.
-        </p>
-
-        <a href="#principal-desk" class="hero-cta">
-          Read Message <i class="fas fa-arrow-right"></i>
-        </a>
-
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="../index.html">Home</a>
-          <span class="sep">/</span>
-          <span class="current">Principal's Message</span>
-        </nav>
-      </div>
-
-      <!-- Right -->
-      <div class="hero-right reveal fade-right">
-        <div class="hero-img-card">
+    <!-- Right: Profile Card -->
+    <div class="reveal fade-right">
+      <div class="lp-profile-card">
+        <div class="lp-photo-wrap">
           <img
-            src="../pricipal mam1.png"
-            alt="Dr. Daya Raut - Principal"
+            src="../principal.png"
+            alt="Mr. Jitesh Nair - Principal"
             loading="eager"
-            onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80'">
-
-          <!-- Floating Badge -->
-          <div class="achievement-badge">
-            <div class="badge-icon"><i class="fas fa-certificate"></i></div>
-            <div class="badge-text">
-              <strong>Academic</strong>
-              <span>Guidance</span>
-            </div>
-          </div>
+            onerror="this.src='https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=600&q=80'">
         </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     WHO WE ARE SECTION (Adapt to Principal's Intro)
-     ============================================================ -->
-<section class="section" id="principal-desk">
-  <div class="container">
-    <div class="who-grid">
-
-      <!-- Left -->
-      <div class="who-left reveal fade-left">
-        <div class="section-badge">
-          <i class="fas fa-star"></i> FROM THE DESK OF PRINCIPAL
-        </div>
-
-        <h2 class="section-title">Academic Leadership,<br>Progressive Learning.</h2>
-        <div class="section-underline"></div>
-
-        <p class="section-subtitle">
-          Dr. Daya Raut (M.A., B.Ed.) brings over 15 years of educational expertise to our institution, ensuring a disciplined yet supportive academic framework that enables students to flourish.
-        </p>
-
-        <!-- Feature Cards -->
-        <div class="feature-cards stagger" style="margin-top:28px;">
-          <div class="feature-card">
-            <div class="fc-icon"><i class="fas fa-user-graduate"></i></div>
-            <h4>Student-Centered</h4>
-          </div>
-          <div class="feature-card">
-            <div class="fc-icon"><i class="fas fa-shield-alt"></i></div>
-            <h4>Discipline &amp; Values</h4>
-          </div>
-          <div class="feature-card">
-            <div class="fc-icon"><i class="fas fa-award"></i></div>
-            <h4>Holistic Growth</h4>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right — two stacked images -->
-      <div class="who-right reveal fade-right">
-        <div class="who-img-main">
-          <img
-            src="005.JPG"
-            alt="Students in Lab" loading="lazy">
-        </div>
-        <div class="who-img-side">
-          <img
-            src="006.JPG"
-            alt="Classroom Interaction" loading="lazy">
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     EXPERIENCE EXCELLENCE SECTION (Adapt to Philosophy/Quote)
-     ============================================================ -->
-<section class="section excellence-section" id="philosophy">
-  <div class="container">
-
-    <div class="excellence-grid">
-      <!-- Left -->
-      <div class="reveal fade-left">
-        <p class="excellence-label">Educational Philosophy</p>
-        <h2 class="excellence-title">Igniting Spark<br>For Learning</h2>
-        <p class="excellence-desc">
-          "Every child is unique — a spark waiting to be ignited. Our role as educators is to fan that spark into a flame of lifelong learning, courage, and purpose."
-        </p>
-      </div>
-
-      <!-- Right — Feature Cards -->
-      <div class="ex-feature-cards stagger">
-        <div class="ex-card">
-          <div class="ex-icon"><i class="fas fa-book-reader"></i></div>
-          <div>
-            <h4>Academic Excellence</h4>
-            <p>Providing custom curriculum modules, advanced assessments, and supportive learning zones to achieve top grades.</p>
-          </div>
-        </div>
-        <div class="ex-card">
-          <div class="ex-icon"><i class="fas fa-heart"></i></div>
-          <div>
-            <h4>Character Building</h4>
-            <p>Fostering emotional intelligence, empathy, and active citizenship via social projects and community service.</p>
-          </div>
-        </div>
-        <div class="ex-card">
-          <div class="ex-icon"><i class="fas fa-running"></i></div>
-          <div>
-            <h4>Physical &amp; Mental Wellness</h4>
-            <p>Promoting sports, yoga, and meditation routines to ensure students maintain sound health and sharp concentration.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats Bar -->
-    <div class="stats-bar reveal zoom-in">
-      <div class="stat-item">
-        <div class="stat-number">
-          <span data-count="15" data-suffix="+">0+</span>
-        </div>
-        <div class="stat-label">Years of Guidance</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">
-          <span data-count="1500" data-suffix="+">0+</span>
-        </div>
-        <div class="stat-label">Students Guided</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">
-          <span data-count="60" data-suffix="+">0+</span>
-        </div>
-        <div class="stat-label">Expert Teachers</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">
-          <span data-count="50" data-suffix="+">0+</span>
-        </div>
-        <div class="stat-label">Awards &amp; Honours</div>
+        <div class="lp-name">Mr. Jitesh Nair</div>
+        <div class="lp-title">Principal · Ideal Public School</div>
+        <a href="tel:+918770869569" class="lp-contact-pill">
+          <i class="fas fa-phone-alt"></i> +91 8770869569
+        </a>
+        <a href="mailto:idealpublicschool@gmail.com" class="lp-contact-pill">
+          <i class="fas fa-envelope"></i> idealpublicschool@gmail.com
+        </a>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- ============================================================
-     LIFE AT SCHOOL — MASONRY GALLERY
-     ============================================================ -->
-<section class="section" id="life">
-  <div class="container">
-    <h2 class="section-title reveal fade-up" style="margin-bottom:8px;">Academic Journey Gallery</h2>
-    <p class="section-subtitle reveal fade-up" style="margin-bottom:40px;">
-      Glimpses of classroom learning, science exhibitions, and academic rewards.
-    </p>
+<!-- ============================
+     ABOUT US / MESSAGE SECTION
+     ============================ -->
+<section class="lp-about" id="principal-desk">
+  <div class="lp-about-inner">
+    <div class="lp-section-tag reveal fade-up"><i class="fas fa-star"></i> From the Desk of Principal</div>
+    <h2 class="reveal fade-up">Academic Leadership,<br>Progressive Learning.</h2>
+    <div class="lp-divider reveal fade-up"><span></span><span></span></div>
 
-    <div class="life-gallery reveal zoom-in" id="principalGalleryContainer">
-      <!-- Big left image -->
-      <div class="life-item-big gallery-item">
-        <img
-          src="001.JPG"
-          alt="Library Study Session" loading="lazy">
-      </div>
-      <!-- Right column -->
-      <div class="life-col">
-        <div class="life-item gallery-item">
-          <img
-            src="004.JPG"
-            alt="Practical Science Demo" loading="lazy">
-        </div>
-        <div class="life-item gallery-item">
-          <img
-            src="002.JPG"
-            alt="Sports Award Ceremony" loading="lazy">
-        </div>
-        <div class="life-item gallery-item">
-          <img
-            src="003.JPG"
-            alt="Classroom Project Display" loading="lazy">
-        </div>
+    <div class="lp-msg-card reveal fade-up">
+      <p><strong>I am Jitesh Nair</strong>, Principal of Ideal Public School. With over 15 years of experience in education, I am committed to creating a learning environment that focuses on academic excellence, strong values, creativity, and overall development of every student.</p>
+      <p>At Ideal Public School, we inspire students to learn, grow, and become confident, responsible, and compassionate individuals ready for the future.</p>
+
+      <div class="lp-signature">
+        <span class="sig-script">Jitesh Nair</span>
+        <span class="sig-role">Principal, Ideal Public School</span>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ============================================================
+<!-- ============================
      FOOTER
-     ============================================================ -->
+     ============================ -->
 <footer class="site-footer" id="contact">
   <div class="container">
     <div class="footer-grid">
@@ -329,6 +423,8 @@
           <li><a href="our-campus.html">Our Campus</a></li>
           <li><a href="director-message.html">Director's Message</a></li>
           <li><a href="principal-message.html">Principal's Message</a></li>
+          <li><a href="vice-principal-message.html">Vice Principal's Message</a></li>
+          <li><a href="vice-principal-message.html">Vice Principal's Message</a></li>
           <li><a href="mission-vision.html">Mission &amp; Vision</a></li>
         </ul>
       </div>
@@ -357,15 +453,6 @@
     </div>
   </div>
 </footer>
-
-<!-- Image Viewer Modal for full-size viewing -->
-<div id="imageViewerModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(15, 23, 42, 0.95); align-items: center; justify-content: center; flex-direction: column;">
-  <span class="close-btn" onclick="document.getElementById('imageViewerModal').style.display='none'" style="position: absolute; top: 20px; right: 20px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; transition: background 0.3s;">&times;</span>
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
-    <img id="fullSizeImage" src="" style="max-width: 90%; max-height: 80vh; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); object-fit: contain;">
-    <h3 id="imageCaption" style="color: white; margin-top: 15px; font-family: sans-serif; font-weight: 400; letter-spacing: 1px; text-align: center; padding: 0 20px;"></h3>
-  </div>
-</div>
 
 <script src="../script.js?v=3.3"></script>
 </body>

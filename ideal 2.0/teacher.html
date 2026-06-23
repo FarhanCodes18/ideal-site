@@ -232,17 +232,47 @@
 
         function switchClassTab(tab) { document.getElementById('tab-attendance').style.display = tab === 'attendance' ? 'block' : 'none'; document.getElementById('tab-students').style.display = tab === 'students' ? 'block' : 'none'; document.getElementById('tab-assign').style.display = tab === 'assign' ? 'block' : 'none'; document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById('btn-tab-' + tab).classList.add('active'); }
 
-        // Local Functions (Students / Attendance)
+        // Firebase Live Functions (Students / Attendance)
         function loadStudentsForAttendance() {
             const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value, preview = document.getElementById('attStudentsList');
             if(!date) return showToast("Select a date first!", true);
-            let students = JSON.parse(localStorage.getItem('ideal_student_users')) || [], attData = JSON.parse(localStorage.getItem('ideal_attendance')) || {}, classStudents = students.filter(s => s.cls === cls);
-            if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students registered in ${cls}.</p>`; document.getElementById('saveAttBtn').style.display = 'none'; return; }
-            let html = '<table><tr><th>Name</th><th>Mobile</th><th>Status</th></tr>'; classStudents.forEach(s => { let currentStatus = (attData[s.mobile] && attData[s.mobile][date]) ? attData[s.mobile][date] : 'Present'; html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td><select id="att_${s.mobile}" class="att-select ${currentStatus === 'Present' ? 'att-P' : 'att-A'}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':'att-A')"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option></select></td></tr>`; });
-            preview.innerHTML = html + '</table>'; document.getElementById('saveAttBtn').style.display = 'block';
+            db.ref('ideal_students_by_class/' + cls).once('value', sSnap => {
+                db.ref('ideal_attendance').once('value', aSnap => {
+                    let classStudents = []; sSnap.forEach(c => classStudents.push(c.val())); let attData = aSnap.val() || {};
+                    if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students registered in ${cls}.</p>`; document.getElementById('saveAttBtn').style.display = 'none'; return; }
+                    let html = '<table><tr><th>Name</th><th>Mobile</th><th>Status</th></tr>'; 
+                    classStudents.forEach(s => { 
+                        let currentStatus = (attData[s.mobile] && attData[s.mobile][date]) ? attData[s.mobile][date] : 'Present'; 
+                        html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td><select id="att_${s.mobile}" class="att-select ${currentStatus === 'Present' ? 'att-P' : 'att-A'}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':'att-A')"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option></select></td></tr>`; 
+                    });
+                    preview.innerHTML = html + '</table>'; document.getElementById('saveAttBtn').style.display = 'block';
+                });
+            });
         }
-        function saveAttendance() { const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value; let students = JSON.parse(localStorage.getItem('ideal_student_users')) || [], attData = JSON.parse(localStorage.getItem('ideal_attendance')) || {}, classStudents = students.filter(s => s.cls === cls); classStudents.forEach(s => { let status = document.getElementById(`att_${s.mobile}`).value; if(!attData[s.mobile]) attData[s.mobile] = {}; attData[s.mobile][date] = status; }); localStorage.setItem('ideal_attendance', JSON.stringify(attData)); showToast('Attendance Saved!'); }
-        function loadClassStudentsForManagement() { const cls = document.getElementById('manageClassSelect').value, preview = document.getElementById('manageStudentsList'); let classStudents = (JSON.parse(localStorage.getItem('ideal_student_users')) || []).filter(s => s.cls === cls); if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students found.</p>`; return; } let html = '<table><tr><th>Name</th><th>Mobile</th><th>Gender</th></tr>'; classStudents.forEach(s => { html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td style="font-size:13px; color:#64748b;">${s.gender}</td></tr>`; }); preview.innerHTML = html + '</table>'; }
+        function saveAttendance() { 
+            const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value; 
+            db.ref('ideal_students_by_class/' + cls).once('value', snap => {
+                let classStudents = []; snap.forEach(c => classStudents.push(c.val()));
+                let updates = {}; 
+                classStudents.forEach(s => { 
+                    let status = document.getElementById(`att_${s.mobile}`).value; 
+                    updates[`ideal_attendance/${s.mobile}/${date}`] = status; 
+                }); 
+                db.ref().update(updates).then(() => showToast('Attendance Saved Live!')); 
+            });
+        }
+        function loadClassStudentsForManagement() { 
+            const cls = document.getElementById('manageClassSelect').value, preview = document.getElementById('manageStudentsList'); 
+            db.ref('ideal_students_by_class/' + cls).once('value', snap => {
+                let classStudents = []; snap.forEach(c => classStudents.push(c.val()));
+                if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students found.</p>`; return; } 
+                let html = '<table><tr><th>Name</th><th>Mobile</th><th>Gender</th></tr>'; 
+                classStudents.forEach(s => { 
+                    html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td style="font-size:13px; color:#64748b;">${s.gender}</td></tr>`; 
+                }); 
+                preview.innerHTML = html + '</table>'; 
+            });
+        }
 
         // 🌟 FIREBASE LIVE ASSIGNMENTS 🌟
         function addAssignment() {
