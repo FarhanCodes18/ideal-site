@@ -1990,6 +1990,9 @@ function playShowcaseVideo(element) {
     const container = document.getElementById('videoPlayerContainer');
     if (!container) return;
     
+    // If already playing, do nothing on wrapper click
+    if (container.style.display === 'block') return;
+    
     // Read the video URL from data attribute (local file or external URL)
     const videoUrl = (element && element.getAttribute('data-video-url')) || "school_video.mp4";
     
@@ -1999,15 +2002,20 @@ function playShowcaseVideo(element) {
     const overlay = document.getElementById('videoPlayOverlay');
     if (overlay) overlay.style.display = 'none';
     
-    // Stop click event from firing again
-    if (element) element.style.pointerEvents = 'none';
-    
-    // Insert full video player
+    // Insert full video player and Close (X) button
     container.innerHTML = `
         <video src="${videoUrl}" controls autoplay playsinline 
             style="width:100%; height:100%; object-fit:cover; display:block; border-radius:inherit;"
             onended="resetVideoCard()">
         </video>
+        <button onclick="event.stopPropagation(); resetVideoCard();" 
+            class="close-video-btn"
+            style="position:absolute; top:15px; right:15px; background:rgba(15,23,42,0.85); color:white; border:none; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:12; transition:all 0.2s; font-size:16px;" 
+            onmouseover="this.style.background='rgba(239,68,68,1)'" 
+            onmouseout="this.style.background='rgba(15,23,42,0.85)'"
+            title="Close Video">
+            <i class="fas fa-times"></i>
+        </button>
     `;
     
     // Make container visible and cover the card
@@ -2017,13 +2025,11 @@ function playShowcaseVideo(element) {
 // Reset video card back to thumbnail state
 function resetVideoCard() {
     const container = document.getElementById('videoPlayerContainer');
-    if (container) { container.innerHTML = ''; container.style.cssText = ''; }
+    if (container) { container.innerHTML = ''; container.style.display = 'none'; }
     const thumbVideo = document.getElementById('videoThumbPreview');
     if (thumbVideo) thumbVideo.style.visibility = 'visible';
     const overlay = document.getElementById('videoPlayOverlay');
     if (overlay) overlay.style.display = '';
-    const wrapper = document.querySelector('.video-preview-wrapper');
-    if (wrapper) wrapper.style.pointerEvents = '';
 }
 
 
