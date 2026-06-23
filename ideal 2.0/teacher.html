@@ -200,7 +200,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const classPasswords = { "Class 1st": "2026", "Class 2nd": "2026", "Class 3rd": "2026", "Class 4th": "2026", "Class 5th": "2026", "Class 6th": "2026", "Class 7th": "2026", "Class 8th": "2000", "Class 9th": "2021", "Class 10th": "2022", "Class 11th": "2023", "Class 12th": "2024" };
+        const classPasswords = { "Class 1st": "2000", "Class 2nd": "2001", "Class 3rd": "2002", "Class 4th": "2003", "Class 5th": "2004", "Class 6th": "2005", "Class 7th": "2006", "Class 8th": "2007", "Class 9th": "2008", "Class 10th": "2009", "Class 11th": "2010", "Class 12th": "2011" };
 
         document.addEventListener("DOMContentLoaded", () => {
             const session = sessionStorage.getItem("ideal_active_teacher");
@@ -236,9 +236,18 @@
         function loadStudentsForAttendance() {
             const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value, preview = document.getElementById('attStudentsList');
             if(!date) return showToast("Select a date first!", true);
-            db.ref('ideal_students_by_class/' + cls).once('value', sSnap => {
+            db.ref('ideal_student_users').once('value', sSnap => {
                 db.ref('ideal_attendance').once('value', aSnap => {
-                    let classStudents = []; sSnap.forEach(c => classStudents.push(c.val())); let attData = aSnap.val() || {};
+                    let classStudents = [];
+                    const usersData = sSnap.val() || {};
+                    Object.keys(usersData).forEach(mobile => {
+                        const s = usersData[mobile];
+                        const studentClass = s.cls || s.class || '';
+                        if (studentClass === cls) {
+                            classStudents.push({ mobile: mobile, ...s });
+                        }
+                    });
+                    let attData = aSnap.val() || {};
                     if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students registered in ${cls}.</p>`; document.getElementById('saveAttBtn').style.display = 'none'; return; }
                     let html = '<table><tr><th>Name</th><th>Mobile</th><th>Status</th></tr>'; 
                     classStudents.forEach(s => { 
@@ -251,8 +260,16 @@
         }
         function saveAttendance() { 
             const cls = document.getElementById('attClassSelect').value, date = document.getElementById('attDate').value; 
-            db.ref('ideal_students_by_class/' + cls).once('value', snap => {
-                let classStudents = []; snap.forEach(c => classStudents.push(c.val()));
+            db.ref('ideal_student_users').once('value', snap => {
+                let classStudents = [];
+                const usersData = snap.val() || {};
+                Object.keys(usersData).forEach(mobile => {
+                    const s = usersData[mobile];
+                    const studentClass = s.cls || s.class || '';
+                    if (studentClass === cls) {
+                        classStudents.push({ mobile: mobile, ...s });
+                    }
+                });
                 let updates = {}; 
                 classStudents.forEach(s => { 
                     let status = document.getElementById(`att_${s.mobile}`).value; 
@@ -263,8 +280,16 @@
         }
         function loadClassStudentsForManagement() { 
             const cls = document.getElementById('manageClassSelect').value, preview = document.getElementById('manageStudentsList'); 
-            db.ref('ideal_students_by_class/' + cls).once('value', snap => {
-                let classStudents = []; snap.forEach(c => classStudents.push(c.val()));
+            db.ref('ideal_student_users').once('value', snap => {
+                let classStudents = [];
+                const usersData = snap.val() || {};
+                Object.keys(usersData).forEach(mobile => {
+                    const s = usersData[mobile];
+                    const studentClass = s.cls || s.class || '';
+                    if (studentClass === cls) {
+                        classStudents.push({ mobile: mobile, ...s });
+                    }
+                });
                 if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students found.</p>`; return; } 
                 let html = '<table><tr><th>Name</th><th>Mobile</th><th>Gender</th></tr>'; 
                 classStudents.forEach(s => { 
