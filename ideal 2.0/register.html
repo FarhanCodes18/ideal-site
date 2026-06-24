@@ -258,7 +258,7 @@
             <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="Create Password" required></div>
             
             <div id="recaptcha-container" style="margin-bottom: 15px; display: flex; justify-content: center;">
-                <div class="g-recaptcha" data-sitekey="6LdEOjAtAAAAAOVHxWeWi5L5zScbfoGM2zaaLkAh"></div>
+                <div class="g-recaptcha" data-sitekey="6LftRTAtAAAAANTCEbCHJkgw7Hk_qb_OzbG4ReIN"></div>
             </div>
             
             <button class="btn" id="regBtn" style="background: #10b981;" onclick="handleRegister()">Register Live</button>
@@ -433,7 +433,7 @@
             // Check Google reCAPTCHA
             const recaptchaResponse = grecaptcha.getResponse();
             if (!recaptchaResponse) {
-                alert("Please verify the reCAPTCHA first!");
+                alert("Please verify that you are not a robot.");
                 return;
             }
             
@@ -447,43 +447,47 @@
                     return;
                 }
                 
-                compressAndSaveImage(photoFile, function(compressedBase64) {
-                    const saveToDatabase = () => {
-                        let sData = { name, mobile, email, gender, cls, password, date: new Date().toLocaleDateString('en-GB') };
-                        // Save to Live Database
-                        db.ref('ideal_student_users/' + mobile).set(sData)
-                        .then(() => {
-                            return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
-                        })
-                        .then(() => {
-                            return db.ref('ideal_student_photos/' + mobile).set(compressedBase64);
-                        })
-                        .then(() => {
-                            let formBody = new URLSearchParams(); formBody.append("date", new Date().toLocaleDateString('en-GB')); formBody.append("name", name); formBody.append("mobile", mobile); formBody.append("email", email); formBody.append("gender", gender); formBody.append("class", cls); formBody.append("password", password);
-                            fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
-                            fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                // Check if email already registered in RTDB
+                db.ref('ideal_student_users').orderByChild('email').equalTo(email).once('value', emailSnap => {
+                    if(emailSnap.exists()) {
+                        alert("Email address already registered!"); btn.innerText = "Register Live"; btn.disabled = false;
+                        grecaptcha.reset();
+                        return;
+                    }
+                    
+                    compressAndSaveImage(photoFile, function(compressedBase64) {
+                        const saveToDatabase = () => {
+                            let sData = { name, mobile, email, gender, cls, password, date: new Date().toLocaleDateString('en-GB') };
+                            // Save to Live Database
+                            db.ref('ideal_student_users/' + mobile).set(sData)
+                            .then(() => {
+                                return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
+                            })
+                            .then(() => {
+                                return db.ref('ideal_student_photos/' + mobile).set(compressedBase64);
+                            })
+                            .then(() => {
+                                let formBody = new URLSearchParams(); formBody.append("date", new Date().toLocaleDateString('en-GB')); formBody.append("name", name); formBody.append("mobile", mobile); formBody.append("email", email); formBody.append("gender", gender); formBody.append("class", cls); formBody.append("password", password);
+                                fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                                fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
 
-                            document.getElementById('regSuccess').style.display = 'block';
-                            setTimeout(() => { document.getElementById('loginMobile').value = mobile; toggleAuth('login'); btn.innerText = "Register Live"; btn.disabled = false; document.getElementById('regSuccess').style.display = 'none'; grecaptcha.reset(); }, 1500);
-                        }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
-                    };
+                                document.getElementById('regSuccess').style.display = 'block';
+                                setTimeout(() => { document.getElementById('loginMobile').value = mobile; toggleAuth('login'); btn.innerText = "Register Live"; btn.disabled = false; document.getElementById('regSuccess').style.display = 'none'; grecaptcha.reset(); }, 1500);
+                            }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
+                        };
 
-                    // Try to register in Firebase Auth first
-                    firebase.auth().createUserWithEmailAndPassword(email, password)
-                        .then(() => {
-                            saveToDatabase();
-                        })
-                        .catch(authError => {
-                            if (authError.code === 'auth/email-already-in-use') {
-                                // Email exists in Auth, but phone not in RTDB. Syncing account.
+                        // Try to register in Firebase Auth first
+                        firebase.auth().createUserWithEmailAndPassword(email, password)
+                            .then(() => {
                                 saveToDatabase();
-                            } else {
+                            })
+                            .catch(authError => {
                                 alert("Auth Account Creation Error: " + authError.message);
                                 btn.innerText = "Register Live";
                                 btn.disabled = false;
                                 grecaptcha.reset();
-                            }
-                        });
+                            });
+                    });
                 });
             });
         }
@@ -654,12 +658,13 @@
         function changeMonth(dir) { calCurrentMonth += dir; if(calCurrentMonth < 0) { calCurrentMonth = 11; calCurrentYear--; } else if(calCurrentMonth > 11) { calCurrentMonth = 0; calCurrentYear++; } let user = JSON.parse(sessionStorage.getItem("ideal_active_student")); renderCalendar(calCurrentMonth, calCurrentYear, user ? user.cls : 'All Classes'); }
 
         function loadTransportForStudent() {
-            db.ref('ideal_transport_list').once('value', snap => {
-                let tList = []; snap.forEach(child => tList.push(child.val()));
+            db.ref('ideal_transport_list').on('value', snap => {
+                let data = snap.val();
                 let container = document.getElementById('transContainer');
-                if(tList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No transport routes available.</p>'; return; }
+                if(!data) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No transport routes available.</p>'; return; }
                 let html = '<div style="display:flex; flex-direction:column; gap:15px;">';
-                tList.forEach(t => {
+                Object.keys(data).forEach(id => {
+                    let t = data[id];
                     html += `<div style="background:#f8fafc; padding:20px; border-radius:15px; border:1px solid #e2e8f0; text-align:left; position:relative; overflow:hidden;"><div style="position:absolute; top:0; left:0; width:5px; height:100%; background:#eab308;"></div><p style="margin-bottom:10px; font-size:1.1rem; color:#0f172a;"><strong><i class="fas fa-map-marker-alt" style="color:#ef4444;"></i> Route:</strong> ${t.route}</p><div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:15px;"><span style="background:#fef08a; color:#ca8a04; padding:5px 12px; border-radius:8px; font-weight:bold; font-size: 13px;"><i class="fas fa-bus"></i> Bus: ${t.busNo}</span><span style="background:#e0f2fe; color:#2563eb; padding:5px 12px; border-radius:8px; font-weight:bold; font-size: 13px;"><i class="fas fa-user-tie"></i> Driver: ${t.driverName}</span></div><a href="tel:${t.driverMobile}" class="btn" style="background:#10b981; display:flex; justify-content:center; align-items:center; gap:10px; text-decoration:none; margin:0;"><i class="fas fa-phone-volume"></i> Call Driver: ${t.driverMobile}</a></div>`;
                 }); container.innerHTML = html + '</div>';
             });

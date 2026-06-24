@@ -2294,7 +2294,10 @@
                         </td>
                         <td style="padding: 12px 10px; color: #475569; font-weight: 500;">${s.date || 'N/A'}</td>
                         <td style="padding: 12px 10px; text-align: center;">
-                            <button onclick="deleteStudent('${s.mobile}', '${s.cls}')" class="delete-btn-sm" style="background: #ef4444; border-radius: 6px; color: white; border: none; padding: 6px 12px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;"><i class="fas fa-trash-alt"></i> Del</button>
+                            <div style="display: inline-flex; gap: 6px; justify-content: center;">
+                                <button onclick="promoteStudent('${s.mobile}', '${s.cls}', '${s.name.replace(/'/g, "\\'")}')" style="background: #3b82f6; border-radius: 6px; color: white; border: none; padding: 6px 12px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;"><i class="fas fa-level-up-alt"></i> Promote</button>
+                                <button onclick="deleteStudent('${s.mobile}', '${s.cls}')" class="delete-btn-sm" style="background: #ef4444; border-radius: 6px; color: white; border: none; padding: 6px 12px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;"><i class="fas fa-trash-alt"></i> Del</button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -3437,7 +3440,7 @@
                     }
                 });
                 if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students.</p>`; return; }
-                let html = '<table><tr><th>Student Info</th><th>Action</th></tr>'; classStudents.forEach(s => { html += `<tr><td><strong>${s.name}</strong><br><span style="font-size:12px; color:#64748b;">${s.mobile} | ${s.email}</span></td><td><button onclick="deleteStudent('${s.mobile}', '${cls}')" class="delete-btn-sm">Del</button></td></tr>`; }); preview.innerHTML = html + '</table>';
+                let html = '<table><tr><th>Student Info</th><th>Action</th></tr>'; classStudents.forEach(s => { html += `<tr><td><strong>${s.name}</strong><br><span style="font-size:12px; color:#64748b;">${s.mobile} | ${s.email}</span></td><td><div style="display:flex; gap:6px;"><button onclick="promoteStudent('${s.mobile}', '${cls}', '${s.name.replace(/'/g, "\\'")}')" style="background:#3b82f6; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.8rem; font-weight:500; display:inline-flex; align-items:center; gap:4px;"><i class="fas fa-level-up-alt"></i> Promote</button><button onclick="deleteStudent('${s.mobile}', '${cls}')" class="delete-btn-sm">Del</button></div></td></tr>`; }); preview.innerHTML = html + '</table>';
             });
         }
 
@@ -3451,6 +3454,51 @@
                     loadClassStudentsForManagement();
                 });
             }
+        };
+
+        window.promoteStudent = function(mobile, currentClass, name) {
+            const classes = [
+                "Class 1st", "Class 2nd", "Class 3rd", "Class 4th", "Class 5th", 
+                "Class 6th", "Class 7th", "Class 8th", "Class 9th", "Class 10th", 
+                "Class 11th", "Class 12th"
+            ];
+            let idx = classes.indexOf(currentClass);
+            let defaultNext = (idx !== -1 && idx < classes.length - 1) ? classes[idx + 1] : "";
+            
+            let newClass = prompt(`Promote student ${name} from ${currentClass} to:`, defaultNext);
+            if (!newClass) return; // Cancelled
+            
+            newClass = newClass.trim();
+            if (!classes.includes(newClass)) {
+                alert("Invalid class name! Please use standard format (e.g., Class 12th). Allowed values:\n" + classes.join(", "));
+                return;
+            }
+            
+            db.ref('ideal_student_users/' + mobile).once('value', snap => {
+                if (!snap.exists()) {
+                    alert("Student not found!");
+                    return;
+                }
+                let sData = snap.val();
+                sData.cls = newClass;
+                
+                db.ref('ideal_student_users/' + mobile).update({ cls: newClass })
+                .then(() => {
+                    return db.ref('ideal_students_by_class/' + currentClass + '/' + mobile).remove();
+                })
+                .then(() => {
+                    return db.ref('ideal_students_by_class/' + newClass + '/' + mobile).set(sData);
+                })
+                .then(() => {
+                    showToast(`${name} promoted to ${newClass} successfully!`);
+                    if (typeof loadClassStudentsForManagement === 'function') {
+                        loadClassStudentsForManagement();
+                    }
+                })
+                .catch(err => {
+                    alert("Error promoting student: " + err.message);
+                });
+            });
         };
 
         function loadStudentsForAttendance() {
