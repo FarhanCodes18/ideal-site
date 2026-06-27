@@ -55,6 +55,8 @@
         .att-select { padding: 6px; border-radius: 5px; border: 1px solid #cbd5e1; font-weight: bold; outline: none; }
         .att-P { color: #10b981; background: #dcfce7; border-color: #86efac; }
         .att-A { color: #ef4444; background: #fee2e2; border-color: #fca5a5; }
+        .att-H { color: #d97706; background: #fef3c7; border-color: #fde68a; }
+        .att-S { color: #3b82f6; background: #dbeafe; border-color: #bfdbfe; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .toast-notification { visibility: hidden; min-width: 250px; background-color: #10b981; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 15px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); font-weight: 600; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
         .toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
@@ -252,7 +254,8 @@
                     let html = '<table><tr><th>Name</th><th>Mobile</th><th>Status</th></tr>'; 
                     classStudents.forEach(s => { 
                         let currentStatus = (attData[s.mobile] && attData[s.mobile][date]) ? attData[s.mobile][date] : 'Present'; 
-                        html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td><select id="att_${s.mobile}" class="att-select ${currentStatus === 'Present' ? 'att-P' : 'att-A'}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':'att-A')"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option></select></td></tr>`; 
+                        let classSelect = currentStatus === 'Present' ? 'att-P' : (currentStatus === 'Absent' ? 'att-A' : (currentStatus === 'Holiday' ? 'att-H' : 'att-S'));
+                        html += `<tr><td><strong>${s.name}</strong></td><td style="font-size:13px;">${s.mobile}</td><td><select id="att_${s.mobile}" class="att-select ${classSelect}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':(this.value==='Absent'?'att-A':(this.value==='Holiday'?'att-H':'att-S')))"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option><option value="Holiday" ${currentStatus==='Holiday'?'selected':''}>Holiday</option><option value="Sunday" ${currentStatus==='Sunday'?'selected':''}>Sunday</option></select></td></tr>`; 
                     });
                     preview.innerHTML = html + '</table>'; document.getElementById('saveAttBtn').style.display = 'block';
                 });

@@ -10,6 +10,10 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Croppie for circular photo cropping at registration -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -119,6 +123,10 @@
         .box-progress:hover { box-shadow: 0 16px 36px rgba(225, 29, 72, 0.12); }
         .box-progress .icon-bg { background: #ffe4e6; color: #e11d48; } 
 
+        .box-doc::before { background: #f97316; } 
+        .box-doc:hover { box-shadow: 0 16px 36px rgba(249, 115, 22, 0.12); }
+        .box-doc .icon-bg { background: #fff7ed; color: #f97316; }
+
         .icon-bg { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 -2px 4px rgba(0,0,0,0.03); }
         .feature-box:hover .icon-bg { transform: scale(1.1) rotate(5deg); }
         .feature-text h4 { color: #0f172a; font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.2px; }
@@ -225,6 +233,25 @@
             .features-grid { grid-template-columns: 1fr; }
             .feature-box { flex-direction: row; text-align: left; padding: 15px 20px; }
         }
+
+        /* Fees Module Dashboard styling */
+        .fees-dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        @media (min-width: 480px) {
+            .fees-dashboard-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .fee-dash-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .fee-dash-card .card-label { font-size: 0.8rem; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .fee-dash-card .card-val { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
+        .text-green { color: #10b981 !important; }
+        .text-red { color: #ef4444 !important; }
+        
+        .status-badge { padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; }
+        .badge-paid { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-pending { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge-overdue { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        .progress-bar-container { background: #e2e8f0; height: 10px; border-radius: 50px; overflow: hidden; width: 100%; }
+        .progress-bar-fill { background: linear-gradient(90deg, #10b981, #3b82f6); height: 100%; border-radius: 50px; transition: width 0.4s ease; }
     </style>
 </head>
 <body>
@@ -254,7 +281,7 @@
                 <div class="input-group"><i class="fas fa-chalkboard"></i><select id="regClass" required><option value="" disabled selected>Select Class</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select></div>
                 <div class="input-group"><i class="fas fa-venus-mars"></i><select id="regGender" required><option value="Male">Male</option><option value="Female">Female</option></select></div>
             </div>
-            <label class="custom-file-upload"><i class="fas fa-camera-retro"></i><span id="regFileName" style="font-size: 13px;">Upload Photo</span><input type="file" id="regPhoto" accept="image/*" required onchange="document.getElementById('regFileName').innerText = this.files[0].name"></label>
+            <label class="custom-file-upload"><i class="fas fa-camera-retro"></i><span id="regFileName" style="font-size: 13px;">Upload Photo</span><input type="file" id="regPhoto" accept="image/*" required onchange="handleProfilePhotoSelect(this)"></label>
             <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="Create Password" required></div>
             
             <div id="recaptcha-container" style="margin-bottom: 15px; display: flex; justify-content: center;">
@@ -290,6 +317,7 @@
             <div class="feature-box box-trans" onclick="openModal('transModal')"><div class="icon-bg"><i class="fas fa-bus"></i></div><div class="feature-text"><h4>Transport Routes</h4><p>Bus & Driver info</p></div></div>
             <div class="feature-box box-time" onclick="openModal('timeModal')"><div class="icon-bg"><i class="far fa-clock"></i></div><div class="feature-text"><h4>Timetable</h4><p>Daily schedule</p></div></div>
             <div class="feature-box box-assign" onclick="openModal('assignModal')"><div class="icon-bg"><i class="fas fa-book-open"></i></div><div class="feature-text"><h4>Assignments</h4><p>Pending homework</p></div></div>
+            <div class="feature-box box-doc" onclick="openModal('docModal')"><div class="icon-bg"><i class="fas fa-folder-open"></i></div><div class="feature-text"><h4>My Documents</h4><p>Upload & View Documents</p></div></div>
             <div class="feature-box box-fee locked-feature" onclick="openModal('feeModal')"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-rupee-sign"></i></div><div class="feature-text"><h4>Fee Record</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
             <div class="feature-box box-progress locked-feature" onclick="openProgressModal()"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-chart-line"></i></div><div class="feature-text"><h4>My Progress</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
         </div>
@@ -337,6 +365,54 @@
     </div>
 
     <div id="timeModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('timeModal')"><i class="fas fa-times"></i></span><h2 style="color:#dc2626; margin-bottom:20px;"><i class="far fa-clock"></i> Timetable</h2><div id="timeContainer" style="margin-top:15px;"><p style="text-align:center;">Loading Timetable... ⏳</p></div></div></div>
+
+    <!-- Student Documents Modal -->
+    <div id="docModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-btn" onclick="closeModal('docModal')"><i class="fas fa-times"></i></span>
+            <h2 style="color: #f97316; margin-bottom: 20px; text-align: center;"><i class="fas fa-folder-open"></i> Student Documents</h2>
+            
+            <p style="color: #64748b; font-size: 0.9rem; text-align: center; margin-bottom: 20px;">
+                <i class="fas fa-info-circle"></i> Once a document is uploaded, it will be locked and cannot be deleted or changed. Please upload clear photos.
+            </p>
+            
+            <div id="documentsList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <!-- Filled dynamically by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Screen Document Viewer Modal -->
+    <div id="docViewModal" class="modal" style="z-index: 1100;">
+        <div class="modal-content" style="max-width: 800px; text-align: center; padding: 20px;">
+            <span class="close-btn" onclick="closeModal('docViewModal')"><i class="fas fa-times"></i></span>
+            <h3 id="docViewTitle" style="margin-bottom: 15px; color: #0f172a;">Document</h3>
+            <div style="width: 100%; max-height: 70vh; overflow: auto; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc;">
+                <img id="docViewImg" src="" style="max-width: 100%; height: auto;" />
+            </div>
+            <a id="docViewDownloadBtn" href="" download="document.jpg" class="btn" style="background: #3b82f6; width: auto; display: inline-block; margin-top: 15px; padding: 10px 25px; text-decoration: none;">
+                <i class="fas fa-download"></i> Download Document
+            </a>
+        </div>
+    </div>
+
+    <!-- Circular Photo Cropping Modal -->
+    <div id="cropModal" class="modal" style="z-index: 2000;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <span class="close-btn" onclick="closeCropModal()"><i class="fas fa-times"></i></span>
+            <h3 style="margin-bottom: 10px; color: #10b981;"><i class="fas fa-crop-alt"></i> Crop Profile Photo</h3>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Adjust your photo within the circle</p>
+            <div id="cropContainer" style="margin: 0 auto 20px auto; max-width: 100%;"></div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" style="background: #10b981; margin: 0; flex: 1;" onclick="saveCroppedPhoto()">
+                    <i class="fas fa-check"></i> Crop & Save
+                </button>
+                <button class="btn" style="background: #64748b; margin: 0; flex: 1;" onclick="closeCropModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="toastMessage" class="toast-notification"><i class="fas fa-check-circle"></i> <span id="toastText">Success!</span></div>
 
@@ -425,9 +501,9 @@
         // 🌟 FIREBASE LIVE REGISTRATION 🌟
         function handleRegister() {
             const btn = document.getElementById('regBtn');
-            const name = document.getElementById('regName').value.trim(), mobile = document.getElementById('regMobile').value.trim(), email = document.getElementById('regEmail').value.trim(), gender = document.getElementById('regGender').value, cls = document.getElementById('regClass').value, password = document.getElementById('regPassword').value, photoFile = document.getElementById('regPhoto').files[0];
+            const name = document.getElementById('regName').value.trim(), mobile = document.getElementById('regMobile').value.trim(), email = document.getElementById('regEmail').value.trim(), gender = document.getElementById('regGender').value, cls = document.getElementById('regClass').value, password = document.getElementById('regPassword').value;
             
-            if(!name || !mobile || !email || !cls || !password || !photoFile) return alert("Fill all details!");
+            if(!name || !mobile || !email || !cls || !password || !window.croppedProfilePhotoBase64) return alert("Fill all details and select/crop profile photo!");
             if(mobile.length !== 10) return alert("Mobile number must be exactly 10 digits!");
             
             // Check Google reCAPTCHA
@@ -455,39 +531,47 @@
                         return;
                     }
                     
-                    compressAndSaveImage(photoFile, function(compressedBase64) {
-                        const saveToDatabase = () => {
-                            let sData = { name, mobile, email, gender, cls, password, date: new Date().toLocaleDateString('en-GB') };
-                            // Save to Live Database
-                            db.ref('ideal_student_users/' + mobile).set(sData)
-                            .then(() => {
-                                return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
-                            })
-                            .then(() => {
-                                return db.ref('ideal_student_photos/' + mobile).set(compressedBase64);
-                            })
-                            .then(() => {
-                                let formBody = new URLSearchParams(); formBody.append("date", new Date().toLocaleDateString('en-GB')); formBody.append("name", name); formBody.append("mobile", mobile); formBody.append("email", email); formBody.append("gender", gender); formBody.append("class", cls); formBody.append("password", password);
-                                fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
-                                fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                    const saveToDatabase = () => {
+                        let sData = { name, mobile, email, gender, cls, password, date: new Date().toLocaleDateString('en-GB') };
+                        // Save to Live Database
+                        db.ref('ideal_student_users/' + mobile).set(sData)
+                        .then(() => {
+                            return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
+                        })
+                        .then(() => {
+                            return db.ref('ideal_student_photos/' + mobile).set(window.croppedProfilePhotoBase64);
+                        })
+                        .then(() => {
+                            let formBody = new URLSearchParams(); formBody.append("date", new Date().toLocaleDateString('en-GB')); formBody.append("name", name); formBody.append("mobile", mobile); formBody.append("email", email); formBody.append("gender", gender); formBody.append("class", cls); formBody.append("password", password);
+                            fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                            fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
 
-                                document.getElementById('regSuccess').style.display = 'block';
-                                setTimeout(() => { document.getElementById('loginMobile').value = mobile; toggleAuth('login'); btn.innerText = "Register Live"; btn.disabled = false; document.getElementById('regSuccess').style.display = 'none'; grecaptcha.reset(); }, 1500);
-                            }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
-                        };
+                            document.getElementById('regSuccess').style.display = 'block';
+                            setTimeout(() => { 
+                                document.getElementById('loginMobile').value = mobile; 
+                                toggleAuth('login'); 
+                                btn.innerText = "Register Live"; 
+                                btn.disabled = false; 
+                                document.getElementById('regSuccess').style.display = 'none'; 
+                                grecaptcha.reset(); 
+                                window.croppedProfilePhotoBase64 = null;
+                                document.getElementById('regFileName').innerHTML = "Upload Photo";
+                                document.getElementById('regPhoto').value = '';
+                            }, 1500);
+                        }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
+                    };
 
-                        // Try to register in Firebase Auth first
-                        firebase.auth().createUserWithEmailAndPassword(email, password)
-                            .then(() => {
-                                saveToDatabase();
-                            })
-                            .catch(authError => {
-                                alert("Auth Account Creation Error: " + authError.message);
-                                btn.innerText = "Register Live";
-                                btn.disabled = false;
-                                grecaptcha.reset();
-                            });
-                    });
+                    // Try to register in Firebase Auth first
+                    firebase.auth().createUserWithEmailAndPassword(email, password)
+                        .then(() => {
+                            saveToDatabase();
+                        })
+                        .catch(authError => {
+                            alert("Auth Account Creation Error: " + authError.message);
+                            btn.innerText = "Register Live";
+                            btn.disabled = false;
+                            grecaptcha.reset();
+                        });
                 });
             });
         }
@@ -686,24 +770,48 @@
                 document.getElementById('assignContainer').innerHTML = assignHtml || '<p style="text-align:center;">No assignments.</p>';
             });
 
-            // 🔥 LIVE FEES WITH SECURITY LOCK (LOCKED & COMING SOON) 🔥
-            document.getElementById('feeContainer').innerHTML = `
-                <div style="text-align:center; padding:30px 10px;">
-                    <i class="fas fa-lock" style="font-size:4rem; color:#8b5cf6; margin-bottom:20px; display:block;"></i>
-                    <h3 style="color:#0f172a; margin-bottom:10px; font-weight:700;">Fee Portal Locked</h3>
-                    <p style="color:#64748b; font-size:14px; line-height:1.6; margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
-                        The fee record and payment portal is currently locked. Online payment options and receipts will be coming soon!
-                    </p>
-                    <span style="background:#ede9fe; color:#8b5cf6; padding:8px 22px; border-radius:20px; font-weight:600; font-size:13px; display:inline-block; border: 1px solid #c084fc;"><i class="fas fa-hourglass-half"></i> Coming Soon</span>
-                </div>
-            `;
+            // 🔥 LIVE FEES WITH SECURITY LOCK (UNLOCKED/LOCKED TOGGLE) 🔥
+            if (window.IS_FEES_PORTAL_LOCKED) {
+                document.getElementById('feeContainer').innerHTML = `
+                    <div style="text-align:center; padding:30px 10px;">
+                        <i class="fas fa-lock" style="font-size:4rem; color:#8b5cf6; margin-bottom:20px; display:block;"></i>
+                        <h3 style="color:#0f172a; margin-bottom:10px; font-weight:700;">Fee Portal Locked</h3>
+                        <p style="color:#64748b; font-size:14px; line-height:1.6; margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                            The fee record and payment portal is currently locked. Online payment options and receipts will be coming soon!
+                        </p>
+                        <span style="background:#ede9fe; color:#8b5cf6; padding:8px 22px; border-radius:20px; font-weight:600; font-size:13px; display:inline-block; border: 1px solid #c084fc;"><i class="fas fa-hourglass-half"></i> Coming Soon</span>
+                    </div>
+                `;
+            } else if (!document.getElementById('feeContainer').innerHTML.trim()) {
+                document.getElementById('feeContainer').innerHTML = `
+                    <div style="text-align:center; padding:30px 10px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:3rem; color:#8b5cf6; margin-bottom:20px; display:block;"></i>
+                        <h3 style="color:#0f172a; margin-bottom:10px; font-weight:700;">Loading Fee Details...</h3>
+                        <p style="color:#64748b; font-size:14px;">Please wait while we fetch your official record.</p>
+                    </div>
+                `;
+            }
 
             // 🔥 LIVE ATTENDANCE 🔥
             db.ref('ideal_attendance').on('value', snap => {
                 let attData = snap.val() || {}, myAtt = attData[student.mobile] || {};
-                let total = Object.keys(myAtt).length, present = Object.values(myAtt).filter(v => v === 'Present').length;
+                let total = 0, present = 0, absent = 0, holiday = 0, sunday = 0;
+                Object.keys(myAtt).forEach(d => {
+                    if (myAtt[d] === 'Present') {
+                        present++;
+                        total++;
+                    } else if (myAtt[d] === 'Absent') {
+                        absent++;
+                        total++;
+                    } else if (myAtt[d] === 'Holiday') {
+                        holiday++;
+                    } else if (myAtt[d] === 'Sunday') {
+                        sunday++;
+                    }
+                });
                 let percent = total === 0 ? 0 : Math.round((present/total)*100);
-                document.getElementById('attValue').innerText = percent + "%"; document.getElementById('attSummaryText').innerText = `Total Days: ${total} | Present: ${present}`;
+                document.getElementById('attValue').innerText = percent + "%"; 
+                document.getElementById('attSummaryText').innerText = `Total Days: ${total} | Present: ${present} | Holiday: ${holiday} | Sunday: ${sunday}`;
                 document.getElementById('attProgress').style.background = `conic-gradient(${percent<50?'#ef4444':(percent<75?'#f59e0b':'#10b981')} ${percent * 3.6}deg, #e2e8f0 0deg)`;
                 let absList = document.getElementById('absentList'); absList.innerHTML = ''; let absentDays = Object.keys(myAtt).filter(d => myAtt[d] === 'Absent');
                 if(absentDays.length > 0) { absentDays.forEach(d => absList.innerHTML += `<li style="padding: 5px 0; border-bottom: 1px dashed #e2e8f0;"><i class="fas fa-times-circle" style="color: #ef4444;"></i> ${d}</li>`); } else { absList.innerHTML = '<li>No absent records. Keep it up!</li>'; }
@@ -788,9 +896,575 @@
             `;
         }
 
-        function openModal(id) { let user = JSON.parse(sessionStorage.getItem("ideal_active_student")); if(user) { loadStudentData(user); if(id === 'calModal') { renderCalendar(calCurrentMonth, calCurrentYear, user.cls); } if(id === 'leaveModal') { loadMyLeaves(user); } if(id === 'transModal') { loadTransportForStudent(); } } document.getElementById(id).style.display = 'flex'; }
+        let cropperInstance = null;
+
+        function handleProfilePhotoSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('cropModal').style.display = 'flex';
+                
+                const cropEl = document.getElementById('cropContainer');
+                cropEl.innerHTML = '';
+                
+                cropperInstance = new Croppie(cropEl, {
+                    viewport: { width: 200, height: 200, type: 'circle' },
+                    boundary: { width: 280, height: 280 },
+                    showZoomer: true,
+                    enableOrientation: true
+                });
+                
+                cropperInstance.bind({
+                    url: e.target.result
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function closeCropModal() {
+            document.getElementById('cropModal').style.display = 'none';
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            document.getElementById('regPhoto').value = '';
+        }
+
+        function saveCroppedPhoto() {
+            if (!cropperInstance) return;
+            
+            cropperInstance.result({
+                type: 'base64',
+                size: { width: 300, height: 300 },
+                format: 'jpeg',
+                quality: 0.8
+            }).then(function(base64) {
+                window.croppedProfilePhotoBase64 = base64;
+                
+                const labelName = document.getElementById('regFileName');
+                labelName.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <img src="${base64}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981;">
+                        <span style="color: #10b981; font-weight: 600;">Photo Ready</span>
+                    </div>
+                `;
+                
+                document.getElementById('cropModal').style.display = 'none';
+                cropperInstance.destroy();
+                cropperInstance = null;
+            });
+        }
+
+        const DOCUMENT_TYPES = [
+            { key: 'aadhar', name: 'Aadhaar Card' },
+            { key: 'marksheet', name: 'Marksheet (10th/Last Class)' },
+            { key: 'samagra', name: 'Samagra ID' },
+            { key: 'domicile', name: 'Domicile Certificate (मूल निवासी)' },
+            { key: 'income', name: 'Income Certificate (आय प्रमाण पत्र)' },
+            { key: 'caste', name: 'Caste Certificate (जाति प्रमाण पत्र)' },
+            { key: 'tc', name: 'Transfer Certificate (TC)' },
+            { key: 'passportPhoto', name: 'Passport Size Photo' }
+        ];
+
+        let selectedDocFiles = {};
+
+        function loadStudentDocuments(studentMobile) {
+            const container = document.getElementById('documentsList');
+            container.innerHTML = '<div style="grid-column: span 2; text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #f97316;"></i><p style="margin-top: 10px;">Loading documents...</p></div>';
+            
+            db.ref('ideal_student_documents/' + studentMobile).once('value', snap => {
+                const docs = snap.val() || {};
+                container.innerHTML = '';
+                
+                DOCUMENT_TYPES.forEach(docType => {
+                    const hasDoc = docs[docType.key];
+                    if (hasDoc) {
+                        container.innerHTML += `
+                            <div class="doc-card" style="border: 1px solid #bbf7d0; border-radius: 12px; padding: 15px; background: #f0fdf4; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; position: relative;">
+                                <span style="font-weight: 600; font-size: 0.9rem; color: #166534; margin-bottom: 10px;">${docType.name}</span>
+                                <div style="width: 100%; height: 100px; display: flex; align-items: center; justify-content: center; background: #dcfce7; border-radius: 8px; margin-bottom: 10px; overflow: hidden; border: 1px solid #86efac;">
+                                    <img src="${hasDoc}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="viewDocumentFullscreen('${hasDoc}', '${docType.name}')" />
+                                </div>
+                                <span style="font-size: 0.75rem; font-weight: 600; color: #15803d; background: #dcfce7; border: 1px solid #86efac; padding: 4px 10px; border-radius: 50px; margin-bottom: 8px;">
+                                    <i class="fas fa-lock"></i> Uploaded & Locked
+                                </span>
+                                <button class="btn" style="background: #10b981; font-size: 0.8rem; padding: 6px 12px; margin: 0; width: auto; height: auto;" onclick="viewDocumentFullscreen('${hasDoc}', '${docType.name}')">
+                                    <i class="fas fa-eye"></i> View Full
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML += `
+                            <div class="doc-card" id="doc-card-${docType.key}" style="border: 1px dashed #cbd5e1; border-radius: 12px; padding: 15px; background: #f8fafc; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; position: relative;">
+                                <span style="font-weight: 600; font-size: 0.9rem; color: #334155; margin-bottom: 10px;">${docType.name}</span>
+                                <div style="width: 100%; height: 100px; display: flex; align-items: center; justify-content: center; background: #e2e8f0; border-radius: 8px; margin-bottom: 10px; position: relative; overflow: hidden; border: 1px dashed #cbd5e1;">
+                                    <i class="fas fa-file-image" style="font-size: 2.5rem; color: #94a3b8;" id="preview-icon-${docType.key}"></i>
+                                    <img id="preview-img-${docType.key}" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                                </div>
+                                <label class="btn" style="background: #64748b; font-size: 0.8rem; padding: 8px 12px; cursor: pointer; margin: 0; display: inline-block; width: auto; border-radius: 6px;">
+                                    <i class="fas fa-camera"></i> Select Photo
+                                    <input type="file" accept="image/*" style="display: none;" onchange="handleDocFileChange(this, '${docType.key}')" />
+                                </label>
+                                <button id="upload-btn-${docType.key}" class="btn" style="background: #f97316; font-size: 0.8rem; padding: 8px 12px; margin-top: 8px; display: none; width: auto;" onclick="uploadDocument('${docType.key}')">
+                                    <i class="fas fa-upload"></i> Upload & Lock
+                                </button>
+                            </div>
+                        `;
+                    }
+                });
+            });
+        }
+
+        function handleDocFileChange(input, key) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('preview-img-' + key);
+                const previewIcon = document.getElementById('preview-icon-' + key);
+                
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                previewIcon.style.display = 'none';
+                
+                document.getElementById('upload-btn-' + key).style.display = 'inline-block';
+            };
+            reader.readAsDataURL(file);
+            
+            selectedDocFiles[key] = file;
+        }
+
+        function compressDocumentImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let scaleSize = 800 / img.width;
+                    if (scaleSize > 1) scaleSize = 1;
+                    
+                    canvas.width = img.width * scaleSize;
+                    canvas.height = img.height * scaleSize;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    callback(canvas.toDataURL('image/jpeg', 0.6));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function uploadDocument(key) {
+            const file = selectedDocFiles[key];
+            if (!file) return;
+            
+            const user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+            if (!user) return;
+            
+            const uploadBtn = document.getElementById('upload-btn-' + key);
+            uploadBtn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Uploading...";
+            uploadBtn.disabled = true;
+            
+            compressDocumentImage(file, function(compressedBase64) {
+                db.ref('ideal_student_documents/' + user.mobile + '/' + key).set(compressedBase64)
+                .then(() => {
+                    showToast("Document uploaded and locked successfully! 🔒");
+                    loadStudentDocuments(user.mobile);
+                })
+                .catch(err => {
+                    alert("Error uploading document: " + err.message);
+                    uploadBtn.innerHTML = "<i class='fas fa-upload'></i> Upload & Lock";
+                    uploadBtn.disabled = false;
+                });
+            });
+        }
+
+        function viewDocumentFullscreen(src, title) {
+            document.getElementById('docViewTitle').innerText = title;
+            document.getElementById('docViewImg').src = src;
+            document.getElementById('docViewDownloadBtn').href = src;
+            document.getElementById('docViewDownloadBtn').download = title.replace(/\s+/g, '_') + '.jpg';
+            document.getElementById('docViewModal').style.display = 'flex';
+        }
+
+        function openModal(id) { let user = JSON.parse(sessionStorage.getItem("ideal_active_student")); if(user) { loadStudentData(user); if(id === 'calModal') { renderCalendar(calCurrentMonth, calCurrentYear, user.cls); } if(id === 'leaveModal') { loadMyLeaves(user); } if(id === 'transModal') { loadTransportForStudent(); } if(id === 'docModal') { loadStudentDocuments(user.mobile); } } document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function logout() { sessionStorage.removeItem("ideal_active_student"); window.location.href = "index.html"; }
+    </script>
+
+    <!-- Fee Breakdown Modal -->
+    <div id="feeBreakdownModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-btn" onclick="closeModal('feeBreakdownModal')"><i class="fas fa-times"></i></span>
+            <h2 style="color:#0d9488; margin-bottom:20px; text-align:center;"><i class="fas fa-file-invoice-dollar"></i> Fee Breakdown</h2>
+            <div id="feeBreakdownDetails" style="font-size: 0.95rem; line-height: 1.8;">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Firestore v9 Modular Setup for Fees -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCK-PK_YPHMdTfhTOR-MVJjY3Fodqq5K_g",
+            authDomain: "ideal-public-school-59070.firebaseapp.com",
+            databaseURL: "https://ideal-public-school-59070-default-rtdb.firebaseio.com",
+            projectId: "ideal-public-school-59070",
+            storageBucket: "ideal-public-school-59070.firebasestorage.app",
+            messagingSenderId: "775234870692",
+            appId: "1:775234870692:web:39c85c60ada28f5d563531"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db_fs = getFirestore(app);
+
+        window.db_fs = db_fs;
+        window.IS_FEES_PORTAL_LOCKED = true; // Locked
+
+        window.openFeeBreakdown = function() {
+            openModal('feeBreakdownModal');
+        };
+
+        window.simulatePayment = function() {
+            alert("Razorpay Payment Gateway placeholder clicked! In a production system, this would open the Razorpay payment interface.");
+        };
+
+        window.downloadFirestoreReceipt = function(receiptNo, amount, dateStr, month, mode) {
+            const activeSession = sessionStorage.getItem("ideal_active_student");
+            if (!activeSession) return;
+            const student = JSON.parse(activeSession);
+            
+            document.getElementById('recDate').innerText = dateStr;
+            document.getElementById('recName').innerText = student.name;
+            document.getElementById('recClass').innerText = student.cls;
+            document.getElementById('recMobile').innerText = student.mobile;
+            document.getElementById('recEmail').innerText = student.email || 'N/A';
+            document.getElementById('recTotal').innerText = amount;
+            document.getElementById('recPaid').innerText = amount;
+            document.getElementById('recDue').innerText = "0";
+            document.getElementById('recUtr').innerText = receiptNo || 'Verified Online Payment';
+            
+            let receiptElement = document.getElementById('receiptToCapture');
+            receiptElement.parentElement.style.display = 'block';
+            showToast("Generating official receipt...");
+            
+            html2canvas(receiptElement, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+                let link = document.createElement('a');
+                link.download = `Receipt_${receiptNo}_${student.name.replace(/\s+/g, '_')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                receiptElement.parentElement.style.display = 'none';
+                showToast("Receipt Downloaded! ✅");
+            }).catch(err => {
+                console.error("html2canvas error: ", err);
+                receiptElement.parentElement.style.display = 'none';
+            });
+        };
+
+        async function loadDefaultClassFees(className, studentName, mobile) {
+            try {
+                const feeStructRef = doc(db_fs, "feeStructure", className);
+                const docSnap = await getDoc(feeStructRef);
+                let defaultData = {
+                    studentName: studentName,
+                    mobile: mobile,
+                    class: className,
+                    totalFee: 0,
+                    paidAmount: 0,
+                    pendingAmount: 0,
+                    status: "Pending",
+                    customFeeAssigned: false
+                };
+                if (docSnap.exists()) {
+                    const fs = docSnap.data();
+                    defaultData.totalFee = fs.totalFee || 0;
+                    defaultData.pendingAmount = fs.totalFee || 0;
+                }
+                updateStudentFeesUI(defaultData);
+            } catch (err) {
+                console.error("Error fetching class fee structure: ", err);
+            }
+        }
+
+        function updateStudentFeesUI(data) {
+            const totalFee = Number(data.totalFee || 0);
+            const paidAmount = Number(data.paidAmount || 0);
+            const pendingAmount = Number(data.pendingAmount || 0);
+            const status = data.status || "Pending";
+            
+            let statusClass = "badge-pending";
+            if (status === "Paid") statusClass = "badge-paid";
+            else if (status === "Overdue") statusClass = "badge-overdue";
+            
+            const percent = totalFee > 0 ? Math.round((paidAmount / totalFee) * 100) : 0;
+            
+            const cardStatusEl = document.getElementById("feeCardStatus");
+            if (cardStatusEl) {
+                cardStatusEl.innerText = status === "Paid" ? "Paid ✅" : `Due: ₹${pendingAmount}`;
+                cardStatusEl.style.color = status === "Paid" ? "#10b981" : "#ef4444";
+            }
+
+            const container = document.getElementById("feeContainer");
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="fees-dashboard-grid">
+                    <div class="fee-dash-card card-total">
+                        <span class="card-label">Total Fee</span>
+                        <span class="card-val">₹${totalFee}</span>
+                    </div>
+                    <div class="fee-dash-card card-paid">
+                        <span class="card-label">Paid</span>
+                        <span class="card-val text-green">₹${paidAmount}</span>
+                    </div>
+                    <div class="fee-dash-card card-pending">
+                        <span class="card-label">Pending</span>
+                        <span class="card-val text-red">₹${pendingAmount}</span>
+                    </div>
+                    <div class="fee-dash-card card-status">
+                        <span class="card-label">Status</span>
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </div>
+                </div>
+
+                <div style="margin: 25px 0; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px;">
+                        <span>Payment Progress</span>
+                        <span>${percent}%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                    <button class="btn btn-teal" style="flex: 1; margin: 0; background: #8b5cf6;" onclick="window.simulatePayment()">
+                        <i class="fas fa-credit-card"></i> Pay Now (UPI/Card)
+                    </button>
+                    <button class="btn" style="flex: 1; margin: 0; background: #0f172a; color: white;" onclick="window.openFeeBreakdown()">
+                        <i class="fas fa-file-invoice"></i> View Breakdown
+                    </button>
+                </div>
+
+                <h3 style="text-align: left; color: #0f172a; font-size: 1.2rem; margin-bottom: 15px; font-weight: 700; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+                    <i class="fas fa-history"></i> Payment History
+                </h3>
+                <div id="paymentsTableWrapper" style="overflow-x: auto; max-height: 250px; margin-bottom: 25px;">
+                    <p style="color: #64748b; padding: 15px 0; text-align:center;">No payments recorded yet.</p>
+                </div>
+
+                <div style="margin-top: 30px; text-align: left;">
+                    <h3 style="color: #0f172a; font-size: 1.2rem; margin-bottom: 15px; font-weight: 700; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">
+                        <i class="fas fa-bus"></i> BUS FEES STRUCTURE SESSION 2026-27
+                    </h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; max-height: 250px; overflow-y: auto;">
+                        <h4 style="font-size: 0.9rem; color: #7c3aed; margin-bottom: 8px; font-weight: 700; border-bottom: 1px solid #ede9fe; padding-bottom: 4px;">KIDZEE</h4>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px; color: #475569;">
+                            <span>WARASEONI</span>
+                            <strong>₹786 / month</strong>
+                        </div>
+                        
+                        <h4 style="font-size: 0.9rem; color: #3b82f6; margin-bottom: 8px; font-weight: 700; border-bottom: 1px solid #eff6ff; padding-bottom: 4px; margin-top: 10px;">CLASS I TO XII</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem; color: #475569;">
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>WARASEONI</span> <strong>₹1,064/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>KOCHEWAHI</span> <strong>₹1,742/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>KATANGIHARI</span> <strong>₹1,464/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>TEKADI</span> <strong>₹1,331/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>KHANDWA</span> <strong>₹990/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>BUDBUDA</span> <strong>₹1,694/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>NAHARTOLA</span> <strong>₹1,331/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>MEHANDI WADA</span> <strong>₹1,331/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>SAVANGI</span> <strong>₹990/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>BITOTI</span> <strong>₹1,694/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>NEWARGAON</span> <strong>₹1,597/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>RAMPAYLI</span> <strong>₹1,863/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>GATAPAYLI</span> <strong>₹1,694/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>MADANPUR KOSTE</span> <strong>₹1,863/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>BOTEJHARI</span> <strong>₹1,464/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>DORLI</span> <strong>₹1,694/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>UMARWADA</span> <strong>₹1,863/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>DONGARMALI</span> <strong>₹1,694/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>MURJHAD FORM</span> <strong>₹1,320/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>LAWANI</span> <strong>₹1,863/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>BAGHOLI</span> <strong>₹1,452/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>SIKANDARA</span> <strong>₹1,064/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>GHOTI</span> <strong>₹1,863/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>SIRRA</span> <strong>₹1,694/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>JHALIWADA</span> <strong>₹1,573/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>MENDKI</span> <strong>₹1,485/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>KOSTE</span> <strong>₹1,197/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>CHANDORI</span> <strong>₹330/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>KHAIRLANJI</span> <strong>₹1,863/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>KOPE TUMADI</span> <strong>₹1,331/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>WARA</span> <strong>₹1,210/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>THANEGAON</span> <strong>₹1,670/-</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #e2e8f0;"><span>RAMRAMA</span> <strong>₹1,863/-</strong></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            updateBreakdownModalUI(data);
+        }
+
+        async function updateBreakdownModalUI(data) {
+            const breakdownEl = document.getElementById("feeBreakdownDetails");
+            if (!breakdownEl) return;
+
+            let tuition = 0, transport = 0, exam = 0, admission = 0, annual = 0, late = 0, discount = 0, scholarship = 0;
+            let busStop = data.busStop || '';
+            
+            if (data.customFeeAssigned) {
+                tuition = Number(data.customTuitionFee || 0);
+                transport = Number(data.customTransportFee || 0);
+                exam = Number(data.customExamFee || 0);
+                admission = Number(data.customAdmissionFee || 0);
+                discount = Number(data.discount || 0);
+                scholarship = Number(data.scholarship || 0);
+            } else {
+                try {
+                    const feeStructRef = doc(db_fs, "feeStructure", data.class);
+                    const docSnap = await getDoc(feeStructRef);
+                    if (docSnap.exists()) {
+                        const fs = docSnap.data();
+                        tuition = Number(fs.tuitionFee || 0);
+                        transport = Number(fs.transportFee || 0);
+                        exam = Number(fs.examFee || 0);
+                        admission = Number(fs.admissionFee || 0);
+                        annual = Number(fs.annualFee || 0);
+                        late = Number(fs.lateFee || 0);
+                        if (!busStop) busStop = fs.busStop || '';
+                    }
+                } catch (err) {
+                    console.error("Error reading fee structure for breakdown: ", err);
+                }
+            }
+
+            const subtotal = tuition + transport + exam + admission + annual + late;
+            const finalTotal = subtotal - (discount + scholarship);
+
+            const busStopRow = busStop ? `<tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#64748b;"><i class="fas fa-bus" style="color:#eab308;"></i> Assigned Bus Stop</td><td style="padding:10px 0; text-align:right; font-weight:700; color:#ca8a04;">${busStop}</td></tr>` : '';
+
+            breakdownEl.innerHTML = `
+                <table style="width:100%; border-collapse:collapse; margin-bottom:15px; font-size:0.95rem;">
+                    <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px 0; font-weight:600; color:#475569;">Class / Stream</td><td style="padding:10px 0; text-align:right; font-weight:700;">${data.class}</td></tr>
+                    ${busStopRow}
+                    <tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#64748b;">Tuition Fee</td><td style="padding:10px 0; text-align:right; font-weight:600;">₹${tuition}</td></tr>
+                    <tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#64748b;">Transport Fee</td><td style="padding:10px 0; text-align:right; font-weight:600;">₹${transport}</td></tr>
+                    <tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#64748b;">Exam Fee</td><td style="padding:10px 0; text-align:right; font-weight:600;">₹${exam}</td></tr>
+                    <tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#64748b;">Admission Fee</td><td style="padding:10px 0; text-align:right; font-weight:600;">₹${admission}</td></tr>
+                    ${annual > 0 ? `<tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#64748b;">Annual Charges</td><td style="padding:10px 0; text-align:right; font-weight:600;">₹${annual}</td></tr>` : ''}
+                    ${late > 0 ? `<tr style="border-bottom:1px dashed #e2e8f0;"><td style="padding:10px 0; color:#b45309;">Late Fine</td><td style="padding:10px 0; text-align:right; font-weight:600; color:#b45309;">₹${late}</td></tr>` : ''}
+                    <tr style="border-bottom:2px solid #e2e8f0; font-weight:700;"><td style="padding:10px 0; color:#0f172a;">Subtotal</td><td style="padding:10px 0; text-align:right; color:#0f172a;">₹${subtotal}</td></tr>
+                    
+                    ${discount > 0 ? `<tr style="border-bottom:1px dashed #e2e8f0; color:#b91c1c;"><td style="padding:10px 0;">Discount Applied</td><td style="padding:10px 0; text-align:right; font-weight:600;">-₹${discount}</td></tr>` : ''}
+                    ${scholarship > 0 ? `<tr style="border-bottom:1px dashed #e2e8f0; color:#0f766e;"><td style="padding:10px 0;">Scholarship</td><td style="padding:10px 0; text-align:right; font-weight:600;">-₹${scholarship}</td></tr>` : ''}
+                    
+                    <tr style="background:#f8fafc; font-weight:800; font-size:1.1rem; border-top:1px solid #cbd5e1; border-bottom:1px solid #cbd5e1;"><td style="padding:12px; color:#1e3a8a;">Total Annual Fee</td><td style="padding:12px; text-align:right; color:#1e3a8a;">₹${finalTotal}</td></tr>
+                </table>
+                ${data.customFeeAssigned ? `<p style="font-size:0.75rem; color:#0d9488; text-align:center; font-weight:600; margin-top:10px;"><i class="fas fa-info-circle"></i> A custom fee structure has been overridden for this profile by the administrator.</p>` : ''}
+            `;
+        }
+
+        function updatePaymentsTableUI(paymentsList) {
+            const wrapper = document.getElementById("paymentsTableWrapper");
+            if (!wrapper) return;
+            
+            if (!paymentsList || paymentsList.length === 0) {
+                wrapper.innerHTML = `<p style="color:#64748b; padding:15px 0; text-align:center;">No payments recorded yet.</p>`;
+                return;
+            }
+            
+            paymentsList.sort((a,b) => new Date(b.date || '') - new Date(a.date || ''));
+            
+            let html = `
+                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.85rem; min-width:480px;">
+                    <thead>
+                        <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
+                            <th style="padding:8px; color:#475569; font-weight:600;">Receipt No</th>
+                            <th style="padding:8px; color:#475569; font-weight:600;">Month</th>
+                            <th style="padding:8px; color:#475569; font-weight:600;">Amount</th>
+                            <th style="padding:8px; color:#475569; font-weight:600;">Status</th>
+                            <th style="padding:8px; color:#475569; font-weight:600;">Date</th>
+                            <th style="padding:8px; color:#475569; font-weight:600; text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            paymentsList.forEach((p) => {
+                let statusBadge = "badge-pending";
+                if (p.status === "Paid" || p.status === "Verified" || p.status === "Success") statusBadge = "badge-paid";
+                else if (p.status === "Failed" || p.status === "Rejected") statusBadge = "badge-overdue";
+                
+                const receiptNo = p.receiptNumber || 'N/A';
+                const pMonth = p.month || 'N/A';
+                const pAmount = p.amount || 0;
+                const pDate = p.date || 'N/A';
+                const pMode = p.paymentMode || 'Online';
+                
+                html += `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:10px 8px; font-weight:600; color:#3b82f6;">${receiptNo}</td>
+                        <td style="padding:10px 8px;">${pMonth}</td>
+                        <td style="padding:10px 8px; font-weight:700;">₹${pAmount}</td>
+                        <td style="padding:10px 8px;"><span class="status-badge ${statusBadge}" style="font-size:0.7rem; padding:2px 8px;">${p.status || 'Success'}</span></td>
+                        <td style="padding:10px 8px;">${pDate}</td>
+                        <td style="padding:10px 8px; text-align:center;">
+                            <button onclick="window.downloadFirestoreReceipt('${receiptNo}', ${pAmount}, '${pDate}', '${pMonth}', '${pMode}')" style="background:#fee2e2; color:#ef4444; border:1px solid #fca5a5; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:0.75rem; font-weight:600; margin:0;">
+                                <i class="fas fa-file-download"></i> Receipt
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            wrapper.innerHTML = html;
+        }
+
+        function initStudentFeesListener() {
+            if (window.IS_FEES_PORTAL_LOCKED) return;
+            const activeSession = sessionStorage.getItem("ideal_active_student");
+            if (!activeSession) return;
+            const student = JSON.parse(activeSession);
+            const mobile = student.mobile;
+            
+            const studentFeeRef = doc(db_fs, "studentFees", mobile);
+            onSnapshot(studentFeeRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    updateStudentFeesUI(data);
+                } else {
+                    loadDefaultClassFees(student.cls, student.name, mobile);
+                }
+            }, (error) => {
+                console.error("Error listening to student fees: ", error);
+            });
+
+            const paymentsQuery = query(collection(db_fs, "payments"), where("studentId", "==", mobile));
+            onSnapshot(paymentsQuery, (querySnapshot) => {
+                const paymentsList = [];
+                querySnapshot.forEach((doc) => {
+                    paymentsList.push(doc.data());
+                });
+                updatePaymentsTableUI(paymentsList);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                initStudentFeesListener();
+            }, 600);
+        });
     </script>
 </body>
 </html>

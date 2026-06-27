@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         /* ==============================================================
@@ -1041,6 +1042,7 @@
         .att-P { color: #10b981; background: #dcfce7; border-color: #86efac; }
         .att-A { color: #ef4444; background: #fee2e2; border-color: #fca5a5; }
         .att-H { color: #d97706; background: #fef3c7; border-color: #fde68a; }
+        .att-S { color: #3b82f6; background: #dbeafe; border-color: #bfdbfe; }
 
         /* Premium Gallery styling */
         .gallery-grid {
@@ -1324,6 +1326,14 @@
                     <i class="fas fa-users"></i>
                     <span>Registered Students</span>
                 </a>
+                <a href="javascript:void(0)" class="nav-item" onclick="showDashboardSection('bulk-blaster', this)">
+                    <i class="fas fa-sms"></i>
+                    <span>Bulk SMS Blaster</span>
+                </a>
+                <a href="javascript:void(0)" class="nav-item" onclick="showDashboardSection('documents-portal', this)">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Student Documents</span>
+                </a>
                 <a href="javascript:void(0)" class="nav-item" onclick="showDashboardSection('student-analytics', this)">
                     <i class="fas fa-chart-bar"></i>
                     <span>Student Analytics</span>
@@ -1495,7 +1505,7 @@
                             </div>
                         </div>
 
-                        <div id="tab-students" style="display: none;"><div class="input-group"><select id="manageClassSelect" onchange="loadClassStudentsForManagement()"><option value="" disabled selected>-- Select Class --</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select></div><div class="preview-area" id="manageStudentsList" style="max-height: 350px; overflow-y: auto;"></div></div>
+                        <div id="tab-students" style="display: none;"><div class="input-group"><select id="manageClassSelect" onchange="loadClassStudentsForManagement()"><option value="" disabled selected>-- Select Class --</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select><button class="btn btn-teal" id="btnDownloadExcel" style="width: auto; display: none;" onclick="downloadClassStudentsExcel()"><i class="fas fa-file-excel"></i> Download Excel</button></div><div class="preview-area" id="manageStudentsList" style="max-height: 350px; overflow-y: auto;"></div></div>
                         
                         <div id="tab-assign" style="display: none;">
                             <div class="input-group"><select id="assignClass"><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select><input type="text" id="assignSubject" placeholder="Subject"><input type="date" id="assignDue"></div>
@@ -1505,7 +1515,303 @@
                             <div class="preview-area" id="adminAssignPreview"></div>
                         </div>
                         
-                        <div id="tab-fee" style="display: none;"><div class="input-group"><select id="feeClassSelect" onchange="loadClassStudentsForFee()"><option value="" disabled selected>-- Select Class --</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select></div><div class="preview-area" id="feeStudentsList" style="overflow-x:auto;"></div></div>
+                        <div id="tab-fee" style="display: none;">
+                            <h3 style="color:#0f172a; margin-bottom:15px; font-weight:700;"><i class="fas fa-wallet" style="color:#8b5cf6;"></i> Fee Management Hub</h3>
+                            
+                            <!-- Nested Tab Menu for Fees Module -->
+                            <div class="tab-menu" style="margin-bottom: 20px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px;">
+                                <button class="tab-btn active" id="btn-fee-sub-dash" onclick="window.switchFeeSubTab('dash')"><i class="fas fa-chart-pie"></i> Fee Dashboard</button>
+                                <button class="tab-btn" id="btn-fee-sub-struct" onclick="window.switchFeeSubTab('struct')"><i class="fas fa-file-invoice-dollar"></i> Fee Structure</button>
+                                <button class="tab-btn" id="btn-fee-sub-records" onclick="window.switchFeeSubTab('records')"><i class="fas fa-users-cog"></i> Student Records</button>
+                                <button class="tab-btn" id="btn-fee-sub-custom" onclick="window.switchFeeSubTab('custom')"><i class="fas fa-user-edit"></i> Custom Override</button>
+                                <button class="tab-btn" id="btn-fee-sub-remind" onclick="window.switchFeeSubTab('remind')"><i class="fas fa-bell"></i> Fee Reminders</button>
+                            </div>
+
+                            <!-- 1. Fee Dashboard & Analytics -->
+                            <div id="fee-sub-dash" style="display: block;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px;">
+                                    <div class="admin-card card-purple" style="margin:0; padding:20px; background:#faf5ff;">
+                                        <span style="font-size:0.85rem; font-weight:600; color:#7c3aed; text-transform:uppercase;">Total Fee Collected</span>
+                                        <h2 id="metricFeeCollected" style="font-size:2rem; font-weight:800; color:#6b21a8; margin-top:5px;">₹0</h2>
+                                    </div>
+                                    <div class="admin-card card-pink" style="margin:0; padding:20px; background:#fff5f7;">
+                                        <span style="font-size:0.85rem; font-weight:600; color:#db2777; text-transform:uppercase;">Pending Collection</span>
+                                        <h2 id="metricFeePending" style="font-size:2rem; font-weight:800; color:#9d174d; margin-top:5px;">₹0</h2>
+                                    </div>
+                                    <div class="admin-card card-teal" style="margin:0; padding:20px; background:#f0fdfa;">
+                                        <span style="font-size:0.85rem; font-weight:600; color:#0d9488; text-transform:uppercase;">Paid Students</span>
+                                        <h2 id="metricPaidStudents" style="font-size:2rem; font-weight:800; color:#115e59; margin-top:5px;">0</h2>
+                                    </div>
+                                    <div class="admin-card card-blue" style="margin:0; padding:20px; background:#eff6ff;">
+                                        <span style="font-size:0.85rem; font-weight:600; color:#2563eb; text-transform:uppercase;">Defaulters</span>
+                                        <h2 id="metricDefaulters" style="font-size:2rem; font-weight:800; color:#1e40af; margin-top:5px;">0</h2>
+                                    </div>
+                                    <div class="admin-card card-green" style="margin:0; padding:20px; background:#f0fdf4;">
+                                        <span style="font-size:0.85rem; font-weight:600; color:#16a34a; text-transform:uppercase;">Today's Collection</span>
+                                        <h2 id="metricTodayCollection" style="font-size:2rem; font-weight:800; color:#166534; margin-top:5px;">₹0</h2>
+                                    </div>
+                                    <div class="admin-card card-yellow" style="margin:0; padding:20px; background:#fefce8; border-left:6px solid #eab308;">
+                                        <span style="font-size:0.85rem; font-weight:600; color:#ca8a04; text-transform:uppercase;">Monthly Collection</span>
+                                        <h2 id="metricMonthlyCollection" style="font-size:2rem; font-weight:800; color:#854d0e; margin-top:5px;">₹0</h2>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 25px; text-align: left; background: #faf5ff; border: 1.5px dashed #d8b4fe; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.05);">
+                                    <h4 style="color: #6b21a8; font-size: 1.05rem; margin-bottom: 12px; font-weight: 700; border-bottom: 1px solid #f3e8ff; padding-bottom: 6px;"><i class="fas fa-tools"></i> Fee Module Administrative Utilities</h4>
+                                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                        <div style="flex: 1; min-width: 250px; background: #fff5f5; border: 1px solid #fca5a5; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                                            <div>
+                                                <h5 style="color: #dc2626; font-size: 0.9rem; margin-bottom: 4px; font-weight: 700;"><i class="fas fa-trash-alt"></i> Reset All Paid Fees to Zero</h5>
+                                                <p style="font-size: 0.8rem; color: #7f1d1d; margin-bottom: 12px; font-weight: 500; line-height: 1.4;">Resets the paid amount of all students to zero (full fees will be due). Students without custom fee overrides will fall back to their default class fees, or zero if class fees are not set by the admin.</p>
+                                            </div>
+                                            <button class="btn" style="width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); margin: 0; padding: 8px 16px; font-size: 0.85rem; font-weight: 600;" onclick="window.resetAllPaidFeesToZero()">
+                                                <i class="fas fa-sync-alt"></i> Reset All Payments to 0
+                                            </button>
+                                        </div>
+                                        <div style="flex: 1; min-width: 250px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                                            <div>
+                                                <h5 style="color: #16a34a; font-size: 0.9rem; margin-bottom: 4px; font-weight: 700;"><i class="fas fa-check-double"></i> Mark All Fees as Fully Paid</h5>
+                                                <p style="font-size: 0.8rem; color: #14532d; margin-bottom: 12px; font-weight: 500; line-height: 1.4;">Sets the pending amount of all registered students to zero and marks their payment status as "Paid". Students will show as having fully paid their entire assigned fee structure.</p>
+                                            </div>
+                                            <button class="btn" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); margin: 0; padding: 8px 16px; font-size: 0.85rem; font-weight: 600;" onclick="window.zeroAllStudentBalances()">
+                                                <i class="fas fa-check"></i> Mark All as Paid (Dues = 0)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Manage Fee Structure -->
+                            <div id="fee-sub-struct" style="display: none;">
+                                <div class="input-group">
+                                    <select id="structClassSelect" style="flex:0.3;" onchange="window.loadClassFeeStructureUI()">
+                                        <option value="" disabled selected>-- Select Class --</option>
+                                        <option value="Class 1st">Class 1st</option>
+                                        <option value="Class 2nd">Class 2nd</option>
+                                        <option value="Class 3rd">Class 3rd</option>
+                                        <option value="Class 4th">Class 4th</option>
+                                        <option value="Class 5th">Class 5th</option>
+                                        <option value="Class 6th">Class 6th</option>
+                                        <option value="Class 7th">Class 7th</option>
+                                        <option value="Class 8th">Class 8th</option>
+                                        <option value="Class 9th">Class 9th</option>
+                                        <option value="Class 10th">Class 10th</option>
+                                        <option value="Class 11th">Class 11th</option>
+                                        <option value="Class 12th">Class 12th</option>
+                                    </select>
+                                </div>
+                                <div id="feeStructureFormContainer" style="display:none; background:#f8fafc; border:1px solid #cbd5e1; padding:20px; border-radius:12px; margin-top:15px; text-align:left;">
+                                    <h4 id="structFormHeader" style="margin-bottom:15px; color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">Fee Configuration</h4>
+                                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:15px;">
+                                        <div><label>Tuition Fee (₹)</label><input type="number" id="fs_tuition" value="0"></div>
+                                        <div>
+                                            <label>Transport Fee / Bus Stop</label>
+                                            <select id="fs_bus_stop" onchange="document.getElementById('fs_transport').value = this.value" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:8px;">
+                                                <option value="0" data-stop="">-- Select Bus Stop --</option>
+                                                <optgroup label="KIDZEE">
+                                                    <option value="786" data-stop="WARASEONI (KIDZEE)">WARASEONI – ₹786/month</option>
+                                                </optgroup>
+                                                <optgroup label="CLASS I TO XII">
+                                                    <option value="1064" data-stop="WARASEONI">WARASEONI – ₹1,064/-</option>
+                                                    <option value="1742" data-stop="KOCHEWAHI">KOCHEWAHI – ₹1,742/-</option>
+                                                    <option value="1464" data-stop="KATANGIHARI">KATANGIHARI – ₹1,464/-</option>
+                                                    <option value="1331" data-stop="TEKADI">TEKADI – ₹1,331/-</option>
+                                                    <option value="990" data-stop="KHANDWA">KHANDWA – ₹990/-</option>
+                                                    <option value="1694" data-stop="BUDBUDA">BUDBUDA – ₹1,694/-</option>
+                                                    <option value="1331" data-stop="NAHARTOLA">NAHARTOLA – ₹1,331/-</option>
+                                                    <option value="1331" data-stop="MEHANDI WADA">MEHANDI WADA – ₹1,331/-</option>
+                                                    <option value="990" data-stop="SAVANGI">SAVANGI – ₹990/-</option>
+                                                    <option value="1694" data-stop="BITOTI">BITOTI – ₹1,694/-</option>
+                                                    <option value="1597" data-stop="NEWARGAON">NEWARGAON – ₹1,597/-</option>
+                                                    <option value="1863" data-stop="RAMPAYLI">RAMPAYLI – ₹1,863/-</option>
+                                                    <option value="1694" data-stop="GATAPAYLI">GATAPAYLI – ₹1,694/-</option>
+                                                    <option value="1863" data-stop="MADANPUR KOSTE">MADANPUR KOSTE – ₹1,863/-</option>
+                                                    <option value="1464" data-stop="BOTEJHARI">BOTEJHARI – ₹1,464/-</option>
+                                                    <option value="1694" data-stop="DORLI">DORLI – ₹1,694/-</option>
+                                                    <option value="1863" data-stop="UMARWADA">UMARWADA – ₹1,863/-</option>
+                                                    <option value="1694" data-stop="DONGARMALI">DONGARMALI – ₹1,694/-</option>
+                                                    <option value="1320" data-stop="MURJHAD FORM">MURJHAD FORM – ₹1,320/-</option>
+                                                    <option value="1863" data-stop="LAWANI">LAWANI – ₹1,863/-</option>
+                                                    <option value="1452" data-stop="BAGHOLI">BAGHOLI – ₹1,452/-</option>
+                                                    <option value="1064" data-stop="SIKANDARA">SIKANDARA – ₹1,064/-</option>
+                                                    <option value="1863" data-stop="GHOTI">GHOTI – ₹1,863/-</option>
+                                                    <option value="1694" data-stop="SIRRA">SIRRA – ₹1,694/-</option>
+                                                    <option value="1573" data-stop="JHALIWADA">JHALIWADA – ₹1,573/-</option>
+                                                    <option value="1485" data-stop="MENDKI">MENDKI – ₹1,485/-</option>
+                                                    <option value="1197" data-stop="KOSTE">KOSTE – ₹1,197/-</option>
+                                                    <option value="330" data-stop="CHANDORI">CHANDORI – ₹330/-</option>
+                                                    <option value="1863" data-stop="KHAIRLANJI">KHAIRLANJI – ₹1,863/-</option>
+                                                    <option value="1331" data-stop="KOPE TUMADI">KOPE TUMADI – ₹1,331/-</option>
+                                                    <option value="1210" data-stop="WARA">WARA – ₹1,210/-</option>
+                                                    <option value="1670" data-stop="THANEGAON">THANEGAON – ₹1,670/-</option>
+                                                    <option value="1863" data-stop="RAMRAMA">RAMRAMA – ₹1,863/-</option>
+                                                </optgroup>
+                                            </select>
+                                            <input type="number" id="fs_transport" value="0">
+                                        </div>
+                                        <div><label>Exam Fee (₹)</label><input type="number" id="fs_exam" value="0"></div>
+                                        <div><label>Admission Fee (₹)</label><input type="number" id="fs_admission" value="0"></div>
+                                        <div><label>Annual Charges (₹)</label><input type="number" id="fs_annual" value="0"></div>
+                                        <div><label>Late Fee Fine (₹)</label><input type="number" id="fs_late" value="0"></div>
+                                    </div>
+                                    <button class="btn btn-teal" style="width:auto; margin:0;" onclick="window.saveClassFeeStructure()"><i class="fas fa-save"></i> Save Fee Structure</button>
+                                </div>
+                                <div id="structClassStudentsContainer" style="display:none; margin-top:20px; background:#ffffff; border:1px solid #cbd5e1; padding:20px; border-radius:12px; text-align:left;">
+                                    <h4 style="margin-bottom:15px; color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">
+                                        <i class="fas fa-users"></i> Students in this Class &amp; Individual Fee Status
+                                    </h4>
+                                    <div style="overflow-x:auto;">
+                                        <table style="width:100%; border-collapse:collapse; font-size:0.9rem;">
+                                            <thead>
+                                                <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0; text-align:left;">
+                                                    <th style="padding:10px 8px; color:#475569; font-weight:600;">Student Name</th>
+                                                    <th style="padding:10px 8px; color:#475569; font-weight:600;">Assigned Total Fee</th>
+                                                    <th style="padding:10px 8px; color:#475569; font-weight:600;">Paid</th>
+                                                    <th style="padding:10px 8px; color:#475569; font-weight:600;">Pending</th>
+                                                    <th style="padding:10px 8px; color:#475569; font-weight:600;">Status</th>
+                                                    <th style="padding:10px 8px; color:#475569; font-weight:600; text-align:center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="structClassStudentsTableBody">
+                                                <!-- Populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Student Fee Records -->
+                            <div id="fee-sub-records" style="display: none;">
+                                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                                    <div style="flex:1; min-width:200px;"><input type="text" id="feeSearchInput" placeholder="Search by name, mobile, admission no..." oninput="window.filterFeeRecords()"></div>
+                                    <div style="width:180px;">
+                                        <select id="feeRecordClassFilter" onchange="window.filterFeeRecords()">
+                                            <option value="All Classes">All Classes</option>
+                                            <option value="Class 1st">Class 1st</option>
+                                            <option value="Class 2nd">Class 2nd</option>
+                                            <option value="Class 3rd">Class 3rd</option>
+                                            <option value="Class 4th">Class 4th</option>
+                                            <option value="Class 5th">Class 5th</option>
+                                            <option value="Class 6th">Class 6th</option>
+                                            <option value="Class 7th">Class 7th</option>
+                                            <option value="Class 8th">Class 8th</option>
+                                            <option value="Class 9th">Class 9th</option>
+                                            <option value="Class 10th">Class 10th</option>
+                                            <option value="Class 11th">Class 11th</option>
+                                            <option value="Class 12th">Class 12th</option>
+                                        </select>
+                                    </div>
+                                    <div style="width:150px;">
+                                        <select id="feeRecordStatusFilter" onchange="window.filterFeeRecords()">
+                                            <option value="All">All Status</option>
+                                            <option value="Paid">Paid</option>
+                                            <option value="Pending">Pending</option>
+                                            <option value="Overdue">Overdue</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="feeRecordsTableWrapper" style="overflow-x:auto;">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- 4. Special Student Custom Fee Override -->
+                            <div id="fee-sub-custom" style="display: none; text-align:left;">
+                                <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:20px; border-radius:12px; margin-bottom:20px;">
+                                    <h4 style="margin-bottom:15px; color:#1e3a8a;"><i class="fas fa-user-shield"></i> Set Custom Override for Student</h4>
+                                    <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                                        <input type="text" id="customSearchInput" placeholder="Enter student name, mobile or student ID..." style="flex:1;">
+                                        <button class="btn btn-teal" style="width:auto; margin:0;" onclick="window.searchStudentForCustomOverride()"><i class="fas fa-search"></i> Search Profile</button>
+                                    </div>
+                                    <div id="overrideFormContainer" style="display:none; border-top:1px dashed #cbd5e1; padding-top:15px;">
+                                        <p id="overrideStudentInfo" style="font-weight:700; font-size:1rem; color:#0f172a; margin-bottom:15px;"></p>
+                                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:15px;">
+                                            <div><label>Custom Tuition Fee (₹)</label><input type="number" id="custom_tuition" value="0"></div>
+                                            <div>
+                                                <label>Custom Transport Fee / Bus Stop</label>
+                                                <select id="custom_bus_stop" onchange="document.getElementById('custom_transport').value = this.value" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:8px;">
+                                                    <option value="0" data-stop="">-- Select Bus Stop --</option>
+                                                    <optgroup label="KIDZEE">
+                                                        <option value="786" data-stop="WARASEONI (KIDZEE)">WARASEONI – ₹786/month</option>
+                                                    </optgroup>
+                                                    <optgroup label="CLASS I TO XII">
+                                                        <option value="1064" data-stop="WARASEONI">WARASEONI – ₹1,064/-</option>
+                                                        <option value="1742" data-stop="KOCHEWAHI">KOCHEWAHI – ₹1,742/-</option>
+                                                        <option value="1464" data-stop="KATANGIHARI">KATANGIHARI – ₹1,464/-</option>
+                                                        <option value="1331" data-stop="TEKADI">TEKADI – ₹1,331/-</option>
+                                                        <option value="990" data-stop="KHANDWA">KHANDWA – ₹990/-</option>
+                                                        <option value="1694" data-stop="BUDBUDA">BUDBUDA – ₹1,694/-</option>
+                                                        <option value="1331" data-stop="NAHARTOLA">NAHARTOLA – ₹1,331/-</option>
+                                                        <option value="1331" data-stop="MEHANDI WADA">MEHANDI WADA – ₹1,331/-</option>
+                                                        <option value="990" data-stop="SAVANGI">SAVANGI – ₹990/-</option>
+                                                        <option value="1694" data-stop="BITOTI">BITOTI – ₹1,694/-</option>
+                                                        <option value="1597" data-stop="NEWARGAON">NEWARGAON – ₹1,597/-</option>
+                                                        <option value="1863" data-stop="RAMPAYLI">RAMPAYLI – ₹1,863/-</option>
+                                                        <option value="1694" data-stop="GATAPAYLI">GATAPAYLI – ₹1,694/-</option>
+                                                        <option value="1863" data-stop="MADANPUR KOSTE">MADANPUR KOSTE – ₹1,863/-</option>
+                                                        <option value="1464" data-stop="BOTEJHARI">BOTEJHARI – ₹1,464/-</option>
+                                                        <option value="1694" data-stop="DORLI">DORLI – ₹1,694/-</option>
+                                                        <option value="1863" data-stop="UMARWADA">UMARWADA – ₹1,863/-</option>
+                                                        <option value="1694" data-stop="DONGARMALI">DONGARMALI – ₹1,694/-</option>
+                                                        <option value="1320" data-stop="MURJHAD FORM">MURJHAD FORM – ₹1,320/-</option>
+                                                        <option value="1863" data-stop="LAWANI">LAWANI – ₹1,863/-</option>
+                                                        <option value="1452" data-stop="BAGHOLI">BAGHOLI – ₹1,452/-</option>
+                                                        <option value="1064" data-stop="SIKANDARA">SIKANDARA – ₹1,064/-</option>
+                                                        <option value="1863" data-stop="GHOTI">GHOTI – ₹1,863/-</option>
+                                                        <option value="1694" data-stop="SIRRA">SIRRA – ₹1,694/-</option>
+                                                        <option value="1573" data-stop="JHALIWADA">JHALIWADA – ₹1,573/-</option>
+                                                        <option value="1485" data-stop="MENDKI">MENDKI – ₹1,485/-</option>
+                                                        <option value="1197" data-stop="KOSTE">KOSTE – ₹1,197/-</option>
+                                                        <option value="330" data-stop="CHANDORI">CHANDORI – ₹330/-</option>
+                                                        <option value="1863" data-stop="KHAIRLANJI">KHAIRLANJI – ₹1,863/-</option>
+                                                        <option value="1331" data-stop="KOPE TUMADI">KOPE TUMADI – ₹1,331/-</option>
+                                                        <option value="1210" data-stop="WARA">WARA – ₹1,210/-</option>
+                                                        <option value="1670" data-stop="THANEGAON">THANEGAON – ₹1,670/-</option>
+                                                        <option value="1863" data-stop="RAMRAMA">RAMRAMA – ₹1,863/-</option>
+                                                    </optgroup>
+                                                </select>
+                                                <input type="number" id="custom_transport" value="0">
+                                            </div>
+                                            <div><label>Custom Exam Fee (₹)</label><input type="number" id="custom_exam" value="0"></div>
+                                            <div><label>Custom Admission Fee (₹)</label><input type="number" id="custom_admission" value="0"></div>
+                                            <div><label>Scholarship Amount (₹)</label><input type="number" id="custom_scholarship" value="0"></div>
+                                            <div><label>Discount Amount (₹)</label><input type="number" id="custom_discount" value="0"></div>
+                                        </div>
+                                        <button class="btn btn-teal" style="width:auto; margin:0;" onclick="window.saveCustomStudentOverride()"><i class="fas fa-check-double"></i> Save Custom Fee Profile</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Send Fee Reminders -->
+                            <div id="fee-sub-remind" style="display: none; text-align:left;">
+                                <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:20px; border-radius:12px;">
+                                    <h4 style="margin-bottom:15px; color:#1e3a8a;"><i class="fas fa-paper-plane"></i> Send Notification Fee Reminder</h4>
+                                    <div class="input-group">
+                                        <select id="remindClassSelect" onchange="window.loadStudentsForReminder()">
+                                            <option value="" disabled selected>-- Select Class --</option>
+                                            <option value="Class 1st">Class 1st</option>
+                                            <option value="Class 2nd">Class 2nd</option>
+                                            <option value="Class 3rd">Class 3rd</option>
+                                            <option value="Class 4th">Class 4th</option>
+                                            <option value="Class 5th">Class 5th</option>
+                                            <option value="Class 6th">Class 6th</option>
+                                            <option value="Class 7th">Class 7th</option>
+                                            <option value="Class 8th">Class 8th</option>
+                                            <option value="Class 9th">Class 9th</option>
+                                            <option value="Class 10th">Class 10th</option>
+                                            <option value="Class 11th">Class 11th</option>
+                                            <option value="Class 12th">Class 12th</option>
+                                        </select>
+                                    </div>
+                                    <div id="reminderStudentsListContainer" style="display:none; max-height:250px; overflow-y:auto; border:1px solid #cbd5e1; border-radius:8px; background:white; padding:10px; margin-bottom:15px;">
+                                        <!-- Checked list of students with class -->
+                                    </div>
+                                    <div class="input-group" style="margin-top:10px;">
+                                        <input type="text" id="reminderMessage" placeholder="Enter custom reminder message" value="Dear Student, you have a pending fee balance. Please clear it by this weekend to avoid late fine.">
+                                    </div>
+                                    <button class="btn btn-teal" style="width:auto; margin:0;" onclick="window.sendFeeReminders()"><i class="fas fa-bell"></i> Broadcast Notifications</button>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div id="tab-time" style="display: none;">
                             <div class="input-group"><select id="timeClass"><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select><input type="text" id="timeUpdate" placeholder="e.g. Mon: Math, Tue: Sci..."></div>
@@ -1768,15 +2074,6 @@
                         <h3><i class="fas fa-inbox"></i> Smart Complaint Inbox</h3>
                         <div id="adminComplaintsPreview" class="preview-area" style="max-height: 400px; overflow-y: auto; border: none; padding: 0; background: transparent;"></div>
                     </div>
-
-                    <div class="admin-card email-blaster-card card-black">
-                        <h3><i class="fas fa-envelope-open-text blink-icon"></i> Bulk Communication Blaster</h3>
-                        <textarea id="blasterMessage" rows="4" placeholder="Type your urgent broadcast message here..." style="background: rgba(255,255,255,0.05); color: #0f172a; border-color: #cbd5e1; font-size:15px; margin-top: 10px; border-radius: 10px; padding: 15px;"></textarea>
-                        <div style="display: flex; gap: 15px; margin-top: 20px;">
-                            <button class="btn btn-black" id="btnShootEmail" onclick="shootBulkEmail()" style="flex:1; padding: 15px;"><i class="fas fa-envelope"></i> FIRE EMAIL</button>
-                            <button class="btn-whatsapp" onclick="openWhatsappBlaster()" style="flex:1; margin:0; padding: 15px;"><i class="fab fa-whatsapp"></i> WHATSAPP BROADCAST</button>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- 7. REVIEWS MANAGEMENT -->
@@ -1802,6 +2099,121 @@
                             <div id="approvedReviewsList" style="max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
                                 <p style="text-align: center; color: #64748b;">Loading approved reviews... ⏳</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7.4. BULK SMS & COMMUNICATION BLASTER -->
+                <div id="section-bulk-blaster" class="tab-section">
+                    <div class="admin-card card-teal">
+                        <h3><i class="fas fa-sms" style="color: #0d9488;"></i> Bulk Communication Blaster</h3>
+                        <p class="desc">Send broadcast messages to all registered students or specific classes via SMS, Email, or WhatsApp.</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 25px; flex-wrap: wrap; margin-bottom: 25px; align-items: stretch;">
+                        
+                        <!-- Left Column: Controls -->
+                        <div class="admin-card" style="margin: 0; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h4 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 15px; font-weight: 600;"><i class="fas fa-paper-plane" style="color: #0d9488; margin-right: 8px;"></i> Create Broadcast Message</h4>
+                                
+                                <div style="margin-bottom: 15px;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Target Class</label>
+                                    <select id="blasterTargetClass" onchange="loadBlasterRecipientPreview()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; background: white;">
+                                        <option value="All">All Registered Students</option>
+                                        <option value="Class 1st">Class 1st</option>
+                                        <option value="Class 2nd">Class 2nd</option>
+                                        <option value="Class 3rd">Class 3rd</option>
+                                        <option value="Class 4th">Class 4th</option>
+                                        <option value="Class 5th">Class 5th</option>
+                                        <option value="Class 6th">Class 6th</option>
+                                        <option value="Class 7th">Class 7th</option>
+                                        <option value="Class 8th">Class 8th</option>
+                                        <option value="Class 9th">Class 9th</option>
+                                        <option value="Class 10th">Class 10th</option>
+                                        <option value="Class 11th">Class 11th</option>
+                                        <option value="Class 12th">Class 12th</option>
+                                    </select>
+                                </div>
+
+                                <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" id="blasterHeaderToggle" onchange="updateBlasterCharCount()" style="width: auto; cursor: pointer;">
+                                    <label for="blasterHeaderToggle" style="font-size: 0.85rem; font-weight: 600; color: #475569; cursor: pointer; user-select: none;">Prepend School Header `[Ideal Public School]`</label>
+                                </div>
+
+                                <div style="margin-bottom: 15px;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Message Text</label>
+                                    <textarea id="blasterMessageInput" rows="5" placeholder="Type your urgent broadcast message here..." oninput="updateBlasterCharCount()" style="background: rgba(255,255,255,0.05); color: #0f172a; border-color: #cbd5e1; font-size:15px; border-radius: 10px; padding: 15px; width: 100%; box-sizing: border-box;"></textarea>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div id="blasterCounterInfo" style="font-size: 0.8rem; font-weight: bold; color: #64748b; margin-bottom: 15px; display: flex; justify-content: space-between; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+                                    <span>Character Count: <span id="blasterCharCount" style="color: #0d9488;">0</span> / 160</span>
+                                    <span>Credits Estimator: <span id="blasterSmsParts" style="color: #0d9488;">1</span> SMS Part(s)</span>
+                                </div>
+
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button class="btn btn-teal" id="btnShootSms" onclick="shootBulkSms()" style="flex:1; min-width: 140px; padding: 12px; background: #0d9488; color: white;"><i class="fas fa-sms"></i> SMS BULK MESSAGE</button>
+                                    <button class="btn btn-black" id="btnShootEmail" onclick="shootBulkEmail()" style="flex:1; min-width: 140px; padding: 12px;"><i class="fas fa-envelope"></i> FIRE EMAIL</button>
+                                    <button class="btn-whatsapp" id="btnShootWa" onclick="openWhatsappBlaster()" style="flex:1; min-width: 140px; margin:0; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fab fa-whatsapp"></i> WHATSAPP BROADCAST</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Recipient Preview -->
+                        <div class="admin-card" style="margin: 0; padding: 25px; display: flex; flex-direction: column; height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                                <h4 style="font-size: 1.1rem; color: #0f172a; font-weight: 600; margin: 0;"><i class="fas fa-users-cog" style="color: #0d9488; margin-right: 8px;"></i> Live Recipient Preview</h4>
+                                <span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: bold;"><span id="blasterTargetCount">0</span> selected</span>
+                            </div>
+                            
+                            <div style="margin-bottom: 15px;">
+                                <input type="text" id="blasterRecipientSearch" placeholder="Search target student name or mobile..." oninput="loadBlasterRecipientPreview()" style="padding: 8px 12px; font-size: 0.85rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; width: 100%;">
+                            </div>
+
+                            <div style="flex: 1; min-height: 250px; max-height: 280px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: 8px;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                                    <thead style="background: #f8fafc; position: sticky; top: 0; z-index: 5;">
+                                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                                            <th style="padding: 10px;">Name</th>
+                                            <th style="padding: 10px;">Class</th>
+                                            <th style="padding: 10px;">Mobile</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="blasterRecipientTableBody">
+                                        <!-- Dynamically loaded -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Card: Log History -->
+                    <div class="admin-card" style="padding: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                            <h3 style="margin: 0; color: #0f172a;"><i class="fas fa-history" style="color: #64748b; margin-right: 8px;"></i> Broadcast Log History</h3>
+                            <button onclick="clearAllBroadcastHistory()" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;"><i class="fas fa-trash-alt"></i> Clear Logs</button>
+                        </div>
+                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                                <thead style="background: #f8fafc; position: sticky; top: 0; border-bottom: 2px solid #cbd5e1;">
+                                    <tr>
+                                        <th style="padding: 12px 15px;">Date &amp; Time</th>
+                                        <th style="padding: 12px 15px;">Channel</th>
+                                        <th style="padding: 12px 15px;">Target</th>
+                                        <th style="padding: 12px 15px;">Count</th>
+                                        <th style="padding: 12px 15px;">Message</th>
+                                        <th style="padding: 12px 15px; text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="blasterHistoryTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">No broadcasts recorded yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -1866,6 +2278,70 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7.6. STUDENT DOCUMENTS PORTAL -->
+                <div id="section-documents-portal" class="tab-section">
+                    <div class="admin-card card-orange" style="border-left: 6px solid #f97316;">
+                        <h3><i class="fas fa-folder-open" style="color: #f97316;"></i> Student Documents Control</h3>
+                        <p class="desc">Filter students by class, select a student to view their uploaded documents, and download clear copies of their Aadhaar, Marksheet, Samagra ID, Domicile, Income, and other certificates.</p>
+                    </div>
+
+                    <div class="admin-card" style="margin-top:0; padding: 25px; background: white; border-radius: 16px; border-left: 5px solid #f97316; display: flex; flex-direction: column;">
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 25px; align-items: flex-end;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Select Class</label>
+                                <select id="docAdminClassSelect" onchange="window.loadStudentsForDocPortal()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; background: white;">
+                                    <option value="" disabled selected>-- Select Class --</option>
+                                    <option value="Class 1st">Class 1st</option>
+                                    <option value="Class 2nd">Class 2nd</option>
+                                    <option value="Class 3rd">Class 3rd</option>
+                                    <option value="Class 4th">Class 4th</option>
+                                    <option value="Class 5th">Class 5th</option>
+                                    <option value="Class 6th">Class 6th</option>
+                                    <option value="Class 7th">Class 7th</option>
+                                    <option value="Class 8th">Class 8th</option>
+                                    <option value="Class 9th">Class 9th</option>
+                                    <option value="Class 10th">Class 10th</option>
+                                    <option value="Class 11th">Class 11th</option>
+                                    <option value="Class 12th">Class 12th</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Select Student</label>
+                                <select id="docAdminStudentSelect" onchange="window.loadStudentDocsForAdmin()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; background: white;" disabled>
+                                    <option value="" disabled selected>-- Select Student --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Document Display Grid -->
+                        <div id="adminDocsViewContainer" style="display: none;">
+                            <div style="background: #fff7ed; border: 1px solid #ffedd5; padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid #f97316; background: white;">
+                                        <img id="docAdminStudentPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:100%; height:100%; object-fit:cover;">
+                                    </div>
+                                    <div>
+                                        <h4 id="docAdminStudentName" style="color: #c2410c; margin: 0; font-size: 1.1rem; font-weight: 700;">Student Name</h4>
+                                        <p style="margin: 3px 0 0 0; font-size: 0.85rem; color: #7c2d12; font-weight: 600;">
+                                            Class: <span id="docAdminStudentClass">Class</span> | Mobile: <span id="docAdminStudentMobile">0000000000</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="window.downloadAllStudentDocs()" style="background: #f97316; color: white; width: auto; font-size: 0.9rem; padding: 8px 16px; border-radius: 8px; font-weight: bold; margin: 0; display: inline-flex; align-items: center; gap: 6px;"><i class="fas fa-download"></i> Download All Documents</button>
+                            </div>
+
+                            <div id="adminDocsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                                <!-- Populate document items dynamically -->
+                            </div>
+                        </div>
+                        
+                        <div id="adminDocsEmptyState" style="text-align: center; padding: 40px 20px; color: #64748b; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1;">
+                            <i class="fas fa-folder-open" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 12px; display: block;"></i>
+                            <p style="font-weight: 600; margin: 0;">Select a Class and Student to inspect uploaded documents.</p>
                         </div>
                     </div>
                 </div>
@@ -2096,6 +2572,8 @@
                 count = statsData.pendingReviews + statsData.approvedReviews;
             } else if (text === 'Registered Students') {
                 count = statsData.students;
+            } else if (text === 'Bulk SMS Blaster') {
+                count = statsData.students;
             } else if (text === 'Student Analytics') {
                 count = statsData.students;
             }
@@ -2182,6 +2660,11 @@
             document.getElementById('statActiveTabName').innerText = text;
             updateStatsCounts();
             
+            if (sectionId === 'bulk-blaster') {
+                loadBlasterRecipientPreview();
+                loadBlasterHistory();
+            }
+            
             const sidebar = document.getElementById('sidebarMenu');
             if (sidebar) sidebar.classList.remove('mobile-open');
         }
@@ -2212,6 +2695,13 @@
         function refreshDashboardData() {
             loadGalleryPreview(); loadSportsGalleryPreview(); loadComplaintsPreview(); loadLibraryPreview(); loadNoticePreview(); loadToppersPreview(); loadClassFeePreview(); loadTransportPreview(); loadCalEvents(); loadFeeSubmissions(); loadLeavesPreview(); loadStaffPreview();
             loadAssignments(); loadTimetables(); loadResultPreview(); loadCurrentData(); loadSliderPreview(); loadPlacementPreview(); loadNewsPreview(); loadCallbacks(); loadAdmissions(); loadCareers();
+            if (document.getElementById('section-documents-portal') && document.getElementById('section-documents-portal').classList.contains('active')) {
+                loadStudentDocsForAdmin();
+            }
+            if (document.getElementById('section-bulk-blaster') && document.getElementById('section-bulk-blaster').classList.contains('active')) {
+                loadBlasterRecipientPreview();
+                loadBlasterHistory();
+            }
             showToast("Syncing Database Live... ⚡");
             updateStatsCounts();
         }
@@ -2238,6 +2728,9 @@
                 });
                 
                 renderRegisteredStudentsTable();
+                if (typeof loadBlasterRecipientPreview === 'function' && document.getElementById('section-bulk-blaster') && document.getElementById('section-bulk-blaster').classList.contains('active')) {
+                    loadBlasterRecipientPreview();
+                }
             });
         }
 
@@ -2602,16 +3095,23 @@
                     classStudents.forEach(s => {
                         let presentCount = 0;
                         let absentCount = 0;
+                        let holidayCount = 0;
+                        let sundayCount = 0;
                         let totalWorkingDays = 0;
                         let studentAtt = attData[s.mobile] || {};
                         
                         Object.keys(studentAtt).forEach(dateStr => {
                             if (dateStr.startsWith(monthVal)) {
-                                totalWorkingDays++;
                                 if (studentAtt[dateStr] === 'Present') {
                                     presentCount++;
+                                    totalWorkingDays++;
                                 } else if (studentAtt[dateStr] === 'Absent') {
                                     absentCount++;
+                                    totalWorkingDays++;
+                                } else if (studentAtt[dateStr] === 'Holiday') {
+                                    holidayCount++;
+                                } else if (studentAtt[dateStr] === 'Sunday') {
+                                    sundayCount++;
                                 }
                             }
                         });
@@ -2623,6 +3123,8 @@
                             mobile: s.mobile,
                             present: presentCount,
                             absent: absentCount,
+                            holiday: holidayCount,
+                            sunday: sundayCount,
                             total: totalWorkingDays,
                             percentage: pct
                         });
@@ -2639,6 +3141,8 @@
                                             <th style="padding: 10px 8px; color: #475569; font-weight: 600;">Student Name</th>
                                             <th style="padding: 10px 8px; text-align: center; color: #475569; font-weight: 600;">Present</th>
                                             <th style="padding: 10px 8px; text-align: center; color: #475569; font-weight: 600;">Absent</th>
+                                            <th style="padding: 10px 8px; text-align: center; color: #475569; font-weight: 600;">Holiday</th>
+                                            <th style="padding: 10px 8px; text-align: center; color: #475569; font-weight: 600;">Sunday</th>
                                             <th style="padding: 10px 8px; text-align: center; color: #475569; font-weight: 600;">Total Days</th>
                                             <th style="padding: 10px 8px; text-align: right; color: #475569; font-weight: 600;">Attendance %</th>
                                         </tr>
@@ -2656,6 +3160,8 @@
                                 </td>
                                 <td style="padding: 10px 8px; text-align: center; font-weight: 600; color: #10b981;">${stat.present}</td>
                                 <td style="padding: 10px 8px; text-align: center; font-weight: 600; color: #ef4444;">${stat.absent}</td>
+                                <td style="padding: 10px 8px; text-align: center; font-weight: 600; color: #d97706;">${stat.holiday}</td>
+                                <td style="padding: 10px 8px; text-align: center; font-weight: 600; color: #3b82f6;">${stat.sunday}</td>
                                 <td style="padding: 10px 8px; text-align: center; color: #475569;">${stat.total}</td>
                                 <td style="padding: 10px 8px; text-align: right; font-weight: 700; color: ${pctColor};">${stat.percentage}%</td>
                             </tr>
@@ -3335,31 +3841,298 @@
         }
 
         // 🌟 FIXED: EMAIL AND WHATSAPP BLASTER LIVE FETCH 🌟
-        function shootBulkEmail() { 
-            const msgBox = document.getElementById('blasterMessage'); const msgText = msgBox.value.trim(); const btn = document.getElementById('btnShootEmail'); 
-            if(!msgText) return showToast("Please type a message first!", true); 
-            btn.innerHTML = "Sending... <i class='fas fa-spinner fa-spin'></i>"; btn.disabled = true; 
-            db.ref('ideal_student_users').once('value', snap => {
-                let students = []; snap.forEach(c => students.push(c.val()));
-                let emailArray = students.map(s => s.email).filter(email => email && email.includes('@')); 
-                if(emailArray.length === 0) { btn.innerHTML = "<i class='fas fa-envelope'></i> FIRE EMAIL"; btn.disabled = false; return showToast("No valid emails found!", true); }
-                let emailsList = emailArray.join(','); 
-                if(confirm("🚨 WARNING: Send Real Email to " + emailArray.length + " students?")) { 
-                    let formData = new URLSearchParams(); formData.append("action", "send_bulk_email"); formData.append("message", msgText); formData.append("emails", emailsList); 
-                    fetch(EMAIL_API_URL, { method: 'POST', body: formData, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(() => { showToast("Emails Fired!"); msgBox.value = ''; }).finally(() => { btn.innerHTML = "<i class='fas fa-envelope'></i> FIRE EMAIL"; btn.disabled = false; }); 
-                } else { btn.innerHTML = "<i class='fas fa-envelope'></i> FIRE EMAIL"; btn.disabled = false; }
+        // 🌟 DEDICATED BULK SMS & COMMUNICATION BLASTER FUNCTIONS 🌟
+        let blasterCachedStudents = [];
+        
+        function loadBlasterRecipientPreview() {
+            const classSelect = document.getElementById('blasterTargetClass');
+            const searchInput = document.getElementById('blasterRecipientSearch');
+            const tableBody = document.getElementById('blasterRecipientTableBody');
+            const targetCountEl = document.getElementById('blasterTargetCount');
+            
+            if(!classSelect || !tableBody) return;
+            
+            const selectedClass = classSelect.value;
+            const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            
+            let html = '';
+            let validCount = 0;
+            
+            allRegisteredStudentsList.forEach(s => {
+                const matchesClass = (selectedClass === 'All' || s.cls === selectedClass);
+                const nameMatch = s.name ? s.name.toLowerCase().includes(searchQuery) : false;
+                const mobMatch = s.mobile ? s.mobile.toLowerCase().includes(searchQuery) : false;
+                const matchesSearch = (!searchQuery || nameMatch || mobMatch);
+                
+                if (matchesClass && matchesSearch) {
+                    validCount++;
+                    html += `
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 10px; font-weight: 600; color: #0f172a;">${s.name}</td>
+                        <td style="padding: 10px; color: #64748b;">${s.cls}</td>
+                        <td style="padding: 10px; font-family: monospace; color: #0d9488;">${s.mobile}</td>
+                    </tr>
+                    `;
+                }
+            });
+            
+            if(html === '') {
+                html = `<tr><td colspan="3" style="text-align:center; padding:20px; color:#64748b;">No matching students found.</td></tr>`;
+            }
+            
+            tableBody.innerHTML = html;
+            if (targetCountEl) targetCountEl.innerText = validCount;
+        }
+
+        function updateBlasterCharCount() {
+            const msgBox = document.getElementById('blasterMessageInput');
+            const charCountEl = document.getElementById('blasterCharCount');
+            const smsPartsEl = document.getElementById('blasterSmsParts');
+            const headerToggle = document.getElementById('blasterHeaderToggle');
+            
+            if(!msgBox) return;
+            
+            let text = msgBox.value;
+            if (headerToggle && headerToggle.checked) {
+                text = "[Ideal Public School]: " + text;
+            }
+            
+            const charCount = text.length;
+            if(charCountEl) charCountEl.innerText = charCount;
+            
+            const parts = charCount === 0 ? 0 : Math.ceil(charCount / 160);
+            if(smsPartsEl) smsPartsEl.innerText = parts;
+        }
+
+        function getBlasterRecipients() {
+            const classSelect = document.getElementById('blasterTargetClass');
+            if(!classSelect) return [];
+            const selectedClass = classSelect.value;
+            
+            return allRegisteredStudentsList.filter(s => {
+                return (selectedClass === 'All' || s.cls === selectedClass);
             });
         }
-        function openWhatsappBlaster() { 
-            const msgText = document.getElementById('blasterMessage').value.trim(); 
-            if(!msgText) return showToast("Type a message!", true); 
-            db.ref('ideal_student_users').once('value', snap => {
-                let students = []; snap.forEach(c => students.push(c.val()));
-                if(students.length === 0) return showToast("No students!", true); 
-                let html = '<table><tr><th>Student</th><th>Action</th></tr>'; 
-                students.forEach(s => { let mob = s.mobile.length === 10 ? "91" + s.mobile : s.mobile; let encodedMsg = encodeURIComponent(`Hello ${s.name},\n\n*Ideal Public School Notice:*\n${msgText}`); html += `<tr><td><strong>${s.name}</strong><br><small>${s.cls} | ${s.mobile}</small></td><td><a href="https://wa.me/${mob}?text=${encodedMsg}" target="_blank" style="background:#25D366; color:white; padding:8px 15px; border-radius:8px; text-decoration:none; font-size:12px; display:inline-flex; align-items:center; gap:5px; font-weight:bold;"><i class="fab fa-whatsapp"></i> Send</a></td></tr>`; }); 
-                document.getElementById('waStudentList').innerHTML = html + '</table>'; document.getElementById('waModal').style.display = 'flex'; 
+
+        function shootBulkSms() {
+            const msgBox = document.getElementById('blasterMessageInput');
+            const headerToggle = document.getElementById('blasterHeaderToggle');
+            const btn = document.getElementById('btnShootSms');
+            
+            if(!msgBox || !btn) return;
+            
+            let msgText = msgBox.value.trim();
+            if(!msgText) return showToast("Please type a message first!", true);
+            
+            if (headerToggle && headerToggle.checked) {
+                msgText = "[Ideal Public School]: " + msgText;
+            }
+            
+            const targets = getBlasterRecipients();
+            const mobileArray = [...new Set(targets.map(s => s.mobile).filter(mobile => mobile && mobile.trim().length === 10))];
+            
+            if(mobileArray.length === 0) {
+                return showToast("No valid mobile numbers found for selection!", true);
+            }
+            
+            const mobilesList = mobileArray.join(',');
+            const classSelect = document.getElementById('blasterTargetClass');
+            const targetLabel = classSelect ? classSelect.options[classSelect.selectedIndex].text : "Selected Class";
+            
+            if(confirm(`🚨 WARNING: Send bulk SMS to ${mobileArray.length} students in "${targetLabel}"?\n\nMessage preview:\n"${msgText}"`)) {
+                btn.innerHTML = "Sending... <i class='fas fa-spinner fa-spin'></i>";
+                btn.disabled = true;
+                
+                let formData = new URLSearchParams();
+                formData.append("action", "send_bulk_sms");
+                formData.append("message", msgText);
+                formData.append("mobiles", mobilesList);
+                
+                fetch(EMAIL_API_URL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }).then(() => {
+                    db.ref('ideal_bulk_sms_history').push({
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        dateStr: new Date().toLocaleString('en-IN'),
+                        type: 'SMS',
+                        target: targetLabel,
+                        message: msgText,
+                        count: mobileArray.length
+                    });
+                    
+                    showToast(`Bulk SMS Sent to ${mobileArray.length} numbers! ✅`);
+                    msgBox.value = '';
+                    updateBlasterCharCount();
+                }).catch(err => {
+                    console.error("SMS blast error: ", err);
+                    showToast("Failed to dispatch SMS request", true);
+                }).finally(() => {
+                    btn.innerHTML = "<i class='fas fa-sms'></i> SMS BULK MESSAGE";
+                    btn.disabled = false;
+                });
+            }
+        }
+
+        function shootBulkEmail() {
+            const msgBox = document.getElementById('blasterMessageInput');
+            const headerToggle = document.getElementById('blasterHeaderToggle');
+            const btn = document.getElementById('btnShootEmail');
+            
+            if(!msgBox || !btn) return;
+            
+            let msgText = msgBox.value.trim();
+            if(!msgText) return showToast("Please type a message first!", true);
+            
+            if (headerToggle && headerToggle.checked) {
+                msgText = "[Ideal Public School]: " + msgText;
+            }
+            
+            const targets = getBlasterRecipients();
+            const emailArray = [...new Set(targets.map(s => s.email).filter(email => email && email.includes('@')))];
+            
+            if(emailArray.length === 0) {
+                return showToast("No valid email addresses found for selection!", true);
+            }
+            
+            const emailsList = emailArray.join(',');
+            const classSelect = document.getElementById('blasterTargetClass');
+            const targetLabel = classSelect ? classSelect.options[classSelect.selectedIndex].text : "Selected Class";
+            
+            if(confirm(`🚨 WARNING: Send bulk Email to ${emailArray.length} students in "${targetLabel}"?\n\nMessage preview:\n"${msgText}"`)) {
+                btn.innerHTML = "Sending... <i class='fas fa-spinner fa-spin'></i>";
+                btn.disabled = true;
+                
+                let formData = new URLSearchParams();
+                formData.append("action", "send_bulk_email");
+                formData.append("message", msgText);
+                formData.append("emails", emailsList);
+                
+                fetch(EMAIL_API_URL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }).then(() => {
+                    db.ref('ideal_bulk_sms_history').push({
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        dateStr: new Date().toLocaleString('en-IN'),
+                        type: 'Email',
+                        target: targetLabel,
+                        message: msgText,
+                        count: emailArray.length
+                    });
+                    
+                    showToast(`Bulk Emails Sent to ${emailArray.length} addresses! ✅`);
+                    msgBox.value = '';
+                    updateBlasterCharCount();
+                }).catch(err => {
+                    console.error("Email blast error: ", err);
+                    showToast("Failed to dispatch Email request", true);
+                }).finally(() => {
+                    btn.innerHTML = "<i class='fas fa-envelope'></i> FIRE EMAIL";
+                    btn.disabled = false;
+                });
+            }
+        }
+
+        function openWhatsappBlaster() {
+            const msgBox = document.getElementById('blasterMessageInput');
+            const headerToggle = document.getElementById('blasterHeaderToggle');
+            
+            if(!msgBox) return;
+            
+            let msgText = msgBox.value.trim();
+            if(!msgText) return showToast("Please type a message first!", true);
+            
+            if (headerToggle && headerToggle.checked) {
+                msgText = "[Ideal Public School]: " + msgText;
+            }
+            
+            const targets = getBlasterRecipients();
+            if(targets.length === 0) return showToast("No students found in selection!", true);
+            
+            let html = '<table style="width:100%; border-collapse:collapse; font-size:13px; text-align:left;">';
+            html += '<tr style="background:#f8fafc; border-bottom:2px solid #cbd5e1;"><th style="padding:10px;">Student</th><th style="padding:10px; text-align:center;">Action</th></tr>';
+            
+            targets.forEach(s => {
+                let mob = s.mobile.length === 10 ? "91" + s.mobile : s.mobile;
+                let encodedMsg = encodeURIComponent(`Hello ${s.name},\n\n*Ideal Public School Notice:*\n${msgText}`);
+                
+                html += `
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding:10px;">
+                        <strong>${s.name}</strong><br>
+                        <small style="color:#64748b;">${s.cls} | ${s.mobile}</small>
+                    </td>
+                    <td style="padding:10px; text-align:center;">
+                        <a href="https://wa.me/${mob}?text=${encodedMsg}" target="_blank" style="background:#25D366; color:white; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:12px; display:inline-flex; align-items:center; gap:5px; font-weight:bold; cursor:pointer;">
+                            <i class="fab fa-whatsapp"></i> Send
+                        </a>
+                    </td>
+                </tr>`;
             });
+            
+            document.getElementById('waStudentList').innerHTML = html + '</table>';
+            document.getElementById('waModal').style.display = 'flex';
+        }
+
+        function loadBlasterHistory() {
+            const tableBody = document.getElementById('blasterHistoryTableBody');
+            if(!tableBody) return;
+            
+            db.ref('ideal_bulk_sms_history').on('value', snap => {
+                const data = snap.val();
+                let html = '';
+                
+                if (data) {
+                    Object.keys(data).reverse().forEach(id => {
+                        const item = data[id];
+                        const shortMsg = item.message && item.message.length > 50 ? item.message.substring(0, 50) + '...' : (item.message || '');
+                        
+                        html += `
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 12px 15px; font-weight: 500;">${item.dateStr || new Date(item.timestamp).toLocaleString('en-IN')}</td>
+                            <td style="padding: 12px 15px;">
+                                <span style="background: ${item.type === 'SMS' ? '#ccfbf1' : '#e0e7ff'}; color: ${item.type === 'SMS' ? '#0f766e' : '#4338ca'}; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fas ${item.type === 'SMS' ? 'fa-sms' : 'fa-envelope'}"></i> ${item.type}
+                                </span>
+                            </td>
+                            <td style="padding: 12px 15px; color: #475569;">${item.target || 'All'}</td>
+                            <td style="padding: 12px 15px; font-weight: bold; color: #0f172a;">${item.count || 0}</td>
+                            <td style="padding: 12px 15px; color: #334155;" title="${item.message || ''}">${shortMsg}</td>
+                            <td style="padding: 12px 15px; text-align: center;">
+                                <button onclick="deleteBroadcastLog('${id}')" style="background:transparent; border:none; color:#ef4444; cursor:pointer; font-size:1.1rem; padding: 4px 8px;" title="Delete Log"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        `;
+                    });
+                }
+                
+                if (html === '') {
+                    html = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #64748b;">No broadcasts recorded yet.</td></tr>`;
+                }
+                
+                tableBody.innerHTML = html;
+            });
+        }
+
+        function deleteBroadcastLog(id) {
+            if(confirm("Are you sure you want to delete this broadcast log?")) {
+                db.ref('ideal_bulk_sms_history/' + id).remove().then(() => {
+                    showToast("Log deleted");
+                });
+            }
+        }
+
+        function clearAllBroadcastHistory() {
+            if(confirm("⚠️ CRITICAL WARNING: This will delete ALL sent message log history permanently. Proceed?")) {
+                db.ref('ideal_bulk_sms_history').remove().then(() => {
+                    showToast("All broadcast history logs cleared!");
+                });
+            }
         }
 
         // 🌟 STAFF LIVE LOAD 🌟
@@ -3439,10 +4212,59 @@
                         classStudents.push({ id: mobile, mobile: mobile, ...s });
                     }
                 });
-                if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students.</p>`; return; }
+                const btnExcel = document.getElementById('btnDownloadExcel');
+                if(classStudents.length === 0) { 
+                    preview.innerHTML = `<p style="text-align:center;">No students.</p>`; 
+                    if (btnExcel) btnExcel.style.display = 'none';
+                    return; 
+                }
+                if (btnExcel) btnExcel.style.display = 'inline-flex';
                 let html = '<table><tr><th>Student Info</th><th>Action</th></tr>'; classStudents.forEach(s => { html += `<tr><td><strong>${s.name}</strong><br><span style="font-size:12px; color:#64748b;">${s.mobile} | ${s.email}</span></td><td><div style="display:flex; gap:6px;"><button onclick="promoteStudent('${s.mobile}', '${cls}', '${s.name.replace(/'/g, "\\'")}')" style="background:#3b82f6; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.8rem; font-weight:500; display:inline-flex; align-items:center; gap:4px;"><i class="fas fa-level-up-alt"></i> Promote</button><button onclick="deleteStudent('${s.mobile}', '${cls}')" class="delete-btn-sm">Del</button></div></td></tr>`; }); preview.innerHTML = html + '</table>';
             });
         }
+
+        window.downloadClassStudentsExcel = function() {
+            const cls = document.getElementById('manageClassSelect').value;
+            if (!cls) return showToast("Select a class first!", true);
+            db.ref('ideal_student_users').once('value', snap => {
+                let classStudents = [];
+                const usersData = snap.val() || {};
+                Object.keys(usersData).forEach(mobile => {
+                    const s = usersData[mobile];
+                    const studentClass = s.cls || s.class || '';
+                    if (studentClass === cls) {
+                        classStudents.push({ mobile: mobile, ...s });
+                    }
+                });
+                if(classStudents.length === 0) return showToast("No students to export!", true);
+                
+                let csvRows = [];
+                csvRows.push("Student Name,Mobile Number,Email Address,Gender,Class,Enrollment Date");
+                
+                classStudents.forEach(s => {
+                    const name = `"${(s.name || '').replace(/"/g, '""')}"`;
+                    const mobile = `"${(s.mobile || '').replace(/"/g, '""')}"`;
+                    const email = `"${(s.email || '').replace(/"/g, '""')}"`;
+                    const gender = `"${(s.gender || '').replace(/"/g, '""')}"`;
+                    const studentClass = `"${(s.cls || s.class || '').replace(/"/g, '""')}"`;
+                    const date = `"${(s.date || '').replace(/"/g, '""')}"`;
+                    csvRows.push(`${name},${mobile},${email},${gender},${studentClass},${date}`);
+                });
+                
+                const csvString = "\uFEFF" + csvRows.join("\n");
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", `${cls.replace(/\s+/g, '_')}_Enrolled_Students.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showToast("Excel (CSV) sheet downloaded successfully! ✅");
+            });
+        };
 
         window.deleteStudent = function(mobile, cls) {
             if(confirm('Delete Student Profile? This cannot be undone.')) {
@@ -3518,7 +4340,11 @@
                     let attData = aSnap.val() || {};
                     if(classStudents.length === 0) { preview.innerHTML = `<p style="text-align:center;">No students.</p>`; document.getElementById('saveAttBtn').style.display = 'none'; return; }
                     let html = '<table><tr><th>Student Name</th><th>Status</th></tr>';
-                    classStudents.forEach(s => { let currentStatus = (attData[s.mobile] && attData[s.mobile][date]) ? attData[s.mobile][date] : 'Present'; html += `<tr><td><strong>${s.name}</strong><br><span style="font-size:12px; color:#64748b;">${s.mobile}</span></td><td><select id="att_${s.mobile}" class="att-select ${currentStatus === 'Present' ? 'att-P' : 'att-A'}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':'att-A')"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option></select></td></tr>`; });
+                    classStudents.forEach(s => {
+                        let currentStatus = (attData[s.mobile] && attData[s.mobile][date]) ? attData[s.mobile][date] : 'Present';
+                        let classSelect = currentStatus === 'Present' ? 'att-P' : (currentStatus === 'Absent' ? 'att-A' : (currentStatus === 'Holiday' ? 'att-H' : 'att-S'));
+                        html += `<tr><td><strong>${s.name}</strong><br><span style="font-size:12px; color:#64748b;">${s.mobile}</span></td><td><select id="att_${s.mobile}" class="att-select ${classSelect}" onchange="this.className='att-select ' + (this.value==='Present'?'att-P':(this.value==='Absent'?'att-A':(this.value==='Holiday'?'att-H':'att-S')))"><option value="Present" ${currentStatus==='Present'?'selected':''}>Present</option><option value="Absent" ${currentStatus==='Absent'?'selected':''}>Absent</option><option value="Holiday" ${currentStatus==='Holiday'?'selected':''}>Holiday</option><option value="Sunday" ${currentStatus==='Sunday'?'selected':''}>Sunday</option></select></td></tr>`;
+                    });
                     preview.innerHTML = html + '</table>'; document.getElementById('saveAttBtn').style.display = 'block';
                 });
             });
@@ -4411,6 +5237,1274 @@
                 });
             }
         }
+    </script>
+
+    <!-- Admin Payment History Modal -->
+    <div id="adminPaymentHistoryModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-btn" onclick="closeModal('adminPaymentHistoryModal')"><i class="fas fa-times"></i></span>
+            <h2 style="color:#2563eb; margin-bottom:20px; text-align:center;"><i class="fas fa-history"></i> Payment Ledger</h2>
+            <div id="adminPaymentHistoryDetails" style="overflow-y:auto; max-height:400px;">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Collect Payment Modal -->
+    <div id="adminMarkPaidModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; text-align:left;">
+            <span class="close-btn" onclick="closeModal('adminMarkPaidModal')"><i class="fas fa-times"></i></span>
+            <h2 style="color:#10b981; margin-bottom:20px; text-align:center;"><i class="fas fa-cash-register"></i> Collect Payment</h2>
+            <p id="collectPaymentStudentInfo" style="font-weight:700; margin-bottom:15px; color:#0f172a;"></p>
+            <div class="input-group" style="display:flex; flex-direction:column; gap:5px; margin-bottom:15px;">
+                <label style="font-weight:600; color:#475569;">Amount (₹)</label>
+                <input type="number" id="collectPaymentAmount" value="0">
+            </div>
+            <div class="input-group" style="display:flex; flex-direction:column; gap:5px; margin-bottom:15px;">
+                <label style="font-weight:600; color:#475569;">Payment Mode</label>
+                <select id="collectPaymentMode" style="width:100%;">
+                    <option value="Cash">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Online">Online</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+            </div>
+            <div class="input-group" style="display:flex; flex-direction:column; gap:5px; margin-bottom:15px;">
+                <label style="font-weight:600; color:#475569;">Month (e.g. June, July)</label>
+                <input type="text" id="collectPaymentMonth" placeholder="e.g. July">
+            </div>
+            <div class="input-group" style="display:flex; flex-direction:column; gap:5px; margin-bottom:15px;">
+                <label style="font-weight:600; color:#475569;">Transaction ID / Remarks</label>
+                <input type="text" id="collectPaymentRef" placeholder="Remarks or Cash Receipt No">
+            </div>
+            <button class="btn btn-teal" style="width:auto; margin:0;" onclick="window.saveMarkFeePaid()"><i class="fas fa-check-circle"></i> Save Payment Record</button>
+        </div>
+    </div>
+
+    <!-- Individual Fee Edit Modal -->
+    <div id="individualFeeEditModal" class="modal">
+        <div class="modal-content" style="max-width: 600px; text-align:left;">
+            <span class="close-btn" onclick="closeModal('individualFeeEditModal')"><i class="fas fa-times"></i></span>
+            <h2 style="color:#0d9488; margin-bottom:20px; text-align:center;"><i class="fas fa-user-edit"></i> Edit Individual Fees</h2>
+            <p id="individualFeeStudentInfo" style="font-weight:700; margin-bottom:15px; color:#0f172a;"></p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:15px;">
+                <div><label>Tuition Fee (₹)</label><input type="number" id="ind_tuition" value="0"></div>
+                <div>
+                    <label>Transport Fee / Bus Stop</label>
+                    <select id="ind_bus_stop" onchange="document.getElementById('ind_transport').value = this.value" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:8px;">
+                        <option value="0" data-stop="">-- Select Bus Stop --</option>
+                        <optgroup label="KIDZEE">
+                            <option value="786" data-stop="WARASEONI (KIDZEE)">WARASEONI – ₹786/month</option>
+                        </optgroup>
+                        <optgroup label="CLASS I TO XII">
+                            <option value="1064" data-stop="WARASEONI">WARASEONI – ₹1,064/-</option>
+                            <option value="1742" data-stop="KOCHEWAHI">KOCHEWAHI – ₹1,742/-</option>
+                            <option value="1464" data-stop="KATANGIHARI">KATANGIHARI – ₹1,464/-</option>
+                            <option value="1331" data-stop="TEKADI">TEKADI – ₹1,331/-</option>
+                            <option value="990" data-stop="KHANDWA">KHANDWA – ₹990/-</option>
+                            <option value="1694" data-stop="BUDBUDA">BUDBUDA – ₹1,694/-</option>
+                            <option value="1331" data-stop="NAHARTOLA">NAHARTOLA – ₹1,331/-</option>
+                            <option value="1331" data-stop="MEHANDI WADA">MEHANDI WADA – ₹1,331/-</option>
+                            <option value="990" data-stop="SAVANGI">SAVANGI – ₹990/-</option>
+                            <option value="1694" data-stop="BITOTI">BITOTI – ₹1,694/-</option>
+                            <option value="1597" data-stop="NEWARGAON">NEWARGAON – ₹1,597/-</option>
+                            <option value="1863" data-stop="RAMPAYLI">RAMPAYLI – ₹1,863/-</option>
+                            <option value="1694" data-stop="GATAPAYLI">GATAPAYLI – ₹1,694/-</option>
+                            <option value="1863" data-stop="MADANPUR KOSTE">MADANPUR KOSTE – ₹1,863/-</option>
+                            <option value="1464" data-stop="BOTEJHARI">BOTEJHARI – ₹1,464/-</option>
+                            <option value="1694" data-stop="DORLI">DORLI – ₹1,694/-</option>
+                            <option value="1863" data-stop="UMARWADA">UMARWADA – ₹1,863/-</option>
+                            <option value="1694" data-stop="DONGARMALI">DONGARMALI – ₹1,694/-</option>
+                            <option value="1320" data-stop="MURJHAD FORM">MURJHAD FORM – ₹1,320/-</option>
+                            <option value="1863" data-stop="LAWANI">LAWANI – ₹1,863/-</option>
+                            <option value="1452" data-stop="BAGHOLI">BAGHOLI – ₹1,452/-</option>
+                            <option value="1064" data-stop="SIKANDARA">SIKANDARA – ₹1,064/-</option>
+                            <option value="1863" data-stop="GHOTI">GHOTI – ₹1,863/-</option>
+                            <option value="1694" data-stop="SIRRA">SIRRA – ₹1,694/-</option>
+                            <option value="1573" data-stop="JHALIWADA">JHALIWADA – ₹1,573/-</option>
+                            <option value="1485" data-stop="MENDKI">MENDKI – ₹1,485/-</option>
+                            <option value="1197" data-stop="KOSTE">KOSTE – ₹1,197/-</option>
+                            <option value="330" data-stop="CHANDORI">CHANDORI – ₹330/-</option>
+                            <option value="1863" data-stop="KHAIRLANJI">KHAIRLANJI – ₹1,863/-</option>
+                            <option value="1331" data-stop="KOPE TUMADI">KOPE TUMADI – ₹1,331/-</option>
+                            <option value="1210" data-stop="WARA">WARA – ₹1,210/-</option>
+                            <option value="1670" data-stop="THANEGAON">THANEGAON – ₹1,670/-</option>
+                            <option value="1863" data-stop="RAMRAMA">RAMRAMA – ₹1,863/-</option>
+                        </optgroup>
+                    </select>
+                    <input type="number" id="ind_transport" value="0">
+                </div>
+                <div><label>Exam Fee (₹)</label><input type="number" id="ind_exam" value="0"></div>
+                <div><label>Admission Fee (₹)</label><input type="number" id="ind_admission" value="0"></div>
+                <div><label>Scholarship Amount (₹)</label><input type="number" id="ind_scholarship" value="0"></div>
+                <div><label>Discount Amount (₹)</label><input type="number" id="ind_discount" value="0"></div>
+            </div>
+            <button class="btn btn-teal" style="width:auto; margin:0;" onclick="window.saveIndividualStudentFee()"><i class="fas fa-save"></i> Save Individual Fee Profile</button>
+        </div>
+    </div>
+
+    <!-- Hidden Receipt Container for Admin to download receipts -->
+    <div id="receiptContainer" style="position: absolute; top: -9999px; left: -9999px; z-index: -999;">
+        <div id="receiptToCapture" style="width: 650px; background: white; padding: 40px; font-family: 'Poppins', sans-serif; color: #0f172a; position: relative; border: 3px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background-image: url('logo.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; opacity: 0.05; z-index: 1;"></div>
+            <div style="text-align: center; border-bottom: 4px solid #3b82f6; padding-bottom: 20px; margin-bottom: 30px; position: relative; z-index: 2;">
+                <h1 style="margin: 0; color: #0f172a; font-size: 2.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Ideal Public School</h1>
+                <p style="margin: 5px 0 10px 0; font-size: 1.2rem; color: #475569; font-weight: 600;">Chandori, Waraseoni</p>
+                <div style="display: inline-block; background: #fee2e2; color: #dc2626; padding: 6px 20px; border-radius: 8px; font-size: 1rem; font-weight: 700; border: 1.5px solid #fca5a5;">Affiliated to C.B.S.E | Affiliation No - 1030815</div>
+            </div>
+            <div style="text-align: center; margin-bottom: 30px; position: relative; z-index: 2;">
+                <h2 style="display: inline-block; background: #3b82f6; color: white; padding: 10px 30px; border-radius: 50px; font-size: 1.3rem; letter-spacing: 3px; margin: 0; text-transform: uppercase; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">Official Fee Receipt</h2>
+            </div>
+            <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 30px; position: relative; z-index: 2;">
+                <table style="width: 100%; border: none; font-size: 1.15rem;">
+                    <tr><td style="padding: 10px 0; width: 60%;"><strong>Student Name:</strong> <span id="recName" style="color: #3b82f6;"></span></td><td style="padding: 10px 0; text-align: right;"><strong>Date:</strong> <span id="recDate"></span></td></tr>
+                    <tr><td style="padding: 10px 0;"><strong>Class:</strong> <span id="recClass"></span></td><td style="padding: 10px 0; text-align: right;"><strong>Mobile:</strong> <span id="recMobile"></span></td></tr>
+                    <tr><td colspan="2" style="padding: 10px 0;"><strong>Email Address:</strong> <span id="recEmail"></span></td></tr>
+                </table>
+            </div>
+            <div style="position: relative; z-index: 2;">
+                <table style="width: 100%; border-collapse: collapse; border: 2px solid #e2e8f0; margin-bottom: 40px;">
+                    <tr style="background: #0f172a; color: white;"><th style="padding: 15px; border: 1px solid #334155; font-size: 1.2rem; text-align: left;">Fee Description</th><th style="padding: 15px; border: 1px solid #334155; font-size: 1.2rem; text-align: right;">Amount (₹)</th></tr>
+                    <tr><td style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.15rem; font-weight: 600;">Total Course Fee</td><td style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.15rem; text-align: right; font-weight: 600;">₹<span id="recTotal"></span></td></tr>
+                    <tr style="background: #ecfdf5;"><td style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.15rem; font-weight: 700; color: #047857;">Total Amount Paid</td><td style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.2rem; text-align: right; font-weight: 700; color: #047857;">₹<span id="recPaid"></span></td></tr>
+                    <tr style="background: #fef2f2;"><td style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.15rem; font-weight: 700; color: #b91c1c;">Remaining Balance</td><td style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.2rem; text-align: right; font-weight: 700; color: #b91c1c;">₹<span id="recDue"></span></td></tr>
+                    <tr><td colspan="2" style="padding: 15px; border: 1px solid #e2e8f0; font-size: 1.05rem; color: #475569; background: #f8fafc; text-align: center;"><strong>Transaction Mode:</strong> Online (UPI/Bank) &nbsp;|&nbsp; <strong>Ref / UTR No:</strong> <span id="recUtr" style="color: #3b82f6; font-weight: bold;"></span></td></tr>
+                </table>
+            </div>
+            <div style="position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px;">
+                <div style="text-align: center;"><div style="width: 110px; height: 110px; background: url('qr2.png') no-repeat center; background-size: cover; border: 2px solid #cbd5e1; border-radius: 8px; padding: 5px;"></div><p style="font-size: 0.9rem; color: #64748b; margin-top: 8px; font-weight: 600;">Scan to Verify</p></div>
+                <div style="text-align: center;"><p style="margin: 0; font-family: 'Dancing Script', cursive; font-size: 3rem; color: #0f172a; transform: rotate(-5deg); margin-bottom: -10px;">A.R Qureshi</p><div style="border-top: 2.5px solid #0f172a; width: 220px; margin: 0 auto;"></div><p style="margin: 8px 0 0 0; font-size: 1.1rem; font-weight: 800; color: #0f172a; text-transform: uppercase;">A.R Qureshi</p><p style="margin: 0; font-size: 1rem; color: #64748b; font-weight: 600;">Director</p></div>
+            </div>
+            <div style="position: relative; z-index: 2; margin-top: 50px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;"><p style="font-size: 0.9rem; color: #94a3b8; font-weight: 500; margin: 0;">*This is a computer-generated receipt and requires no physical signature.</p></div>
+        </div>
+    </div>
+
+    <!-- Firestore v9 Modular Setup for Admin Fees Module -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, collection, setDoc, updateDoc, addDoc, query, where, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCK-PK_YPHMdTfhTOR-MVJjY3Fodqq5K_g",
+            authDomain: "ideal-public-school-59070.firebaseapp.com",
+            databaseURL: "https://ideal-public-school-59070-default-rtdb.firebaseio.com",
+            projectId: "ideal-public-school-59070",
+            storageBucket: "ideal-public-school-59070.firebasestorage.app",
+            messagingSenderId: "775234870692",
+            appId: "1:775234870692:web:39c85c60ada28f5d563531"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db_fs = getFirestore(app);
+
+        window.db_fs = db_fs;
+
+        let activeOverrideMobile = null;
+        let allStudentFeesRecords = [];
+        let allPaymentsList = [];
+        let rtdbStudentsList = [];
+        let classFeeStructures = {};
+        let rawFirestoreFeesRecords = [];
+
+        function rebuildMergedStudentRecords() {
+            const firestoreMap = {};
+            rawFirestoreFeesRecords.forEach(r => {
+                firestoreMap[r.mobile] = r;
+            });
+
+            allStudentFeesRecords = [];
+            rtdbStudentsList.forEach(student => {
+                if (firestoreMap[student.mobile]) {
+                    allStudentFeesRecords.push(firestoreMap[student.mobile]);
+                } else {
+                    const className = student.cls || '';
+                    const struct = classFeeStructures[className] || { totalFee: 0 };
+                    allStudentFeesRecords.push({
+                        studentId: student.mobile,
+                        studentName: student.name || 'Student',
+                        mobile: student.mobile,
+                        class: className,
+                        totalFee: Number(struct.totalFee || 0),
+                        paidAmount: 0,
+                        pendingAmount: Number(struct.totalFee || 0),
+                        status: "Pending",
+                        customFeeAssigned: false
+                    });
+                }
+            });
+
+            // Calculate Metrics
+            let collected = 0;
+            let pending = 0;
+            let paidCount = 0;
+            let defaulterCount = 0;
+
+            allStudentFeesRecords.forEach(r => {
+                collected += Number(r.paidAmount || 0);
+                pending += Number(r.pendingAmount || 0);
+                if (r.status === "Paid") {
+                    paidCount++;
+                } else if (r.status === "Overdue" || (Number(r.pendingAmount || 0) > 0 && r.status !== "Paid")) {
+                    defaulterCount++;
+                }
+            });
+
+            const feeCollEl = document.getElementById("metricFeeCollected");
+            if (feeCollEl) feeCollEl.innerText = `₹${collected}`;
+            
+            const feePendEl = document.getElementById("metricFeePending");
+            if (feePendEl) feePendEl.innerText = `₹${pending}`;
+            
+            const paidStudEl = document.getElementById("metricPaidStudents");
+            if (paidStudEl) paidStudEl.innerText = paidCount;
+            
+            const defEl = document.getElementById("metricDefaulters");
+            if (defEl) defEl.innerText = defaulterCount;
+
+            renderFeeRecordsTableUI();
+            
+            const selectedClass = document.getElementById("structClassSelect") ? document.getElementById("structClassSelect").value : '';
+            if (selectedClass && typeof window.loadClassStudentsFeesList === 'function') {
+                window.loadClassStudentsFeesList(selectedClass);
+            }
+        }
+
+        // Listen to RTDB students
+        db.ref('ideal_student_users').on('value', (snap) => {
+            rtdbStudentsList = [];
+            if (snap.exists()) {
+                const val = snap.val();
+                Object.keys(val).forEach(mobile => {
+                    rtdbStudentsList.push({ mobile, ...val[mobile] });
+                });
+            }
+            rebuildMergedStudentRecords();
+        });
+
+        // Listen to Firestore fee structures
+        onSnapshot(collection(db_fs, "feeStructure"), (querySnapshot) => {
+            classFeeStructures = {};
+            querySnapshot.forEach((docSnap) => {
+                classFeeStructures[docSnap.id] = docSnap.data();
+            });
+            rebuildMergedStudentRecords();
+        });
+
+        window.switchFeeSubTab = function(subtab) {
+            const subtabs = ['dash', 'struct', 'records', 'custom', 'remind'];
+            subtabs.forEach(t => {
+                const el = document.getElementById('fee-sub-' + t);
+                if (el) el.style.display = subtab === t ? 'block' : 'none';
+                const btn = document.getElementById('btn-fee-sub-' + t);
+                if (btn) {
+                    if (subtab === t) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
+            });
+        };
+
+        function selectBusStopOption(selectId, stopName, stopVal) {
+            const selectEl = document.getElementById(selectId);
+            if (!selectEl) return;
+            
+            // Try matching by data-stop first
+            if (stopName) {
+                for (let i = 0; i < selectEl.options.length; i++) {
+                    if (selectEl.options[i].getAttribute('data-stop') === stopName) {
+                        selectEl.selectedIndex = i;
+                        return;
+                    }
+                }
+            }
+            
+            // Fallback: Match by value (amount)
+            if (stopVal !== undefined) {
+                selectEl.value = stopVal;
+            } else {
+                selectEl.selectedIndex = 0;
+            }
+        }
+
+        window.loadClassStudentsFeesList = function(className) {
+            const container = document.getElementById("structClassStudentsContainer");
+            const tbody = document.getElementById("structClassStudentsTableBody");
+            if (!container || !tbody) return;
+            
+            if (!className) {
+                container.style.display = "none";
+                return;
+            }
+            
+            const classStudents = allStudentFeesRecords.filter(r => r.class === className);
+            
+            if (classStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:15px; color:#64748b;">No registered students in this class yet.</td></tr>`;
+                container.style.display = "block";
+                return;
+            }
+            
+            let html = "";
+            classStudents.forEach(s => {
+                let statusBadge = "badge-pending";
+                if (s.status === "Paid") statusBadge = "badge-paid";
+                else if (s.status === "Overdue") statusBadge = "badge-overdue";
+                
+                const customIndicator = s.customFeeAssigned ? ` <span style="background:#ede9fe; color:#8b5cf6; font-size:0.7rem; padding:2px 6px; border-radius:4px; font-weight:600;"><i class="fas fa-user-tag"></i> Custom</span>` : '';
+                
+                html += `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:10px 8px;">
+                            <strong>${s.studentName}</strong>${customIndicator}<br>
+                            <small style="color:#64748b;">Mob: ${s.mobile}</small>
+                        </td>
+                        <td style="padding:10px 8px; font-weight:700;">₹${s.totalFee}</td>
+                        <td style="padding:10px 8px; color:#10b981; font-weight:700;">₹${s.paidAmount}</td>
+                        <td style="padding:10px 8px; color:#ef4444; font-weight:700;">₹${s.pendingAmount}</td>
+                        <td style="padding:10px 8px;"><span class="status-badge ${statusBadge}" style="font-size:0.75rem; padding:3px 8px;">${s.status}</span></td>
+                        <td style="padding:10px 8px; text-align:center;">
+                            <button onclick="window.openIndividualFeeEdit('${s.mobile}', '${s.studentName.replace(/'/g, "\\'")}', '${className}')" style="background:#0d9488; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px; margin:0;"><i class="fas fa-user-edit"></i> Edit Fees</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            container.style.display = "block";
+        };
+
+        let activeIndividualMobile = null;
+        let activeIndividualName = null;
+        let activeIndividualClass = null;
+
+        window.openIndividualFeeEdit = function(mobile, name, className) {
+            activeIndividualMobile = mobile;
+            activeIndividualName = name;
+            activeIndividualClass = className;
+            
+            document.getElementById("individualFeeStudentInfo").innerText = `Configure Fees for: ${name} (${className} - ${mobile})`;
+            
+            const record = allStudentFeesRecords.find(r => r.mobile === mobile);
+            
+            // Check if there is already a custom override set, else populate from class-wide structure
+            if (record && record.customFeeAssigned) {
+                document.getElementById("ind_tuition").value = record.customTuitionFee || 0;
+                document.getElementById("ind_transport").value = record.customTransportFee || 0;
+                document.getElementById("ind_exam").value = record.customExamFee || 0;
+                document.getElementById("ind_admission").value = record.customAdmissionFee || 0;
+                document.getElementById("ind_scholarship").value = record.scholarship || 0;
+                document.getElementById("ind_discount").value = record.discount || 0;
+                selectBusStopOption("ind_bus_stop", record.busStop, record.customTransportFee);
+            } else {
+                // Pre-fill with class fee structure defaults
+                const struct = classFeeStructures[className] || {};
+                document.getElementById("ind_tuition").value = struct.tuitionFee || 0;
+                document.getElementById("ind_transport").value = struct.transportFee || 0;
+                document.getElementById("ind_exam").value = struct.examFee || 0;
+                document.getElementById("ind_admission").value = struct.admissionFee || 0;
+                document.getElementById("ind_scholarship").value = 0;
+                document.getElementById("ind_discount").value = 0;
+                selectBusStopOption("ind_bus_stop", struct.busStop, struct.transportFee);
+            }
+            
+            openModal("individualFeeEditModal");
+        };
+
+        window.saveIndividualStudentFee = async function() {
+            if (!activeIndividualMobile) return;
+            
+            const tuition = Number(document.getElementById("ind_tuition").value || 0);
+            const transport = Number(document.getElementById("ind_transport").value || 0);
+            const exam = Number(document.getElementById("ind_exam").value || 0);
+            const admission = Number(document.getElementById("ind_admission").value || 0);
+            const scholarship = Number(document.getElementById("ind_scholarship").value || 0);
+            const discount = Number(document.getElementById("ind_discount").value || 0);
+            
+            const busStopSelect = document.getElementById("ind_bus_stop");
+            const busStop = busStopSelect && busStopSelect.selectedIndex >= 0 ? busStopSelect.options[busStopSelect.selectedIndex].getAttribute('data-stop') || '' : '';
+            
+            const subtotal = tuition + transport + exam + admission;
+            const finalTotal = subtotal - (scholarship + discount);
+            
+            try {
+                const existingRecord = allStudentFeesRecords.find(r => r.mobile === activeIndividualMobile);
+                const paid = existingRecord ? Number(existingRecord.paidAmount || 0) : 0;
+                const pending = Math.max(0, finalTotal - paid);
+                const status = pending <= 0 ? "Paid" : "Pending";
+                
+                await setDoc(doc(db_fs, "studentFees", activeIndividualMobile), {
+                    studentId: activeIndividualMobile,
+                    studentName: activeIndividualName,
+                    mobile: activeIndividualMobile,
+                    class: activeIndividualClass,
+                    totalFee: finalTotal,
+                    paidAmount: paid,
+                    pendingAmount: pending,
+                    status: status,
+                    customFeeAssigned: true,
+                    customTuitionFee: tuition,
+                    customTransportFee: transport,
+                    busStop: busStop,
+                    customExamFee: exam,
+                    customAdmissionFee: admission,
+                    discount: discount,
+                    scholarship: scholarship
+                });
+                
+                showToast(`Individual fee profile for ${activeIndividualName} updated successfully!`);
+                closeModal("individualFeeEditModal");
+                
+                // Refresh list if selectedClass is active
+                const selectedClass = document.getElementById("structClassSelect").value;
+                if (selectedClass) {
+                    window.loadClassStudentsFeesList(selectedClass);
+                }
+                
+                activeIndividualMobile = null;
+                activeIndividualName = null;
+                activeIndividualClass = null;
+            } catch (err) {
+                alert("Error saving custom individual fee: " + err.message);
+            }
+        };
+
+        window.resetAllPaidFeesToZero = async function() {
+            if (!allStudentFeesRecords || allStudentFeesRecords.length === 0) {
+                alert("No student records found to update!");
+                return;
+            }
+            if (!confirm(`⚠️ WARNING: This will reset the paid fee amount of ALL (${allStudentFeesRecords.length}) students to 0 and recalculate their pending amounts.\n\nStudents without custom fee overrides will fall back to their class default fees (or zero if the class fee structure is not set yet).\n\nAre you sure you want to proceed?`)) {
+                return;
+            }
+            showToast("Resetting all payments to zero...", false);
+            try {
+                const promises = [];
+                allStudentFeesRecords.forEach(s => {
+                    if (!s.mobile) return;
+                    const studentFeeRef = doc(db_fs, "studentFees", s.mobile);
+                    if (s.customFeeAssigned) {
+                        promises.push(setDoc(studentFeeRef, {
+                            paidAmount: 0,
+                            pendingAmount: Number(s.totalFee || 0),
+                            status: "Pending"
+                        }, { merge: true }));
+                    } else {
+                        promises.push(deleteDoc(studentFeeRef));
+                    }
+                });
+                await Promise.all(promises);
+                showToast("All student paid fees successfully reset to zero! ✅");
+            } catch (err) {
+                alert("Error resetting payments: " + err.message);
+            }
+        };
+
+        window.zeroAllStudentBalances = async function() {
+            if (!allStudentFeesRecords || allStudentFeesRecords.length === 0) {
+                alert("No student records found to update!");
+                return;
+            }
+            if (!confirm(`⚠️ WARNING: This will set the pending balance of ALL (${allStudentFeesRecords.length}) students to 0 and mark their status as 'Paid'.\n\nAre you sure you want to proceed?`)) {
+                return;
+            }
+            showToast("Zeroing all balances...", false);
+            try {
+                const promises = [];
+                allStudentFeesRecords.forEach(s => {
+                    if (!s.mobile) return;
+                    const studentFeeRef = doc(db_fs, "studentFees", s.mobile);
+                    promises.push(setDoc(studentFeeRef, {
+                        studentId: s.mobile,
+                        studentName: s.studentName || s.name || 'Student',
+                        mobile: s.mobile,
+                        class: s.class || '',
+                        totalFee: Number(s.totalFee || 0),
+                        paidAmount: Number(s.totalFee || 0),
+                        pendingAmount: 0,
+                        status: "Paid",
+                        customFeeAssigned: s.customFeeAssigned || false,
+                        busStop: s.busStop || ''
+                    }, { merge: true }));
+                });
+                await Promise.all(promises);
+                showToast("All student balances successfully set to zero! ✅");
+            } catch (err) {
+                alert("Error zeroing balances: " + err.message);
+            }
+        };
+
+        window.loadClassFeeStructureUI = async function() {
+            const className = document.getElementById("structClassSelect").value;
+            if (!className) return;
+            
+            document.getElementById("feeStructureFormContainer").style.display = "block";
+            document.getElementById("structFormHeader").innerText = `Configure Fees for ${className}`;
+            
+            try {
+                const docRef = doc(db_fs, "feeStructure", className);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById("fs_tuition").value = data.tuitionFee || 0;
+                    document.getElementById("fs_transport").value = data.transportFee || 0;
+                    document.getElementById("fs_exam").value = data.examFee || 0;
+                    document.getElementById("fs_admission").value = data.admissionFee || 0;
+                    document.getElementById("fs_annual").value = data.annualFee || 0;
+                    document.getElementById("fs_late").value = data.lateFee || 0;
+                    selectBusStopOption("fs_bus_stop", data.busStop, data.transportFee);
+                } else {
+                    ["tuition", "transport", "exam", "admission", "annual", "late"].forEach(f => {
+                        document.getElementById("fs_" + f).value = 0;
+                    });
+                    const stopSel = document.getElementById("fs_bus_stop");
+                    if (stopSel) stopSel.selectedIndex = 0;
+                }
+                
+                // Load class students list
+                if (typeof window.loadClassStudentsFeesList === 'function') {
+                    window.loadClassStudentsFeesList(className);
+                }
+            } catch (err) {
+                console.error("Error reading fee structure: ", err);
+            }
+        };
+
+        window.saveClassFeeStructure = async function() {
+            const className = document.getElementById("structClassSelect").value;
+            if (!className) return;
+            
+            const tuition = Number(document.getElementById("fs_tuition").value || 0);
+            const transport = Number(document.getElementById("fs_transport").value || 0);
+            const exam = Number(document.getElementById("fs_exam").value || 0);
+            const admission = Number(document.getElementById("fs_admission").value || 0);
+            const annual = Number(document.getElementById("fs_annual").value || 0);
+            const late = Number(document.getElementById("fs_late").value || 0);
+            
+            const busStopSelect = document.getElementById("fs_bus_stop");
+            const busStop = busStopSelect && busStopSelect.selectedIndex >= 0 ? busStopSelect.options[busStopSelect.selectedIndex].getAttribute('data-stop') || '' : '';
+            
+            const totalFee = tuition + transport + exam + admission + annual + late;
+            
+            try {
+                await setDoc(doc(db_fs, "feeStructure", className), {
+                    className,
+                    tuitionFee: tuition,
+                    transportFee: transport,
+                    busStop: busStop,
+                    examFee: exam,
+                    admissionFee: admission,
+                    annualFee: annual,
+                    lateFee: late,
+                    totalFee: totalFee
+                });
+                showToast(`Fee structure for ${className} saved successfully!`);
+                updateClassStudentBalances(className, totalFee, busStop);
+            } catch (err) {
+                alert("Error saving fee structure: " + err.message);
+            }
+        };
+
+        async function updateClassStudentBalances(className, newClassTotal, busStop) {
+            try {
+                const q = query(collection(db_fs, "studentFees"), where("class", "==", className), where("customFeeAssigned", "==", false));
+                const snap = await getDocs(q);
+                const promises = [];
+                snap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const paid = Number(data.paidAmount || 0);
+                    const pending = Math.max(0, newClassTotal - paid);
+                    const status = pending <= 0 ? "Paid" : "Pending";
+                    promises.push(updateDoc(doc(db_fs, "studentFees", docSnap.id), {
+                        totalFee: newClassTotal,
+                        pendingAmount: pending,
+                        status: status,
+                        busStop: busStop
+                    }));
+                });
+                await Promise.all(promises);
+            } catch (err) {
+                console.error("Error updating balances: ", err);
+            }
+        }
+
+        function renderFeeRecordsTableUI() {
+            const wrapper = document.getElementById("feeRecordsTableWrapper");
+            if (!wrapper) return;
+            
+            if (allStudentFeesRecords.length === 0) {
+                wrapper.innerHTML = `<p style="color:#64748b; padding:15px; text-align:center;">No student fee records found. Select a class or add a structure to initialize.</p>`;
+                return;
+            }
+            
+            const searchVal = document.getElementById("feeSearchInput").value.toLowerCase().trim();
+            const classFilter = document.getElementById("feeRecordClassFilter").value;
+            const statusFilter = document.getElementById("feeRecordStatusFilter").value;
+            
+            let filtered = allStudentFeesRecords;
+            
+            if (classFilter !== "All Classes") {
+                filtered = filtered.filter(r => r.class === classFilter);
+            }
+            
+            if (statusFilter !== "All") {
+                filtered = filtered.filter(r => r.status === statusFilter);
+            }
+            
+            if (searchVal) {
+                filtered = filtered.filter(r => 
+                    (r.studentName && r.studentName.toLowerCase().includes(searchVal)) ||
+                    (r.mobile && r.mobile.includes(searchVal)) ||
+                    (r.studentId && r.studentId.toLowerCase().includes(searchVal))
+                );
+            }
+            
+            if (filtered.length === 0) {
+                wrapper.innerHTML = `<p style="color:#64748b; padding:15px; text-align:center;">No matching fee records found.</p>`;
+                return;
+            }
+            
+            let html = `
+                <table style="width:100%; border-collapse:collapse; min-width:800px; font-size:0.9rem;">
+                    <thead>
+                        <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0; text-align:left;">
+                            <th style="padding:12px 10px; color:#475569; font-weight:600;">Student Info</th>
+                            <th style="padding:12px 10px; color:#475569; font-weight:600;">Class</th>
+                            <th style="padding:12px 10px; color:#475569; font-weight:600;">Total Fee</th>
+                            <th style="padding:12px 10px; color:#475569; font-weight:600;">Paid</th>
+                            <th style="padding:12px 10px; color:#475569; font-weight:600;">Pending</th>
+                            <th style="padding:12px 10px; color:#475569; font-weight:600;">Status</th>
+                            <th style="padding:12px 10px; color:#475569; font-weight:600; text-align:center; width:220px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            filtered.forEach(r => {
+                let statusBadge = "badge-pending";
+                if (r.status === "Paid") statusBadge = "badge-paid";
+                else if (r.status === "Overdue") statusBadge = "badge-overdue";
+                
+                html += `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:12px 10px;">
+                            <strong>${r.studentName}</strong><br>
+                            <small style="color:#64748b;">Mob: ${r.mobile} | ID: ${r.studentId || 'N/A'}</small>
+                        </td>
+                        <td style="padding:12px 10px;">${r.class}</td>
+                        <td style="padding:12px 10px; font-weight:700;">₹${r.totalFee}</td>
+                        <td style="padding:12px 10px; color:#10b981; font-weight:700;">₹${r.paidAmount}</td>
+                        <td style="padding:12px 10px; color:#ef4444; font-weight:700;">₹${r.pendingAmount}</td>
+                        <td style="padding:12px 10px;"><span class="status-badge ${statusBadge}">${r.status}</span></td>
+                        <td style="padding:12px 10px; text-align:center;">
+                            <div style="display:flex; gap:6px; justify-content:center;">
+                                <button onclick="window.openMarkPaidAdmin('${r.mobile}', '${r.studentName.replace(/'/g, "\\'")}', ${r.pendingAmount})" style="background:#10b981; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px; margin:0;"><i class="fas fa-cash-register"></i> Collect</button>
+                                <button onclick="window.openPaymentHistoryAdmin('${r.mobile}', '${r.studentName.replace(/'/g, "\\'")}')" style="background:#3b82f6; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:0.8rem; display:inline-flex; align-items:center; gap:4px; margin:0;"><i class="fas fa-history"></i> History</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            wrapper.innerHTML = html;
+        }
+
+        window.filterFeeRecords = function() {
+            renderFeeRecordsTableUI();
+        };
+
+        let currentMarkPaidMobile = null;
+        let currentMarkPaidName = null;
+
+        window.openMarkPaidAdmin = function(mobile, name, pending) {
+            currentMarkPaidMobile = mobile;
+            currentMarkPaidName = name;
+            document.getElementById("collectPaymentStudentInfo").innerText = `Collect Fee for ${name} (${mobile})`;
+            document.getElementById("collectPaymentAmount").value = pending;
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById("collectPaymentMonth").value = monthNames[new Date().getMonth()];
+            document.getElementById("collectPaymentRef").value = "";
+            
+            openModal("adminMarkPaidModal");
+        };
+
+        window.saveMarkFeePaid = async function() {
+            const amount = Number(document.getElementById("collectPaymentAmount").value || 0);
+            const mode = document.getElementById("collectPaymentMode").value;
+            const month = document.getElementById("collectPaymentMonth").value;
+            const ref = document.getElementById("collectPaymentRef").value.trim();
+            
+            if (amount <= 0) {
+                alert("Please enter a valid amount!");
+                return;
+            }
+            
+            const receiptNo = "REC" + Date.now();
+            const dateStr = new Date().toLocaleDateString('en-GB');
+
+            try {
+                await addDoc(collection(db_fs, "payments"), {
+                    studentId: currentMarkPaidMobile,
+                    amount: amount,
+                    receiptNumber: receiptNo,
+                    transactionId: ref || 'Cash collected by admin',
+                    status: "Success",
+                    paymentMode: mode,
+                    date: dateStr,
+                    month: month
+                });
+                
+                await addDoc(collection(db_fs, "receipts"), {
+                    receiptNumber: receiptNo,
+                    studentId: currentMarkPaidMobile,
+                    studentName: currentMarkPaidName,
+                    mobile: currentMarkPaidMobile,
+                    amount: amount,
+                    date: dateStr,
+                    paymentMode: mode
+                });
+                
+                const studentFeeRef = doc(db_fs, "studentFees", currentMarkPaidMobile);
+                const docSnap = await getDoc(studentFeeRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const paid = Number(data.paidAmount || 0) + amount;
+                    const total = Number(data.totalFee || 0);
+                    const pending = Math.max(0, total - paid);
+                    const status = pending <= 0 ? "Paid" : "Pending";
+                    await updateDoc(studentFeeRef, {
+                        paidAmount: paid,
+                        pendingAmount: pending,
+                        status: status
+                    });
+                } else {
+                    const student = rtdbStudentsList.find(s => s.mobile === currentMarkPaidMobile) || {};
+                    const className = student.cls || "Class 11th";
+                    const struct = classFeeStructures[className] || { totalFee: 0 };
+                    const totalFee = Number(struct.totalFee || 0);
+                    const paid = amount;
+                    const pending = Math.max(0, totalFee - paid);
+                    const status = pending <= 0 ? "Paid" : "Pending";
+                    
+                    await setDoc(studentFeeRef, {
+                        studentId: currentMarkPaidMobile,
+                        studentName: currentMarkPaidName,
+                        mobile: currentMarkPaidMobile,
+                        class: className,
+                        totalFee: totalFee,
+                        paidAmount: paid,
+                        pendingAmount: pending,
+                        status: status,
+                        customFeeAssigned: false
+                    });
+                }
+                
+                closeModal("adminMarkPaidModal");
+                showToast("Payment recorded & Receipt generated successfully!");
+            } catch (err) {
+                alert("Error saving payment: " + err.message);
+            }
+        };
+
+        window.openPaymentHistoryAdmin = function(mobile, name) {
+            const historyDetailsEl = document.getElementById("adminPaymentHistoryDetails");
+            if (!historyDetailsEl) return;
+            
+            historyDetailsEl.innerHTML = '<p style="padding:20px; text-align:center;">Loading history...</p>';
+            openModal("adminPaymentHistoryModal");
+            
+            const studentPayments = allPaymentsList.filter(p => p.studentId === mobile);
+            
+            if (studentPayments.length === 0) {
+                historyDetailsEl.innerHTML = '<p style="padding:20px; text-align:center; color:#64748b;">No payments recorded for this student.</p>';
+                return;
+            }
+            
+            studentPayments.sort((a,b) => new Date(b.date || '') - new Date(a.date || ''));
+            
+            let html = `
+                <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.85rem;">
+                    <thead>
+                        <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
+                            <th style="padding:10px 8px; color:#475569; font-weight:600;">Receipt No</th>
+                            <th style="padding:10px 8px; color:#475569; font-weight:600;">Month</th>
+                            <th style="padding:10px 8px; color:#475569; font-weight:600;">Amount</th>
+                            <th style="padding:10px 8px; color:#475569; font-weight:600;">Date</th>
+                            <th style="padding:10px 8px; color:#475569; font-weight:600; text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            studentPayments.forEach(p => {
+                const receiptNo = p.receiptNumber || 'N/A';
+                const pMonth = p.month || 'N/A';
+                const pAmount = p.amount || 0;
+                const pDate = p.date || 'N/A';
+                const pMode = p.paymentMode || 'Cash';
+                
+                html += `
+                    <tr style="border-bottom:1px solid #f1f5f9;">
+                        <td style="padding:10px 8px; font-weight:600; color:#3b82f6;">${receiptNo}</td>
+                        <td style="padding:10px 8px;">${pMonth}</td>
+                        <td style="padding:10px 8px; font-weight:700;">₹${pAmount}</td>
+                        <td style="padding:10px 8px;">${pDate}</td>
+                        <td style="padding:10px 8px; text-align:center;">
+                            <button onclick="window.downloadFirestoreReceiptAdmin('${receiptNo}', ${pAmount}, '${pDate}', '${pMonth}', '${pMode}', '${mobile}', '${name.replace(/'/g, "\\'")}')" style="background:#fee2e2; color:#ef4444; border:1px solid #fca5a5; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:0.75rem; font-weight:600; margin:0;">
+                                <i class="fas fa-download"></i> PDF
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            historyDetailsEl.innerHTML = html;
+        };
+
+        window.downloadFirestoreReceiptAdmin = function(receiptNo, amount, dateStr, month, mode, mobile, name) {
+            document.getElementById('recDate').innerText = dateStr;
+            document.getElementById('recName').innerText = name;
+            
+            const record = allStudentFeesRecords.find(r => r.mobile === mobile);
+            const studentClass = record ? record.class : 'N/A';
+            
+            document.getElementById('recClass').innerText = studentClass;
+            document.getElementById('recMobile').innerText = mobile;
+            document.getElementById('recEmail').innerText = 'N/A';
+            document.getElementById('recTotal').innerText = amount;
+            document.getElementById('recPaid').innerText = amount;
+            document.getElementById('recDue').innerText = "0";
+            document.getElementById('recUtr').innerText = receiptNo || 'Verified Online Payment';
+            
+            let receiptElement = document.getElementById('receiptToCapture');
+            receiptElement.parentElement.style.display = 'block';
+            showToast("Generating receipt PDF...");
+            
+            html2canvas(receiptElement, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+                let link = document.createElement('a');
+                link.download = `Receipt_${receiptNo}_${name.replace(/\s+/g, '_')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                receiptElement.parentElement.style.display = 'none';
+                showToast("Receipt Downloaded! ✅");
+            }).catch(err => {
+                console.error("html2canvas error: ", err);
+                receiptElement.parentElement.style.display = 'none';
+            });
+        };
+
+        window.searchStudentForCustomOverride = async function() {
+            const val = document.getElementById("customSearchInput").value.trim().toLowerCase();
+            if (!val) {
+                alert("Please enter a student name, mobile or student ID!");
+                return;
+            }
+            
+            db.ref('ideal_student_users').once('value', async (snap) => {
+                const users = snap.val() || {};
+                let foundStudent = null;
+                Object.keys(users).forEach(mobile => {
+                    const u = users[mobile];
+                    if (mobile === val || (u.name && u.name.toLowerCase().includes(val))) {
+                        foundStudent = { mobile, ...u };
+                    }
+                });
+                
+                if (foundStudent) {
+                    setupOverrideForm(foundStudent);
+                } else {
+                    const record = allStudentFeesRecords.find(r => r.mobile === val || (r.studentName && r.studentName.toLowerCase().includes(val)));
+                    if (record) {
+                        setupOverrideForm({ mobile: record.mobile, name: record.studentName, cls: record.class });
+                    } else {
+                        alert("Student not found in database! Make sure the student is registered.");
+                    }
+                }
+            });
+        };
+
+        function setupOverrideForm(st) {
+            activeOverrideMobile = st.mobile;
+            document.getElementById("overrideFormContainer").style.display = "block";
+            document.getElementById("overrideStudentInfo").innerText = `Configure Custom Fees for: ${st.name} (${st.cls} - ${st.mobile})`;
+            
+            const record = allStudentFeesRecords.find(r => r.mobile === st.mobile);
+            if (record && record.customFeeAssigned) {
+                document.getElementById("custom_tuition").value = record.customTuitionFee || 0;
+                document.getElementById("custom_transport").value = record.customTransportFee || 0;
+                document.getElementById("custom_exam").value = record.customExamFee || 0;
+                document.getElementById("custom_admission").value = record.customAdmissionFee || 0;
+                document.getElementById("custom_scholarship").value = record.scholarship || 0;
+                document.getElementById("custom_discount").value = record.discount || 0;
+                selectBusStopOption("custom_bus_stop", record.busStop, record.customTransportFee);
+            } else {
+                ["tuition", "transport", "exam", "admission", "scholarship", "discount"].forEach(f => {
+                    document.getElementById("custom_" + f).value = 0;
+                });
+                const customSel = document.getElementById("custom_bus_stop");
+                if (customSel) customSel.selectedIndex = 0;
+            }
+        }
+
+        window.saveCustomStudentOverride = async function() {
+            if (!activeOverrideMobile) return;
+            
+            const tuition = Number(document.getElementById("custom_tuition").value || 0);
+            const transport = Number(document.getElementById("custom_transport").value || 0);
+            const exam = Number(document.getElementById("custom_exam").value || 0);
+            const admission = Number(document.getElementById("custom_admission").value || 0);
+            const scholarship = Number(document.getElementById("custom_scholarship").value || 0);
+            const discount = Number(document.getElementById("custom_discount").value || 0);
+            
+            const busStopSelect = document.getElementById("custom_bus_stop");
+            const busStop = busStopSelect && busStopSelect.selectedIndex >= 0 ? busStopSelect.options[busStopSelect.selectedIndex].getAttribute('data-stop') || '' : '';
+            
+            const subtotal = tuition + transport + exam + admission;
+            const finalTotal = subtotal - (scholarship + discount);
+            
+            try {
+                db.ref('ideal_student_users/' + activeOverrideMobile).once('value', async (snap) => {
+                    const st = snap.val() || {};
+                    const name = st.name || "Student";
+                    const className = st.cls || "N/A";
+                    
+                    const existingRecord = allStudentFeesRecords.find(r => r.mobile === activeOverrideMobile);
+                    const paid = existingRecord ? Number(existingRecord.paidAmount || 0) : 0;
+                    const pending = Math.max(0, finalTotal - paid);
+                    const status = pending <= 0 ? "Paid" : "Pending";
+                    
+                    await setDoc(doc(db_fs, "studentFees", activeOverrideMobile), {
+                        studentId: activeOverrideMobile,
+                        studentName: name,
+                        mobile: activeOverrideMobile,
+                        class: className,
+                        totalFee: finalTotal,
+                        paidAmount: paid,
+                        pendingAmount: pending,
+                        status: status,
+                        customFeeAssigned: true,
+                        customTuitionFee: tuition,
+                        customTransportFee: transport,
+                        busStop: busStop,
+                        customExamFee: exam,
+                        customAdmissionFee: admission,
+                        discount: discount,
+                        scholarship: scholarship
+                    });
+                    
+                    showToast(`Custom fee override for ${name} saved successfully!`);
+                    document.getElementById("overrideFormContainer").style.display = "none";
+                    document.getElementById("customSearchInput").value = "";
+                    activeOverrideMobile = null;
+                });
+            } catch (err) {
+                alert("Error saving custom override: " + err.message);
+            }
+        };
+
+        window.loadStudentsForReminder = function() {
+            const className = document.getElementById("remindClassSelect").value;
+            const container = document.getElementById("reminderStudentsListContainer");
+            if (!className) return;
+            
+            db.ref('ideal_student_users').once('value', (snap) => {
+                const users = snap.val() || {};
+                let classStudents = [];
+                Object.keys(users).forEach(mobile => {
+                    const u = users[mobile];
+                    if (u.cls === className) {
+                        classStudents.push({ mobile, ...u });
+                    }
+                });
+                
+                if (classStudents.length === 0) {
+                    container.innerHTML = `<p style="padding:10px; color:#64748b; text-align:center;">No registered students in ${className}.</p>`;
+                    container.style.display = "block";
+                    return;
+                }
+                
+                let html = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:5px; margin-bottom:8px;">
+                        <span style="font-weight:700; color:#475569;">Select Students</span>
+                        <label style="font-size:0.8rem; font-weight:600; cursor:pointer;"><input type="checkbox" id="selectAllReminders" onchange="window.toggleSelectAllReminders(this)"> Select All</label>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                `;
+                
+                classStudents.forEach(s => {
+                    const record = allStudentFeesRecords.find(r => r.mobile === s.mobile);
+                    const pending = record ? Number(record.pendingAmount || 0) : 0;
+                    const labelColor = pending > 0 ? "#ef4444" : "#475569";
+                    
+                    html += `
+                        <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:${labelColor}; cursor:pointer;">
+                            <input type="checkbox" name="reminderStudentCheckbox" value="${s.mobile}" data-name="${s.name}">
+                            <strong>${s.name}</strong> (${s.mobile}) - Due: ₹${pending}
+                        </label>
+                    `;
+                });
+                
+                html += `</div>`;
+                container.innerHTML = html;
+                container.style.display = "block";
+            });
+        };
+
+        window.toggleSelectAllReminders = function(chk) {
+            const checkboxes = document.getElementsByName("reminderStudentCheckbox");
+            checkboxes.forEach(c => c.checked = chk.checked);
+        };
+
+        window.sendFeeReminders = async function() {
+            const checkboxes = document.getElementsByName("reminderStudentCheckbox");
+            const selectedMobiles = [];
+            checkboxes.forEach(c => {
+                if (c.checked) {
+                    selectedMobiles.push({ mobile: c.value, name: c.getAttribute('data-name') });
+                }
+            });
+            
+            if (selectedMobiles.length === 0) {
+                alert("Please select at least one student to send reminder!");
+                return;
+            }
+            
+            const msg = document.getElementById("reminderMessage").value.trim();
+            if (!msg) {
+                alert("Please enter a reminder message!");
+                return;
+            }
+            
+            const dateStr = new Date().toLocaleDateString('en-GB');
+            const promises = [];
+            
+            try {
+                selectedMobiles.forEach(s => {
+                    promises.push(addDoc(collection(db_fs, "notifications"), {
+                        studentId: s.mobile,
+                        title: "Fee Payment Reminder",
+                        message: `Hi ${s.name}, ${msg}`,
+                        date: dateStr,
+                        type: "Fee Reminder"
+                    }));
+                });
+                await Promise.all(promises);
+                showToast(`Reminders sent successfully to ${selectedMobiles.length} students!`);
+                
+                document.getElementById("reminderStudentsListContainer").style.display = "none";
+                document.getElementById("remindClassSelect").value = "";
+            } catch (err) {
+                alert("Error sending reminders: " + err.message);
+            }
+        };
+
+        function initMetricsListener() {
+            onSnapshot(collection(db_fs, "studentFees"), (querySnapshot) => {
+                rawFirestoreFeesRecords = [];
+                querySnapshot.forEach((docSnap) => {
+                    rawFirestoreFeesRecords.push(docSnap.data());
+                });
+                rebuildMergedStudentRecords();
+            });
+
+            onSnapshot(collection(db_fs, "payments"), (querySnapshot) => {
+                let todayTotal = 0;
+                let monthlyTotal = 0;
+                allPaymentsList = [];
+
+                const todayDateStr = new Date().toLocaleDateString('en-GB');
+                const currentMonthIdx = new Date().getMonth();
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                const currentMonthName = monthNames[currentMonthIdx];
+
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    allPaymentsList.push(data);
+                    const amt = Number(data.amount || 0);
+                    if (data.date === todayDateStr) {
+                        todayTotal += amt;
+                    }
+                    if (data.month === currentMonthName || (data.date && data.date.includes(`/${String(currentMonthIdx + 1).padStart(2, '0')}/`))) {
+                        monthlyTotal += amt;
+                    }
+                });
+
+                document.getElementById("metricTodayCollection").innerText = `₹${todayTotal}`;
+                document.getElementById("metricMonthlyCollection").innerText = `₹${monthlyTotal}`;
+            });
+        }
+
+        window.loadStudentsForDocPortal = function() {
+            const cls = document.getElementById('docAdminClassSelect').value;
+            const studentSelect = document.getElementById('docAdminStudentSelect');
+            
+            studentSelect.innerHTML = '<option value="" disabled selected>-- Loading Students... --</option>';
+            studentSelect.disabled = true;
+            
+            document.getElementById('adminDocsViewContainer').style.display = 'none';
+            document.getElementById('adminDocsEmptyState').style.display = 'block';
+            
+            db.ref('ideal_student_users').once('value', snap => {
+                const students = [];
+                const usersData = snap.val() || {};
+                
+                Object.keys(usersData).forEach(mobile => {
+                    const s = usersData[mobile];
+                    if (s.cls === cls) {
+                        students.push({ mobile: mobile, ...s });
+                    }
+                });
+                
+                if (students.length === 0) {
+                    studentSelect.innerHTML = '<option value="" disabled selected>-- No Students in this Class --</option>';
+                    return;
+                }
+                
+                studentSelect.innerHTML = '<option value="" disabled selected>-- Select Student --</option>';
+                students.sort((a, b) => a.name.localeCompare(b.name));
+                students.forEach(s => {
+                    studentSelect.innerHTML += `<option value="${s.mobile}">${s.name} (${s.mobile})</option>`;
+                });
+                studentSelect.disabled = false;
+            });
+        };
+
+        window.loadStudentDocsForAdmin = function() {
+            const mobile = document.getElementById('docAdminStudentSelect').value;
+            if (!mobile) return;
+            
+            const viewContainer = document.getElementById('adminDocsViewContainer');
+            const emptyState = document.getElementById('adminDocsEmptyState');
+            const grid = document.getElementById('adminDocsGrid');
+            
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 25px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #f97316;"></i><p style="margin-top: 10px;">Loading student documents...</p></div>';
+            viewContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            db.ref('ideal_student_users/' + mobile).once('value', sSnap => {
+                const s = sSnap.val() || {};
+                document.getElementById('docAdminStudentName').innerText = s.name || 'N/A';
+                document.getElementById('docAdminStudentClass').innerText = s.cls || 'N/A';
+                document.getElementById('docAdminStudentMobile').innerText = s.mobile || 'N/A';
+                
+                if (s.photo) {
+                    document.getElementById('docAdminStudentPhoto').src = s.photo;
+                } else {
+                    db.ref('ideal_student_photos/' + mobile).once('value', photoSnap => {
+                        if (photoSnap.exists()) {
+                            document.getElementById('docAdminStudentPhoto').src = photoSnap.val();
+                        } else {
+                            document.getElementById('docAdminStudentPhoto').src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                        }
+                    });
+                }
+                
+                db.ref('ideal_student_documents/' + mobile).once('value', docSnap => {
+                    const docs = docSnap.val() || {};
+                    grid.innerHTML = '';
+                    
+                    const docTypes = [
+                        { key: 'aadhar', name: 'Aadhaar Card' },
+                        { key: 'marksheet', name: 'Marksheet (10th/Last Class)' },
+                        { key: 'samagra', name: 'Samagra ID' },
+                        { key: 'domicile', name: 'Domicile Certificate (मूल निवासी)' },
+                        { key: 'income', name: 'Income Certificate (आय प्रमाण पत्र)' },
+                        { key: 'caste', name: 'Caste Certificate (जाति प्रमाण पत्र)' },
+                        { key: 'tc', name: 'Transfer Certificate (TC)' },
+                        { key: 'passportPhoto', name: 'Passport Size Photo' }
+                    ];
+                    
+                    docTypes.forEach(docType => {
+                        const hasDoc = docs[docType.key];
+                        if (hasDoc) {
+                            grid.innerHTML += `
+                                <div class="gallery-card" style="padding: 15px; border-radius: 12px; border: 1px solid #bbf7d0; background: #f0fdf4;">
+                                    <div class="gallery-card-title" style="margin-top: 0; margin-bottom: 10px; font-weight: 700; color: #166534; font-size: 0.95rem;">${docType.name}</div>
+                                    <img src="${hasDoc}" onclick="window.viewAdminDocumentFull('${hasDoc}')" style="height: 120px; border-radius: 6px; border: 1px solid #86efac; margin-bottom: 12px; cursor: pointer;">
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn" style="background: #10b981; font-size: 0.75rem; padding: 6px 10px; margin: 0; flex: 1; height: auto;" onclick="window.viewAdminDocumentFull('${hasDoc}')">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                        <button class="btn" style="background: #3b82f6; font-size: 0.75rem; padding: 6px 10px; margin: 0; flex: 1; height: auto;" onclick="window.downloadAdminDocument('${hasDoc}', '${s.name}_${docType.key}')">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            grid.innerHTML += `
+                                <div class="gallery-card" style="padding: 15px; border-radius: 12px; border: 1px dashed #cbd5e1; background: #f8fafc; opacity: 0.75; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 190px;">
+                                    <div style="font-weight: 700; color: #64748b; font-size: 0.95rem; text-align: center; margin-bottom: 12px;">${docType.name}</div>
+                                    <i class="fas fa-file" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: #94a3b8; background: #e2e8f0; padding: 4px 10px; border-radius: 50px;">
+                                        Not Uploaded
+                                    </span>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+            });
+        };
+
+        window.viewAdminDocumentFull = function(src) {
+            document.getElementById('fullSizeImage').src = src;
+            document.getElementById('imageViewerModal').style.display = 'flex';
+        };
+
+        window.downloadAdminDocument = function(src, filename) {
+            const link = document.createElement('a');
+            link.href = src;
+            link.download = filename.replace(/\s+/g, '_') + '.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        window.downloadAllStudentDocs = function() {
+            const mobile = document.getElementById('docAdminStudentSelect').value;
+            if (!mobile) return;
+            db.ref('ideal_student_documents/' + mobile).once('value', docSnap => {
+                const docs = docSnap.val() || {};
+                const docTypes = [
+                    { key: 'aadhar', name: 'Aadhaar Card' },
+                    { key: 'marksheet', name: 'Marksheet' },
+                    { key: 'samagra', name: 'Samagra ID' },
+                    { key: 'domicile', name: 'Domicile Certificate' },
+                    { key: 'income', name: 'Income Certificate' },
+                    { key: 'caste', name: 'Caste Certificate' },
+                    { key: 'tc', name: 'Transfer Certificate' },
+                    { key: 'passportPhoto', name: 'Passport Size Photo' }
+                ];
+                
+                db.ref('ideal_student_users/' + mobile).once('value', sSnap => {
+                    const s = sSnap.val() || {};
+                    const name = s.name || 'Student';
+                    let count = 0;
+                    docTypes.forEach(docType => {
+                        const hasDoc = docs[docType.key];
+                        if (hasDoc) {
+                            setTimeout(() => {
+                                window.downloadAdminDocument(hasDoc, `${name}_${docType.key}`);
+                            }, count * 300); // delay to prevent browser block
+                            count++;
+                        }
+                    });
+                    if (count === 0) {
+                        showToast("No documents uploaded yet!", true);
+                    } else {
+                        showToast(`Downloading ${count} documents...`);
+                    }
+                });
+            });
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                initMetricsListener();
+            }, 600);
+        });
     </script>
 </body>
 </html>
