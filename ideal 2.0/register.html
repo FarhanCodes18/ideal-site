@@ -82,6 +82,7 @@
         .profile-info p span { display: flex; align-items: center; gap: 8px; }
         .class-badge { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: white; padding: 8px 22px; border-radius: 50px; font-size: 0.95rem; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s ease; }
         .class-badge:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+        .profile-badges { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start; }
         
         .section-title { color: #0f172a; font-size: 1.5rem; margin-bottom: 25px; font-weight: 700; position: relative; padding-left: 15px; display: flex; align-items: center; }
         .section-title::before { content: ''; position: absolute; left: 0; width: 6px; height: 24px; background: #3b82f6; border-radius: 4px; }
@@ -106,6 +107,10 @@
         .box-trans::before { background: #eab308; } 
         .box-trans:hover { box-shadow: 0 16px 36px rgba(234, 179, 8, 0.12); }
         .box-trans .icon-bg { background: #fef08a; color: #eab308; } 
+        
+        .box-achievements::before { background: #f59e0b; } 
+        .box-achievements:hover { box-shadow: 0 16px 36px rgba(245, 158, 11, 0.12); }
+        .box-achievements .icon-bg { background: #fef3c7; color: #f59e0b; }
 
         .box-time::before { background: #dc2626; } 
         .box-time:hover { box-shadow: 0 16px 36px rgba(220, 38, 38, 0.12); }
@@ -188,6 +193,16 @@
         .toast-notification { visibility: hidden; min-width: 250px; background-color: #10b981; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 15px; font-weight: 600; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
         .toast-notification.show { visibility: visible; opacity: 1; bottom: 50px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
         
         @media screen and (max-width: 768px) {
             html, body {
@@ -209,6 +224,7 @@
             .profile-photo { width: 100px; height: 100px; }
             .profile-info h3 { font-size: 1.5rem !important; }
             .profile-info p { justify-content: center; font-size: 0.9rem; }
+            .profile-badges { justify-content: center !important; }
             .features-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .feature-box { flex-direction: column; text-align: center; padding: 20px 10px; }
             .modal-content { width: 95%; margin: 10px auto; padding: 20px; }
@@ -281,6 +297,8 @@
                 <div class="input-group"><i class="fas fa-chalkboard"></i><select id="regClass" required><option value="" disabled selected>Select Class</option><option value="Class 1st">Class 1st</option><option value="Class 2nd">Class 2nd</option><option value="Class 3rd">Class 3rd</option><option value="Class 4th">Class 4th</option><option value="Class 5th">Class 5th</option><option value="Class 6th">Class 6th</option><option value="Class 7th">Class 7th</option><option value="Class 8th">Class 8th</option><option value="Class 9th">Class 9th</option><option value="Class 10th">Class 10th</option><option value="Class 11th">Class 11th</option><option value="Class 12th">Class 12th</option></select></div>
                 <div class="input-group"><i class="fas fa-venus-mars"></i><select id="regGender" required><option value="Male">Male</option><option value="Female">Female</option></select></div>
             </div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 5px; text-align: left; padding-left: 5px;"><i class="fas fa-calendar-alt" style="color: #94a3b8; margin-right: 5px;"></i> Date of Birth:</div>
+            <div class="input-group"><input type="date" id="regDob" required title="Date of Birth" style="padding-left: 15px;"></div>
             <label class="custom-file-upload"><i class="fas fa-camera-retro"></i><span id="regFileName" style="font-size: 13px;">Upload Photo</span><input type="file" id="regPhoto" accept="image/*" required onchange="handleProfilePhotoSelect(this)"></label>
             <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="Create Password" required></div>
             
@@ -300,12 +318,21 @@
         </div>
 
         <div class="profile-banner">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="dashPhoto" class="profile-photo">
+            <div style="position: relative; display: inline-block;" class="profile-photo-wrapper">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="dashPhoto" class="profile-photo" style="cursor: pointer;" onclick="triggerEditProfilePhoto()">
+                <div style="position: absolute; bottom: 5px; right: 5px; background: #3b82f6; color: white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border: 2.5px solid white; cursor: pointer; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 3; transition: all 0.2s;" onclick="triggerEditProfilePhoto()" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <input type="file" id="editProfilePhotoInput" accept="image/*" style="display: none;" onchange="handleEditProfilePhotoSelect(this)">
+            </div>
             <div class="profile-info">
                 <div class="welcome-text">Welcome Back</div>
                 <h3 id="dashName">Student Name</h3>
                 <p><span><i class="fas fa-phone-alt"></i> <span id="dashMobile">0000000000</span></span></p>
-                <div class="class-badge"><i class="fas fa-graduation-cap"></i> Enrolled in <span id="dashClass">Class</span></div>
+                <div class="profile-badges">
+                    <div class="class-badge"><i class="fas fa-graduation-cap"></i> Enrolled in <span id="dashClass">Class</span></div>
+                    <div class="class-badge" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2);"><i class="fas fa-id-card"></i> ID: <span id="dashStudentId">N/A</span></div>
+                </div>
             </div>
         </div>
 
@@ -320,6 +347,7 @@
             <div class="feature-box box-doc" onclick="openModal('docModal')"><div class="icon-bg"><i class="fas fa-folder-open"></i></div><div class="feature-text"><h4>My Documents</h4><p>Upload & View Documents</p></div></div>
             <div class="feature-box box-fee locked-feature" onclick="openModal('feeModal')"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-rupee-sign"></i></div><div class="feature-text"><h4>Fee Record</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
             <div class="feature-box box-progress locked-feature" onclick="openProgressModal()"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-chart-line"></i></div><div class="feature-text"><h4>My Progress</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
+            <div class="feature-box box-achievements locked-feature" onclick="openAchievementsModal()"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-trophy"></i></div><div class="feature-text"><h4>Achievement Badges</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
         </div>
     </div>
 
@@ -329,6 +357,42 @@
             <h2 style="color: #e11d48; margin-bottom: 20px;"><i class="fas fa-chart-bar"></i> Performance Analytics</h2>
             <div style="position: relative; width: 100%; height: 300px;"><canvas id="progressChart"></canvas></div>
             <div id="progressDetails" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <!-- Achievements Modal (Locked) -->
+    <div id="achievementsModal" class="modal">
+        <div class="modal-content" style="max-width: 450px; text-align: center;">
+            <span class="close-btn" onclick="closeModal('achievementsModal')"><i class="fas fa-times"></i></span>
+            <div style="padding: 20px 10px;">
+                <i class="fas fa-lock" style="font-size: 4rem; color: #f59e0b; margin-bottom: 20px; display: block;"></i>
+                <h3 style="color: #0f172a; margin-bottom: 10px; font-weight: 700;">Achievements Portal Locked</h3>
+                <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                    Your badge showcase, school certificates, academic medals, and extra-curricular honors are currently locked. Achievement badges will be coming soon!
+                </p>
+                <span style="background: #fef3c7; color: #d97706; padding: 8px 22px; border-radius: 20px; font-weight: 600; font-size: 13px; display: inline-block; border: 1px solid #fde68a;"><i class="fas fa-hourglass-half"></i> Coming Soon</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎂 BIRTHDAY WISHES MODAL 🎂 -->
+    <div id="birthdayModal" class="modal" style="z-index: 9999;">
+        <div class="modal-content" style="max-width: 500px; text-align: center; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 3px solid #fbbf24; border-radius: 30px; padding: 40px 30px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(251, 191, 36, 0.4);">
+            <div style="position: absolute; top: -10px; left: 10%; font-size: 2rem; animation: float 3s ease-in-out infinite;">🎈</div>
+            <div style="position: absolute; top: 20px; right: 15%; font-size: 2rem; animation: float 4s ease-in-out infinite 1s;">🎈</div>
+            <div style="position: absolute; bottom: 30px; left: 15%; font-size: 1.8rem; animation: float 3.5s ease-in-out infinite 0.5s;">🎁</div>
+            <div style="position: absolute; bottom: 15px; right: 10%; font-size: 1.8rem; animation: float 4.5s ease-in-out infinite 1.5s;">🎉</div>
+            
+            <span class="close-btn" onclick="closeModal('birthdayModal')" style="color: #b45309;"><i class="fas fa-times"></i></span>
+            
+            <div style="font-size: 5rem; margin-bottom: 15px; animation: pulse 2s infinite;">🎂</div>
+            <h2 style="color: #b45309; font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; font-family: 'Poppins', sans-serif;">Happy Birthday, <span id="birthdayStudentName" style="color: #d97706;">Student</span>!</h2>
+            <p style="color: #7c2d12; font-size: 1.1rem; font-weight: 600; line-height: 1.6; margin-bottom: 25px; border-top: 1px dashed #fbd560; border-bottom: 1px dashed #fbd560; padding: 15px 10px;" id="birthdayWishMessage">
+                Wishing you a day filled with laughter, joy, and wonderful surprises! May this year bring you closer to all your dreams.
+            </p>
+            <button class="btn" style="background: linear-gradient(135deg, #d97706, #b45309); border: none; color: white; padding: 12px 35px; font-size: 1.05rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(217, 119, 6, 0.3); transition: all 0.3s;" onclick="closeModal('birthdayModal')">
+                Thank You! ❤️
+            </button>
         </div>
     </div>
 
@@ -454,6 +518,7 @@
     <script>
         const GOOGLE_SHEET_URL_1 = "https://script.google.com/macros/s/AKfycby-395zeIEHWjK559Je8MdDGmMYtsIl54U5p-6-rtiUdWV1xHN17tWeyMig8fOmAHcQ7Q/exec";
         const GOOGLE_SHEET_URL_2 = "https://script.google.com/macros/s/AKfycbzsN3Lvh4XcHl1zGe-B43244tRIL0-sRpFXwECXE_N76daKMxhRcSOwoOUgyqzANpqy/exec";
+        const GOOGLE_SHEET_URL_3 = "https://script.google.com/macros/s/AKfycbxNoleGjR9Tb4GrF4S7NVOIRH_PstTvvEqu2gBwlM_PbfvARlJGOx3U26M9hB2eMHTJsg/exec";
         const GOOGLE_SHEET_FEE_URL = "https://script.google.com/macros/s/AKfycbyUGtk1gsWT5XJ3E3-Py0jMmkBC2t5bsZyesiAzVAVA71efyq4GNp2eRmC1iDxVAnKg/exec"; 
 
         // 🌟 1. FIREBASE INITIALIZATION 🌟
@@ -501,9 +566,9 @@
         // 🌟 FIREBASE LIVE REGISTRATION 🌟
         function handleRegister() {
             const btn = document.getElementById('regBtn');
-            const name = document.getElementById('regName').value.trim(), mobile = document.getElementById('regMobile').value.trim(), email = document.getElementById('regEmail').value.trim(), gender = document.getElementById('regGender').value, cls = document.getElementById('regClass').value, password = document.getElementById('regPassword').value;
+            const name = document.getElementById('regName').value.trim(), mobile = document.getElementById('regMobile').value.trim(), email = document.getElementById('regEmail').value.trim(), gender = document.getElementById('regGender').value, cls = document.getElementById('regClass').value, password = document.getElementById('regPassword').value, dob = document.getElementById('regDob').value;
             
-            if(!name || !mobile || !email || !cls || !password || !window.croppedProfilePhotoBase64) return alert("Fill all details and select/crop profile photo!");
+            if(!name || !mobile || !email || !cls || !password || !dob || !window.croppedProfilePhotoBase64) return alert("Fill all details (including Date of Birth) and select/crop profile photo!");
             if(mobile.length !== 10) return alert("Mobile number must be exactly 10 digits!");
             
             // Check Google reCAPTCHA
@@ -532,33 +597,68 @@
                     }
                     
                     const saveToDatabase = () => {
-                        let sData = { name, mobile, email, gender, cls, password, date: new Date().toLocaleDateString('en-GB') };
-                        // Save to Live Database
-                        db.ref('ideal_student_users/' + mobile).set(sData)
-                        .then(() => {
-                            return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
-                        })
-                        .then(() => {
-                            return db.ref('ideal_student_photos/' + mobile).set(window.croppedProfilePhotoBase64);
-                        })
-                        .then(() => {
-                            let formBody = new URLSearchParams(); formBody.append("date", new Date().toLocaleDateString('en-GB')); formBody.append("name", name); formBody.append("mobile", mobile); formBody.append("email", email); formBody.append("gender", gender); formBody.append("class", cls); formBody.append("password", password);
-                            fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
-                            fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                        const classNum = parseInt(cls.replace(/[^0-9]/g, ''));
+                        const classCode = isNaN(classNum) ? 'NUR' : (classNum < 10 ? '0' + classNum : '' + classNum);
 
-                            document.getElementById('regSuccess').style.display = 'block';
-                            setTimeout(() => { 
-                                document.getElementById('loginMobile').value = mobile; 
-                                toggleAuth('login'); 
-                                btn.innerText = "Register Live"; 
-                                btn.disabled = false; 
-                                document.getElementById('regSuccess').style.display = 'none'; 
-                                grecaptcha.reset(); 
-                                window.croppedProfilePhotoBase64 = null;
-                                document.getElementById('regFileName').innerHTML = "Upload Photo";
-                                document.getElementById('regPhoto').value = '';
-                            }, 1500);
-                        }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
+                        db.ref('ideal_student_id_counters/' + classCode).transaction(currentValue => {
+                            return (currentValue || 100) + 1;
+                        }, (error, committed, snapshot) => {
+                            if (error) {
+                                alert("Database error occurred: " + error.message);
+                                btn.innerText = "Register Live";
+                                btn.disabled = false;
+                                grecaptcha.reset();
+                                return;
+                            }
+                            if (!committed) {
+                                alert("Registration transaction aborted. Please try again.");
+                                btn.innerText = "Register Live";
+                                btn.disabled = false;
+                                grecaptcha.reset();
+                                return;
+                            }
+
+                            const assignedNum = snapshot.val();
+                            const studentId = `IPS-26-${classCode}-${assignedNum}`;
+
+                            let sData = { name, mobile, email, gender, cls, password, studentId, dob, date: new Date().toLocaleDateString('en-GB') };
+                            // Save to Live Database
+                            db.ref('ideal_student_users/' + mobile).set(sData)
+                            .then(() => {
+                                return db.ref('ideal_students_by_class/' + cls + '/' + mobile).set(sData);
+                            })
+                            .then(() => {
+                                return db.ref('ideal_student_photos/' + mobile).set(window.croppedProfilePhotoBase64);
+                            })
+                            .then(() => {
+                                let formBody = new URLSearchParams(); 
+                                formBody.append("date", new Date().toLocaleDateString('en-GB')); 
+                                formBody.append("name", name); 
+                                formBody.append("mobile", mobile); 
+                                formBody.append("email", email); 
+                                formBody.append("gender", gender); 
+                                formBody.append("class", cls); 
+                                formBody.append("password", password);
+                                formBody.append("studentId", studentId);
+                                formBody.append("dob", dob);
+                                fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                                fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                                fetch(GOOGLE_SHEET_URL_3, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+
+                                document.getElementById('regSuccess').style.display = 'block';
+                                setTimeout(() => { 
+                                    document.getElementById('loginMobile').value = mobile; 
+                                    toggleAuth('login'); 
+                                    btn.innerText = "Register Live"; 
+                                    btn.disabled = false; 
+                                    document.getElementById('regSuccess').style.display = 'none'; 
+                                    grecaptcha.reset(); 
+                                    window.croppedProfilePhotoBase64 = null;
+                                    document.getElementById('regFileName').innerHTML = "Upload Photo";
+                                    document.getElementById('regPhoto').value = '';
+                                }, 1500);
+                            }).catch(error => { alert("Error connecting to server."); btn.innerText = "Register Live"; btn.disabled = false; grecaptcha.reset(); });
+                        });
                     };
 
                     // Try to register in Firebase Auth first
@@ -704,6 +804,14 @@
         function showDashboard(studentData) {
             document.getElementById('authBox').style.display = 'none'; document.getElementById('studentDashboard').style.display = 'block';
             document.getElementById('dashName').innerText = studentData.name; document.getElementById('dashMobile').innerText = studentData.mobile; document.getElementById('dashClass').innerText = studentData.cls;
+            
+            // Check and generate Student ID if missing
+            if (!studentData.studentId) {
+                generateStudentIdForExisting(studentData);
+            } else {
+                document.getElementById('dashStudentId').innerText = studentData.studentId;
+            }
+
             document.getElementById('dashPhoto').src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
             if (studentData.photo) {
                 document.getElementById('dashPhoto').src = studentData.photo;
@@ -715,6 +823,89 @@
                 });
             }
             loadStudentData(studentData);
+            checkBirthdayWish(studentData);
+        }
+
+        function checkBirthdayWish(studentData) {
+            db.ref('ideal_birthdays/' + studentData.mobile).once('value', snap => {
+                const todayObj = new Date();
+                const yyyy = todayObj.getFullYear();
+                const mm = String(todayObj.getMonth() + 1).padStart(2, '0');
+                const dd = String(todayObj.getDate()).padStart(2, '0');
+                const todayFormatted = `${yyyy}-${mm}-${dd}`;
+                
+                // 1. If admin set a custom birthday wish for today, prioritize it
+                if (snap.exists()) {
+                    const wish = snap.val();
+                    if (wish.date === todayFormatted) {
+                        document.getElementById('birthdayStudentName').innerText = studentData.name;
+                        if (wish.message) {
+                            document.getElementById('birthdayWishMessage').innerText = wish.message;
+                        }
+                        document.getElementById('birthdayModal').style.display = 'flex';
+                        return; // Exit early
+                    }
+                }
+                
+                // 2. If no custom wish but today is their profile birthday, show default wish popup
+                if (studentData.dob) {
+                    const dobParts = studentData.dob.split('-');
+                    if (dobParts.length === 3) {
+                        const dobMonth = dobParts[1];
+                        const dobDay = dobParts[2];
+                        
+                        if (dobMonth === mm && dobDay === dd) {
+                            document.getElementById('birthdayStudentName').innerText = studentData.name;
+                            document.getElementById('birthdayWishMessage').innerText = `Wishing you a day filled with laughter, joy, and wonderful surprises! May this year bring you closer to all your dreams. Happy Birthday from Ideal Public School! 🎉`;
+                            document.getElementById('birthdayModal').style.display = 'flex';
+                        }
+                    }
+                }
+            });
+        }
+
+        function openAchievementsModal() {
+            document.getElementById('achievementsModal').style.display = 'flex';
+        }
+
+        function generateStudentIdForExisting(studentData) {
+            const mobile = studentData.mobile;
+            const cls = studentData.cls;
+            
+            db.ref('ideal_student_users/' + mobile).once('value', snap => {
+                const u = snap.val() || {};
+                
+                // If they already got an ID, load it
+                if (u.studentId) {
+                    studentData.studentId = u.studentId;
+                    sessionStorage.setItem("ideal_active_student", JSON.stringify(studentData));
+                    document.getElementById('dashStudentId').innerText = studentData.studentId;
+                    return;
+                }
+
+                // If not, assign one via transaction
+                const classNum = parseInt(cls.replace(/[^0-9]/g, ''));
+                const classCode = isNaN(classNum) ? 'NUR' : (classNum < 10 ? '0' + classNum : '' + classNum);
+
+                db.ref('ideal_student_id_counters/' + classCode).transaction(currentValue => {
+                    return (currentValue || 100) + 1;
+                }, (error, committed, snapshot) => {
+                    if (error || !committed) return;
+                    
+                    const assignedNum = snapshot.val();
+                    const studentId = `IPS-26-${classCode}-${assignedNum}`;
+
+                    db.ref('ideal_student_users/' + mobile).update({ studentId: studentId })
+                    .then(() => {
+                        return db.ref('ideal_students_by_class/' + cls + '/' + mobile).update({ studentId: studentId });
+                    })
+                    .then(() => {
+                        studentData.studentId = studentId;
+                        sessionStorage.setItem("ideal_active_student", JSON.stringify(studentData));
+                        document.getElementById('dashStudentId').innerText = studentId;
+                    });
+                });
+            });
         }
 
         let calCurrentMonth = new Date().getMonth(), calCurrentYear = new Date().getFullYear();
@@ -759,7 +950,22 @@
             
             // Timetable
             db.ref('ideal_timetables').once('value', snap => {
-                let tables = snap.val() || {}; document.getElementById('timeContainer').innerHTML = tables[student.cls] ? `<div style="background:#fffbeb; color:#d97706; padding:15px; border-radius:10px;">${tables[student.cls]}</div>` : '<p style="text-align:center;">Not published.</p>';
+                let tables = snap.val() || {};
+                const schedule = tables[student.cls];
+                if (schedule) {
+                    if (schedule.startsWith('data:image/')) {
+                        document.getElementById('timeContainer').innerHTML = `
+                            <div style="text-align:center;">
+                                <img src="${schedule}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); cursor:pointer;" onclick="viewDocumentFullscreen('${schedule}', 'Timetable - ${student.cls}')" />
+                                <p style="color:#64748b; font-size:12px; margin-top:8px;"><i class="fas fa-search-plus"></i> Click image to view full size</p>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('timeContainer').innerHTML = `<div style="background:#fffbeb; color:#d97706; padding:15px; border-radius:10px; line-height:1.6; word-break:break-word;">${schedule}</div>`;
+                    }
+                } else {
+                    document.getElementById('timeContainer').innerHTML = '<p style="text-align:center;">Not published.</p>';
+                }
             });
             
             // Assignments
@@ -897,10 +1103,44 @@
         }
 
         let cropperInstance = null;
+        window.isEditingProfilePhoto = false;
+
+        function triggerEditProfilePhoto() {
+            document.getElementById('editProfilePhotoInput').click();
+        }
+
+        function handleEditProfilePhotoSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            window.isEditingProfilePhoto = true;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('cropModal').style.display = 'flex';
+                
+                const cropEl = document.getElementById('cropContainer');
+                cropEl.innerHTML = '';
+                
+                cropperInstance = new Croppie(cropEl, {
+                    viewport: { width: 200, height: 200, type: 'circle' },
+                    boundary: { width: 280, height: 280 },
+                    showZoomer: true,
+                    enableOrientation: true
+                });
+                
+                cropperInstance.bind({
+                    url: e.target.result
+                });
+            };
+            reader.readAsDataURL(file);
+        }
 
         function handleProfilePhotoSelect(input) {
             const file = input.files[0];
             if (!file) return;
+
+            window.isEditingProfilePhoto = false;
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -930,6 +1170,9 @@
                 cropperInstance = null;
             }
             document.getElementById('regPhoto').value = '';
+            const editInput = document.getElementById('editProfilePhotoInput');
+            if (editInput) editInput.value = '';
+            window.isEditingProfilePhoto = false;
         }
 
         function saveCroppedPhoto() {
@@ -941,19 +1184,55 @@
                 format: 'jpeg',
                 quality: 0.8
             }).then(function(base64) {
-                window.croppedProfilePhotoBase64 = base64;
+                if (window.isEditingProfilePhoto) {
+                    saveDashboardProfilePhoto(base64);
+                } else {
+                    window.croppedProfilePhotoBase64 = base64;
+                    
+                    const labelName = document.getElementById('regFileName');
+                    labelName.innerHTML = `
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <img src="${base64}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981;">
+                            <span style="color: #10b981; font-weight: 600;">Photo Ready</span>
+                        </div>
+                    `;
+                    
+                    document.getElementById('cropModal').style.display = 'none';
+                    cropperInstance.destroy();
+                    cropperInstance = null;
+                }
+            });
+        }
+
+        function saveDashboardProfilePhoto(base64) {
+            const user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+            if (!user) return;
+
+            showToast("Updating profile photo...");
+            
+            db.ref('ideal_student_photos/' + user.mobile).set(base64)
+            .then(() => {
+                return db.ref('ideal_student_users/' + user.mobile).update({ photo: base64 });
+            })
+            .then(() => {
+                return db.ref('ideal_students_by_class/' + user.cls + '/' + user.mobile).update({ photo: base64 });
+            })
+            .then(() => {
+                user.photo = base64;
+                sessionStorage.setItem("ideal_active_student", JSON.stringify(user));
+                document.getElementById('dashPhoto').src = base64;
                 
-                const labelName = document.getElementById('regFileName');
-                labelName.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <img src="${base64}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #10b981;">
-                        <span style="color: #10b981; font-weight: 600;">Photo Ready</span>
-                    </div>
-                `;
+                showToast("Profile photo updated successfully! 📸");
                 
                 document.getElementById('cropModal').style.display = 'none';
-                cropperInstance.destroy();
-                cropperInstance = null;
+                if (cropperInstance) {
+                    cropperInstance.destroy();
+                    cropperInstance = null;
+                }
+                window.isEditingProfilePhoto = false;
+            })
+            .catch(err => {
+                alert("Error updating profile photo: " + err.message);
             });
         }
 
@@ -988,11 +1267,17 @@
                                     <img src="${hasDoc}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="viewDocumentFullscreen('${hasDoc}', '${docType.name}')" />
                                 </div>
                                 <span style="font-size: 0.75rem; font-weight: 600; color: #15803d; background: #dcfce7; border: 1px solid #86efac; padding: 4px 10px; border-radius: 50px; margin-bottom: 8px;">
-                                    <i class="fas fa-lock"></i> Uploaded & Locked
+                                    <i class="fas fa-check-circle"></i> Uploaded
                                 </span>
-                                <button class="btn" style="background: #10b981; font-size: 0.8rem; padding: 6px 12px; margin: 0; width: auto; height: auto;" onclick="viewDocumentFullscreen('${hasDoc}', '${docType.name}')">
-                                    <i class="fas fa-eye"></i> View Full
-                                </button>
+                                <div style="display: flex; gap: 8px; width: 100%; justify-content: center;">
+                                    <button class="btn" style="background: #10b981; font-size: 0.8rem; padding: 6px 10px; margin: 0; flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px;" onclick="viewDocumentFullscreen('${hasDoc}', '${docType.name}')">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <label class="btn" style="background: #f97316; font-size: 0.8rem; padding: 6px 10px; margin: 0; flex: 1; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border-radius: 6px;">
+                                        <i class="fas fa-redo"></i> Retake
+                                        <input type="file" accept="image/*" style="display: none;" onchange="handleRetakeDocFile(this, '${docType.key}', '${docType.name}')" />
+                                    </label>
+                                </div>
                             </div>
                         `;
                     } else {
@@ -1015,6 +1300,28 @@
                     }
                 });
             });
+        }
+
+        function handleRetakeDocFile(input, key, docTypeName) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            if (confirm(`Are you sure you want to retake and replace your ${docTypeName}?`)) {
+                const user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+                if (!user) return;
+                
+                showToast("Compressing and uploading new photo...");
+                compressDocumentImage(file, function(compressedBase64) {
+                    db.ref('ideal_student_documents/' + user.mobile + '/' + key).set(compressedBase64)
+                    .then(() => {
+                        showToast("Document updated successfully! 🔄");
+                        loadStudentDocuments(user.mobile);
+                    })
+                    .catch(err => {
+                        alert("Error updating document: " + err.message);
+                    });
+                });
+            }
         }
 
         function handleDocFileChange(input, key) {
