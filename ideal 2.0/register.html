@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKY1GVTNV8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XKY1GVTNV8');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal - Ideal Public School</title>
     <link rel="icon" type="image/png" href="logo.jpeg">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -268,6 +277,242 @@
 
         .progress-bar-container { background: #e2e8f0; height: 10px; border-radius: 50px; overflow: hidden; width: 100%; }
         .progress-bar-fill { background: linear-gradient(90deg, #10b981, #3b82f6); height: 100%; border-radius: 50px; transition: width 0.4s ease; }
+        
+        /* ==============================================================
+           🏆 ELEGANT PREMIUM CERTIFICATE STYLES 🏆
+           ============================================================== */
+        .certificate-preview-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .certificate-card {
+            background: #fbf9f4; /* Parchment cream */
+            padding: 25px;
+            border: 12px solid transparent;
+            border-image: linear-gradient(135deg, #d4af37, #aa7c11, #d4af37) 12;
+            text-align: center;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+            color: #1e293b;
+            box-sizing: border-box;
+            width: calc(100% - 24px);
+            margin: 12px;
+            aspect-ratio: 1.414;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .certificate-inner-border {
+            border: 1.5px solid #aa7c11;
+            height: 100%;
+            width: 100%;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .certificate-corner {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-color: #aa7c11;
+            border-style: solid;
+        }
+        .corner-tl { top: 6px; left: 6px; border-width: 1.5px 0 0 1.5px; }
+        .corner-tr { top: 6px; right: 6px; border-width: 1.5px 1.5px 0 0; }
+        .corner-bl { bottom: 6px; left: 6px; border-width: 0 0 1.5px 1.5px; }
+        .corner-br { bottom: 6px; right: 6px; border-width: 0 1.5px 1.5px 0; }
+
+        .certificate-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin-top: 5px;
+        }
+        .certificate-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        .certificate-school-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: 1.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .certificate-school-sub {
+            font-size: 0.7rem;
+            color: #475569;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .certificate-title-section {
+            margin: 5px 0;
+        }
+        .certificate-main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #854d0e;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        .certificate-present-text {
+            font-size: 0.75rem;
+            font-style: italic;
+            color: #64748b;
+            margin: 4px 0;
+        }
+        .certificate-recipient-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.1rem;
+            color: #1e293b;
+            font-weight: 700;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding-bottom: 2px;
+            display: inline-block;
+            min-width: 250px;
+            margin: 2px 0;
+        }
+        .certificate-recipient-details {
+            font-size: 0.75rem;
+            color: #475569;
+            margin-top: 2px;
+        }
+        .certificate-description {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #334155;
+            max-width: 500px;
+            margin: 5px auto;
+            font-style: italic;
+        }
+        .certificate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            margin-top: 5px;
+            padding: 0 10px;
+        }
+        .certificate-date-area {
+            text-align: left;
+            width: 120px;
+        }
+        .certificate-date-val {
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-bottom: 1px solid #aa7c11;
+            padding-bottom: 2px;
+            display: block;
+            color: #1e293b;
+        }
+        .certificate-date-lbl {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 3px;
+            display: block;
+            font-weight: 600;
+        }
+        .certificate-badge-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+        .certificate-gold-seal {
+            width: 55px;
+            height: 55px;
+            background: radial-gradient(circle, #fcd34d 0%, #d97706 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3);
+            border: 1.5px dashed #b45309;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .certificate-gold-seal::before {
+            content: "IDEAL";
+            color: #7c2d12;
+            font-weight: 800;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .certificate-ribbon-l {
+            position: absolute;
+            width: 12px;
+            height: 35px;
+            background: #b45309;
+            top: 30px;
+            left: 12px;
+            transform: rotate(30deg);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+            z-index: 1;
+        }
+        .certificate-ribbon-r {
+            position: absolute;
+            width: 12px;
+            height: 35px;
+            background: #b45309;
+            top: 30px;
+            right: 12px;
+            transform: rotate(-30deg);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+            z-index: 1;
+        }
+        .certificate-sig-area {
+            text-align: center;
+            width: 130px;
+        }
+        .certificate-sig-img {
+            height: 35px;
+            max-width: 120px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 2px auto;
+        }
+        .certificate-sig-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: block;
+            margin-bottom: 1px;
+            line-height: 1.2;
+        }
+        .certificate-sig-line {
+            border-bottom: 1px solid #aa7c11;
+            display: block;
+            width: 100%;
+        }
+        .certificate-sig-title {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 3px;
+            display: block;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -338,6 +583,7 @@
 
         <h2 class="section-title">Academic Overview</h2>
         <div class="features-grid">
+            <div class="feature-box box-achievements" onclick="openAchievementsModal()"><div class="icon-bg" style="background: #fef3c7; color: #f59e0b;"><i class="fas fa-trophy"></i></div><div class="feature-text"><h4>Achievement Badges</h4><p style="color: #10b981; font-weight: 600;">View Certificates</p></div></div>
             <div class="feature-box box-cal" onclick="openModal('calModal')"><div class="icon-bg"><i class="far fa-calendar-alt"></i></div><div class="feature-text"><h4>School Calendar</h4><p>Holidays & Events</p></div></div>
             <div class="feature-box box-att" onclick="openModal('attModal')"><div class="icon-bg"><i class="fas fa-calendar-check"></i></div><div class="feature-text"><h4>My Attendance</h4><p>Check daily status</p></div></div>
             <div class="feature-box box-leave" onclick="openModal('leaveModal')"><div class="icon-bg"><i class="fas fa-calendar-minus"></i></div><div class="feature-text"><h4>Apply Leave</h4><p>Submit request</p></div></div>
@@ -347,7 +593,6 @@
             <div class="feature-box box-doc" onclick="openModal('docModal')"><div class="icon-bg"><i class="fas fa-folder-open"></i></div><div class="feature-text"><h4>My Documents</h4><p>Upload & View Documents</p></div></div>
             <div class="feature-box box-fee locked-feature" onclick="openModal('feeModal')"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-rupee-sign"></i></div><div class="feature-text"><h4>Fee Record</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
             <div class="feature-box box-progress locked-feature" onclick="openProgressModal()"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-chart-line"></i></div><div class="feature-text"><h4>My Progress</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
-            <div class="feature-box box-achievements locked-feature" onclick="openAchievementsModal()"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-trophy"></i></div><div class="feature-text"><h4>Achievement Badges</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
         </div>
     </div>
 
@@ -360,17 +605,39 @@
         </div>
     </div>
 
-    <!-- Achievements Modal (Locked) -->
+    <!-- Achievements Modal (Unlocked) -->
     <div id="achievementsModal" class="modal">
-        <div class="modal-content" style="max-width: 450px; text-align: center;">
+        <div class="modal-content" style="max-width: 800px; text-align: center; border-radius: 20px;">
             <span class="close-btn" onclick="closeModal('achievementsModal')"><i class="fas fa-times"></i></span>
-            <div style="padding: 20px 10px;">
-                <i class="fas fa-lock" style="font-size: 4rem; color: #f59e0b; margin-bottom: 20px; display: block;"></i>
-                <h3 style="color: #0f172a; margin-bottom: 10px; font-weight: 700;">Achievements Portal Locked</h3>
-                <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-                    Your badge showcase, school certificates, academic medals, and extra-curricular honors are currently locked. Achievement badges will be coming soon!
-                </p>
-                <span style="background: #fef3c7; color: #d97706; padding: 8px 22px; border-radius: 20px; font-weight: 600; font-size: 13px; display: inline-block; border: 1px solid #fde68a;"><i class="fas fa-hourglass-half"></i> Coming Soon</span>
+            <h2 style="color: #b45309; margin-bottom: 10px; font-weight: 800; font-family: 'Poppins', sans-serif;"><i class="fas fa-trophy" style="color: #f59e0b; margin-right: 8px;"></i> My Achievement Badges</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 25px;">Here are your official certificates, academic awards, and badges issued by the administration.</p>
+            
+            <div id="studentCertsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; text-align: left; max-height: 450px; overflow-y: auto; padding: 10px;">
+                <!-- Dynamically loaded -->
+            </div>
+            
+            <div id="studentCertsEmptyState" style="display: none; padding: 40px 20px; color: #64748b; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1; text-align: center;">
+                <i class="fas fa-award" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 12px; display: block;"></i>
+                <p style="font-weight: 600; margin: 0;">No certificates awarded yet. Keep striving for excellence! 🌟</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Viewer Modal -->
+    <div id="certificateViewerModal" class="modal" style="z-index: 10050;">
+        <div class="modal-content" style="max-width: 840px; padding: 25px; border-radius: 20px;">
+            <span class="close-btn" onclick="closeModal('certificateViewerModal')"><i class="fas fa-times"></i></span>
+            <h3 id="certViewerHeading" style="margin-bottom: 15px; color: #0f172a; font-weight: 700; text-align: center;">View Certificate</h3>
+            
+            <div style="width: 100%; display: flex; justify-content: center; background: #cbd5e1; padding: 20px; border-radius: 12px; overflow: auto; box-sizing: border-box;">
+                <div id="studentCertRenderArea" class="certificate-preview-container" style="width: 760px; height: 537px; box-shadow: none;">
+                    <!-- Will be loaded dynamically -->
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
+                <button id="btnDownloadCertPNG" class="btn" style="background: linear-gradient(135deg, #fbbf24, #d97706); color: white; width: auto; padding: 12px 30px; font-weight: bold; border: none; border-radius: 50px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);"><i class="fas fa-download"></i> Download PNG Certificate</button>
+                <button class="btn" style="background: #64748b; color: white; width: auto; padding: 12px 30px; border: none; border-radius: 50px;" onclick="closeModal('certificateViewerModal')">Close</button>
             </div>
         </div>
     </div>
@@ -392,6 +659,29 @@
             </p>
             <button class="btn" style="background: linear-gradient(135deg, #d97706, #b45309); border: none; color: white; padding: 12px 35px; font-size: 1.05rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(217, 119, 6, 0.3); transition: all 0.3s;" onclick="closeModal('birthdayModal')">
                 Thank You! ❤️
+            </button>
+        </div>
+    </div>
+
+    <!-- 🌟 FIRST TIME LOGIN WELCOME MODAL 🌟 -->
+    <div id="welcomeModal" class="modal" style="z-index: 9999;">
+        <div class="modal-content" style="max-width: 500px; text-align: center; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 3px solid #4ade80; border-radius: 30px; padding: 40px 30px; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(74, 222, 128, 0.4);">
+            <div style="position: absolute; top: -10px; left: 10%; font-size: 2rem; animation: float 3s ease-in-out infinite;">🎓</div>
+            <div style="position: absolute; top: 20px; right: 15%; font-size: 2rem; animation: float 4s ease-in-out infinite 1s;">✨</div>
+            <div style="position: absolute; bottom: 30px; left: 15%; font-size: 1.8rem; animation: float 3.5s ease-in-out infinite 0.5s;">🌟</div>
+            <div style="position: absolute; bottom: 15px; right: 10%; font-size: 1.8rem; animation: float 4.5s ease-in-out infinite 1.5s;">🏫</div>
+            
+            <span class="close-btn" onclick="closeModal('welcomeModal')" style="color: #15803d;"><i class="fas fa-times"></i></span>
+            
+            <div style="font-size: 5rem; margin-bottom: 15px; animation: pulse 2s infinite;">👋</div>
+            <h2 style="color: #15803d; font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; font-family: 'Poppins', sans-serif;">Welcome to IPS Portal!</h2>
+            <p style="color: #166534; font-size: 1.15rem; font-weight: 600; line-height: 1.6; margin-bottom: 25px; border-top: 1px dashed #86efac; border-bottom: 1px dashed #86efac; padding: 20px 10px;" id="welcomeMessageText">
+                Hi <span id="welcomeStudentName" style="color: #15803d; font-weight: 800;">Student</span>,<br><br>
+                Welcome to the Ideal Public School Student Portal!<br>
+                <strong>Your attendance marking will begin on July 1st.</strong> Please check your attendance and other updates regularly.
+            </p>
+            <button class="btn" style="background: linear-gradient(135deg, #22c55e, #15803d); border: none; color: white; padding: 12px 35px; font-size: 1.05rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3); transition: all 0.3s;" onclick="closeModal('welcomeModal')">
+                Okay, Got it! 👍
             </button>
         </div>
     </div>
@@ -621,7 +911,7 @@
                             const assignedNum = snapshot.val();
                             const studentId = `IPS-26-${classCode}-${assignedNum}`;
 
-                            let sData = { name, mobile, email, gender, cls, password, studentId, dob, date: new Date().toLocaleDateString('en-GB') };
+                            let sData = { name, mobile, email, gender, cls, password, studentId, dob, date: new Date().toLocaleDateString('en-GB'), firstTimeLogin: true };
                             // Save to Live Database
                             db.ref('ideal_student_users/' + mobile).set(sData)
                             .then(() => {
@@ -667,10 +957,17 @@
                             saveToDatabase();
                         })
                         .catch(authError => {
-                            alert("Auth Account Creation Error: " + authError.message);
-                            btn.innerText = "Register Live";
-                            btn.disabled = false;
-                            grecaptcha.reset();
+                            if (authError.code === 'auth/email-already-in-use') {
+                                // Bypassing Auth error for orphaned accounts:
+                                // Since this email doesn't exist in the RTDB (checked earlier),
+                                // it means the admin deleted the RTDB profile. We can safely proceed.
+                                saveToDatabase();
+                            } else {
+                                alert("Auth Account Creation Error: " + authError.message);
+                                btn.innerText = "Register Live";
+                                btn.disabled = false;
+                                grecaptcha.reset();
+                            }
                         });
                 });
             });
@@ -824,6 +1121,20 @@
             }
             loadStudentData(studentData);
             checkBirthdayWish(studentData);
+            
+            // Check first time login welcome message
+            if (studentData.firstTimeLogin === true) {
+                document.getElementById('welcomeStudentName').innerText = studentData.name;
+                document.getElementById('welcomeModal').style.display = 'flex';
+                
+                // Set firstTimeLogin to false in database
+                db.ref('ideal_student_users/' + studentData.mobile).update({ firstTimeLogin: false });
+                db.ref('ideal_students_by_class/' + studentData.cls + '/' + studentData.mobile).update({ firstTimeLogin: false });
+                
+                // Update session storage so refresh doesn't trigger it again
+                studentData.firstTimeLogin = false;
+                sessionStorage.setItem("ideal_active_student", JSON.stringify(studentData));
+            }
         }
 
         function checkBirthdayWish(studentData) {
@@ -865,7 +1176,144 @@
         }
 
         function openAchievementsModal() {
+            const user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+            if (!user) {
+                alert("Please log in first!");
+                return;
+            }
+
             document.getElementById('achievementsModal').style.display = 'flex';
+            
+            const grid = document.getElementById('studentCertsGrid');
+            const emptyState = document.getElementById('studentCertsEmptyState');
+            if (!grid || !emptyState) return;
+
+            grid.innerHTML = '<p style="text-align: center; color: #64748b; grid-column: 1/-1; padding: 20px;">Loading achievements... ⏳</p>';
+            emptyState.style.display = 'none';
+
+            db.ref('ideal_student_certificates/' + user.mobile).once('value', snap => {
+                grid.innerHTML = '';
+                const certs = snap.val();
+                if (!certs) {
+                    emptyState.style.display = 'block';
+                    return;
+                }
+
+                Object.keys(certs).forEach(certKey => {
+                    const cert = certs[certKey];
+                    const displayDate = cert.date ? new Date(cert.date).toLocaleDateString('en-GB') : '';
+                    
+                    grid.innerHTML += `
+                        <div class="gallery-card" style="padding: 15px; border-radius: 12px; border: 1.5px solid #fbbf24; background: #fffbeb; display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.08);">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <span style="font-size:0.75rem; color:#d97706; background:#fef3c7; padding:4px 10px; border-radius:50px; font-weight:700; text-transform:uppercase; border:1px solid #fde68a;"><i class="fas fa-award"></i> Certificate</span>
+                                    <span style="font-size:0.72rem; color:#64748b; font-weight:600;">${displayDate}</span>
+                                </div>
+                                <h4 style="color:#0f172a; font-weight:800; font-size:0.95rem; margin-bottom:8px; line-height:1.4;">${cert.title}</h4>
+                                <p style="color:#475569; font-size:0.8rem; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; text-overflow:ellipsis; line-height:1.5; font-style:italic;">"${cert.description}"</p>
+                            </div>
+                            <button class="btn" style="background:linear-gradient(135deg, #fbbf24, #d97706); font-size:0.8rem; padding:8px 15px; margin:12px 0 0 0; width:100%; border:none; color:white; font-weight:700; border-radius:8px; box-shadow:0 3px 8px rgba(217,119,6,0.15); height:auto;" onclick="viewStudentCertificateDetails('${user.mobile}', '${certKey}')">
+                                <i class="fas fa-eye"></i> View Certificate
+                            </button>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        window.viewStudentCertificateDetails = function(mobile, certKey) {
+            db.ref(`ideal_student_certificates/${mobile}/${certKey}`).once('value', snap => {
+                const cert = snap.val();
+                if (!cert) return;
+
+                const renderArea = document.getElementById('studentCertRenderArea');
+                if (!renderArea) return;
+
+                const displayDate = cert.date ? new Date(cert.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
+                renderArea.innerHTML = `
+                    <div class="certificate-card" style="padding: 25px; border-width: 12px; height: 537px; width: 760px; box-sizing: border-box;">
+                        <div class="certificate-inner-border" style="padding: 15px 20px;">
+                            <div class="certificate-corner corner-tl"></div>
+                            <div class="certificate-corner corner-tr"></div>
+                            <div class="certificate-corner corner-bl"></div>
+                            <div class="certificate-corner corner-br"></div>
+
+                            <div class="certificate-header">
+                                <img src="${cert.customLogo || 'logo.jpeg'}" class="certificate-logo" alt="School Logo">
+                                <h1 class="certificate-school-name">Ideal Public School</h1>
+                                <p class="certificate-school-sub">Chandori, Waraseoni (M.P.)</p>
+                            </div>
+
+                            <div class="certificate-title-section">
+                                <h2 class="certificate-main-title">${cert.title}</h2>
+                                <p class="certificate-present-text">This is proudly presented to</p>
+                                <div class="certificate-recipient-name">${cert.recipientName}</div>
+                                <p class="certificate-recipient-details">of ${cert.studentClass} (Student ID: ${cert.studentId || 'N/A'})</p>
+                            </div>
+
+                            <div class="certificate-description">
+                                ${cert.description}
+                            </div>
+
+                            <div class="certificate-footer">
+                                <div class="certificate-date-area">
+                                    <span class="certificate-date-val">${displayDate}</span>
+                                    <span class="certificate-date-lbl">Date of Issue</span>
+                                </div>
+
+                                <div class="certificate-badge-area">
+                                    <div class="certificate-ribbon-l"></div>
+                                    <div class="certificate-ribbon-r"></div>
+                                    <div class="certificate-gold-seal"></div>
+                                </div>
+
+                                <div class="certificate-sig-area">
+                                    ${cert.customSignature ? 
+                                        `<img class="certificate-sig-img" src="${cert.customSignature}" alt="Signature">` : 
+                                        `<span class="certificate-sig-text">${cert.signatoryName}</span>`
+                                    }
+                                    <span class="certificate-sig-line"></span>
+                                    <span class="certificate-sig-title">${cert.signatoryTitle}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Set download button listener
+                const downloadBtn = document.getElementById('btnDownloadCertPNG');
+                downloadBtn.onclick = function() {
+                    const originalText = downloadBtn.innerHTML;
+                    downloadBtn.disabled = true;
+                    downloadBtn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Generating...";
+                    
+                    html2canvas(renderArea, {
+                        scale: 2.5,
+                        useCORS: true,
+                        allowTaint: true
+                    }).then(canvas => {
+                        const link = document.createElement('a');
+                        link.href = canvas.toDataURL('image/png');
+                        link.download = `${cert.recipientName.replace(/\s+/g, '_')}_Certificate.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        downloadBtn.disabled = false;
+                        downloadBtn.innerHTML = originalText;
+                        showToast("Certificate downloaded successfully! 🏆");
+                    }).catch(err => {
+                        console.error(err);
+                        downloadBtn.disabled = false;
+                        downloadBtn.innerHTML = originalText;
+                        alert("Error generating download: " + err.message);
+                    });
+                };
+
+                document.getElementById('certificateViewerModal').style.display = 'flex';
+            });
         }
 
         function generateStudentIdForExisting(studentData) {

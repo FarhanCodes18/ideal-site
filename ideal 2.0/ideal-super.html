@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKY1GVTNV8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XKY1GVTNV8');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Ideal Public School</title>
     <link rel="icon" type="image/png" href="logo.jpeg">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -1233,7 +1242,245 @@
             }
             .login-body {
                 padding: 25px;
+            .login-body {
+                padding: 25px;
             }
+        }
+        
+        /* ==============================================================
+           🏆 ELEGANT PREMIUM CERTIFICATE STYLES 🏆
+           ============================================================== */
+        .certificate-preview-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        .certificate-card {
+            background: #fbf9f4; /* Parchment cream */
+            padding: 25px;
+            border: 12px solid transparent;
+            border-image: linear-gradient(135deg, #d4af37, #aa7c11, #d4af37) 12;
+            text-align: center;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+            color: #1e293b;
+            box-sizing: border-box;
+            width: calc(100% - 24px);
+            margin: 12px;
+            aspect-ratio: 1.414;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .certificate-inner-border {
+            border: 1.5px solid #aa7c11;
+            height: 100%;
+            width: 100%;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        .certificate-corner {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-color: #aa7c11;
+            border-style: solid;
+        }
+        .corner-tl { top: 6px; left: 6px; border-width: 1.5px 0 0 1.5px; }
+        .corner-tr { top: 6px; right: 6px; border-width: 1.5px 1.5px 0 0; }
+        .corner-bl { bottom: 6px; left: 6px; border-width: 0 0 1.5px 1.5px; }
+        .corner-br { bottom: 6px; right: 6px; border-width: 0 1.5px 1.5px 0; }
+
+        .certificate-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin-top: 5px;
+        }
+        .certificate-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        .certificate-school-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: 1.5px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .certificate-school-sub {
+            font-size: 0.7rem;
+            color: #475569;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .certificate-title-section {
+            margin: 5px 0;
+        }
+        .certificate-main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #854d0e;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        .certificate-present-text {
+            font-size: 0.75rem;
+            font-style: italic;
+            color: #64748b;
+            margin: 4px 0;
+        }
+        .certificate-recipient-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.1rem;
+            color: #1e293b;
+            font-weight: 700;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding-bottom: 2px;
+            display: inline-block;
+            min-width: 250px;
+            margin: 2px 0;
+        }
+        .certificate-recipient-details {
+            font-size: 0.75rem;
+            color: #475569;
+            margin-top: 2px;
+        }
+        .certificate-description {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #334155;
+            max-width: 500px;
+            margin: 5px auto;
+            font-style: italic;
+        }
+        .certificate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            margin-top: 5px;
+            padding: 0 10px;
+        }
+        .certificate-date-area {
+            text-align: left;
+            width: 120px;
+        }
+        .certificate-date-val {
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-bottom: 1px solid #aa7c11;
+            padding-bottom: 2px;
+            display: block;
+            color: #1e293b;
+        }
+        .certificate-date-lbl {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 3px;
+            display: block;
+            font-weight: 600;
+        }
+        .certificate-badge-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+        .certificate-gold-seal {
+            width: 55px;
+            height: 55px;
+            background: radial-gradient(circle, #fcd34d 0%, #d97706 100%);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3);
+            border: 1.5px dashed #b45309;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .certificate-gold-seal::before {
+            content: "IDEAL";
+            color: #7c2d12;
+            font-weight: 800;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+        .certificate-ribbon-l {
+            position: absolute;
+            width: 12px;
+            height: 35px;
+            background: #b45309;
+            top: 30px;
+            left: 12px;
+            transform: rotate(30deg);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+            z-index: 1;
+        }
+        .certificate-ribbon-r {
+            position: absolute;
+            width: 12px;
+            height: 35px;
+            background: #b45309;
+            top: 30px;
+            right: 12px;
+            transform: rotate(-30deg);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 80%, 0% 100%);
+            z-index: 1;
+        }
+        .certificate-sig-area {
+            text-align: center;
+            width: 130px;
+        }
+        .certificate-sig-img {
+            height: 35px;
+            max-width: 120px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 2px auto;
+        }
+        .certificate-sig-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: block;
+            margin-bottom: 1px;
+            line-height: 1.2;
+        }
+        .certificate-sig-line {
+            border-bottom: 1px solid #aa7c11;
+            display: block;
+            width: 100%;
+        }
+        .certificate-sig-title {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 3px;
+            display: block;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -1338,6 +1585,10 @@
                     <i class="fas fa-chart-bar"></i>
                     <span>Student Analytics</span>
                 </a>
+                <a href="javascript:void(0)" class="nav-item" onclick="showDashboardSection('certificate-maker', this)">
+                    <i class="fas fa-award"></i>
+                    <span>Certificate Maker</span>
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <p>Ideal Public School</p>
@@ -1358,12 +1609,21 @@
                         <h2 id="activeSectionTitle">Fees Portal</h2>
                     </div>
                 </div>
-                <div class="header-right">
-                    <button class="header-btn" onclick="toggleSidebarMenu()"><i class="fas fa-indent"></i> Toggle sidebar</button>
-                    <button class="header-btn" onclick="refreshDashboardData()"><i class="fas fa-sync"></i> Refresh all</button>
-                    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </div>
             </header>
+
+            <!-- BIRTHDAY REMINDER BANNER -->
+            <div id="birthdayReminderBanner" style="display: none; background: linear-gradient(135deg, #fef08a 0%, #fef9c3 100%); border: 1px solid #fde68a; border-left: 6px solid #eab308; border-radius: 12px; padding: 15px; margin: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 2.2rem;">🎉</span>
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; color: #854d0e; font-weight: 700; font-size: 1.05rem;">Today's Birthday Reminders!</h4>
+                        <p style="margin: 0; color: #a16207; font-size: 0.9rem;" id="birthdayReminderText">Loading today's birthdays...</p>
+                    </div>
+                </div>
+                <button class="btn btn-teal" style="width: auto; margin: 0; padding: 8px 16px; font-size: 0.85rem; background: #ca8a04; color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" onclick="showDashboardSection('attendance-staff', document.querySelector('a[onclick*=\'attendance-staff\']')); switchClassTab('birthdays');">
+                    <i class="fas fa-paper-plane"></i> View & Wish Students
+                </button>
+            </div>
 
             <!-- STAT CARDS CONTAINER -->
             <section class="stats-container">
@@ -1855,10 +2115,35 @@
                                     <h5 style="color: #d97706; margin: 0 0 5px 0; font-size: 0.85rem; text-transform: uppercase; font-weight: bold;"><i class="fas fa-birthday-cake"></i> Birthdays Wished Today</h5>
                                     <h2 id="birthdayCountToday" style="font-size: 2rem; color: #b45309; margin: 0; font-weight: 800;">0</h2>
                                 </div>
+                                <div style="background: #ecfdf5; border: 2px solid #a7f3d0; border-radius: 12px; padding: 15px; text-align: center;">
+                                    <h5 style="color: #059669; margin: 0 0 5px 0; font-size: 0.85rem; text-transform: uppercase; font-weight: bold;"><i class="fas fa-calendar-alt"></i> Today's Birthdays (DOB)</h5>
+                                    <h2 id="birthdayDobCountToday" style="font-size: 2rem; color: #047857; margin: 0; font-weight: 800;">0</h2>
+                                </div>
                                 <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 15px; text-align: center; opacity: 0.85; position: relative;">
                                     <span style="position: absolute; top: 5px; right: 5px; background: #94a3b8; color: white; padding: 2px 8px; border-radius: 50px; font-size: 10px; font-weight: bold; text-transform: uppercase;">Locked</span>
                                     <h5 style="color: #64748b; margin: 0 0 5px 0; font-size: 0.85rem; text-transform: uppercase; font-weight: bold;"><i class="fas fa-trophy"></i> Total Achievements</h5>
                                     <h2 id="achievementCount" style="font-size: 2rem; color: #475569; margin: 0; font-weight: 800;">0 (Locked)</h2>
+                                </div>
+                            </div>
+
+                            <!-- Today's Birthdays List (Automatic Reminders) -->
+                            <div id="todayBirthdaysSection" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 15px; padding: 20px; margin-bottom: 20px; display: none;">
+                                <h4 style="margin: 0 0 12px 0; color: #166534; font-weight: 700; font-size: 1.05rem;"><i class="fas fa-birthday-cake" style="color: #10b981;"></i> Students Celebrating Birthdays Today</h4>
+                                <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;" id="todayBirthdaysTable">
+                                        <thead>
+                                            <tr style="border-bottom: 2px solid #86efac; text-align: left;">
+                                                <th style="padding: 10px; color: #15803d; font-weight: 700;">Student Info</th>
+                                                <th style="padding: 10px; color: #15803d; font-weight: 700;">Class</th>
+                                                <th style="padding: 10px; color: #15803d; font-weight: 700;">D.O.B</th>
+                                                <th style="padding: 10px; color: #15803d; font-weight: 700;">Wish Status</th>
+                                                <th style="padding: 10px; color: #15803d; font-weight: 700; text-align: center;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="todayBirthdaysList">
+                                            <!-- Dynamic birthday rows -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
@@ -2352,10 +2637,17 @@
                                     <option value="Class 12th">Class 12th</option>
                                 </select>
                             </div>
-                            <div style="flex: 2; min-width: 250px;">
+                            <div style="flex: 1; min-width: 180px;">
+                                <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Filter by Date</label>
+                                <div style="display: flex; gap: 5px; align-items: center;">
+                                    <input type="date" id="regStudentDateFilter" onchange="renderRegisteredStudentsTable()" style="width:100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; background: white; color: #475569; height: 42px; box-sizing: border-box;">
+                                    <button onclick="document.getElementById('regStudentDateFilter').value=''; renderRegisteredStudentsTable();" style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; height: 42px; width: 42px; cursor: pointer; color: #64748b; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0;" title="Clear Date"><i class="fas fa-undo-alt"></i></button>
+                                </div>
+                            </div>
+                            <div style="flex: 1.5; min-width: 200px;">
                                 <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Search Students</label>
                                 <div style="position: relative;">
-                                    <input type="text" id="regStudentSearch" oninput="renderRegisteredStudentsTable()" placeholder="Search by name, mobile, email..." style="width:100%; padding: 10px 15px 10px 40px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem;">
+                                    <input type="text" id="regStudentSearch" oninput="renderRegisteredStudentsTable()" placeholder="Search by name, mobile, email..." style="width:100%; padding: 10px 15px 10px 40px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; height: 42px; box-sizing: border-box;">
                                     <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
                                 </div>
                             </div>
@@ -2515,6 +2807,175 @@
                     </div>
                 </div>
 
+                <!-- 9. CERTIFICATE MAKER -->
+                <div id="section-certificate-maker" class="tab-section">
+                    <div class="admin-card card-orange" style="border-left: 6px solid #d97706; background: #fffbeb;">
+                        <h3 style="color: #b45309;"><i class="fas fa-award" style="color: #d97706;"></i> Student Certificate Maker</h3>
+                        <p class="desc" style="color: #7c2d12;">Design and issue beautiful certificates of achievement, sports, or merit directly to a student's portal.</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 25px; flex-wrap: wrap; margin-bottom: 25px; align-items: stretch;">
+                        
+                        <!-- Left Column: Certificate Creation Form -->
+                        <div class="admin-card" style="margin: 0; padding: 25px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h4 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 15px; font-weight: 600;"><i class="fas fa-edit" style="color: #d97706; margin-right: 8px;"></i> Certificate Parameters</h4>
+                                
+                                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Select Class</label>
+                                        <select id="certClassSelect" onchange="onCertClassChange()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; background: white;">
+                                            <option value="">-- Choose Class --</option>
+                                            <option value="Class 1st">Class 1st</option>
+                                            <option value="Class 2nd">Class 2nd</option>
+                                            <option value="Class 3rd">Class 3rd</option>
+                                            <option value="Class 4th">Class 4th</option>
+                                            <option value="Class 5th">Class 5th</option>
+                                            <option value="Class 6th">Class 6th</option>
+                                            <option value="Class 7th">Class 7th</option>
+                                            <option value="Class 8th">Class 8th</option>
+                                            <option value="Class 9th">Class 9th</option>
+                                            <option value="Class 10th">Class 10th</option>
+                                            <option value="Class 11th">Class 11th</option>
+                                            <option value="Class 12th">Class 12th</option>
+                                        </select>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Select Student</label>
+                                        <select id="certStudentSelect" onchange="onCertStudentSelect()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; background: white;">
+                                            <option value="">-- Choose Student --</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 15px;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Recipient Name</label>
+                                    <input type="text" id="certRecipientName" placeholder="Student Name" oninput="updateCertPreview()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem;">
+                                </div>
+
+                                <div style="margin-bottom: 15px;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Certificate Title</label>
+                                    <input type="text" id="certTitle" value="Certificate of Excellence" oninput="updateCertPreview()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem;">
+                                </div>
+
+                                <div style="margin-bottom: 15px;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Description / Achievement Details</label>
+                                    <textarea id="certDescription" rows="3" oninput="updateCertPreview()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem; font-family: inherit; resize: vertical;">for demonstrating exceptional dedication, outstanding academic performance, and exemplary character during the academic session.</textarea>
+                                </div>
+
+                                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Award Date</label>
+                                        <input type="date" id="certDate" onchange="updateCertPreview()" style="width:100%; padding: 9px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem;">
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Signatory Name</label>
+                                        <input type="text" id="certSignatoryName" value="A.R Qureshi" oninput="updateCertPreview()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem;">
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                                    <div style="flex: 1;">
+                                        <label style="font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 6px; display: block;">Signatory Title</label>
+                                        <input type="text" id="certSignatoryTitle" value="Director" oninput="updateCertPreview()" style="width:100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none; font-size: 0.9rem;">
+                                    </div>
+                                    <div style="flex: 1; display:flex; flex-direction:column; justify-content:flex-end;">
+                                        <div style="display: flex; gap: 10px; align-items: center; height: 42px;">
+                                            <label class="btn" style="background:#cbd5e1; color:#0f172a; margin:0; padding:10px; width:auto; font-size: 0.85rem; cursor:pointer;" title="Upload custom signature image"><i class="fas fa-signature"></i> Sig Image<input type="file" id="certSigUpload" accept="image/*" onchange="handleCertSigUpload(this)" style="display:none;"></label>
+                                            <label class="btn" style="background:#cbd5e1; color:#0f172a; margin:0; padding:10px; width:auto; font-size: 0.85rem; cursor:pointer;" title="Upload custom logo image"><i class="fas fa-image"></i> Logo Image<input type="file" id="certLogoUpload" accept="image/*" onchange="handleCertLogoUpload(this)" style="display:none;"></label>
+                                            <button onclick="resetCertImages()" class="btn" style="background:#ef4444; color:white; margin:0; padding:10px; width:auto;" title="Reset images to default"><i class="fas fa-undo"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <button class="btn" id="btnAwardCert" onclick="awardCertificate()" style="background: linear-gradient(135deg, #fbbf24, #d97706); color: white; width: 100%; font-weight: bold; border: none; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);"><i class="fas fa-paper-plane"></i> AWARD CERTIFICATE</button>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Live Premium Preview -->
+                        <div class="admin-card" style="margin: 0; padding: 20px; display: flex; flex-direction: column; justify-content: center; background: #cbd5e1; border-radius: 16px;">
+                            <div class="certificate-preview-container" id="certCaptureArea">
+                                <div class="certificate-card">
+                                    <div class="certificate-inner-border">
+                                        <div class="certificate-corner corner-tl"></div>
+                                        <div class="certificate-corner corner-tr"></div>
+                                        <div class="certificate-corner corner-bl"></div>
+                                        <div class="certificate-corner corner-br"></div>
+
+                                        <div class="certificate-header">
+                                            <img id="previewCertLogo" src="logo.jpeg" class="certificate-logo" alt="School Logo">
+                                            <h1 class="certificate-school-name">Ideal Public School</h1>
+                                            <p class="certificate-school-sub">Chandori, Waraseoni (M.P.)</p>
+                                        </div>
+
+                                        <div class="certificate-title-section">
+                                            <h2 class="certificate-main-title" id="previewCertTitle">Certificate of Excellence</h2>
+                                            <p class="certificate-present-text">This is proudly presented to</p>
+                                            <div class="certificate-recipient-name" id="previewCertRecipient">Student Name</div>
+                                            <p class="certificate-recipient-details" id="previewCertRecipientDetails">of Class X (ID: IPS-X-XXX)</p>
+                                        </div>
+
+                                        <div class="certificate-description" id="previewCertDescription">
+                                            for demonstrating exceptional dedication, outstanding academic performance, and exemplary character during the academic session.
+                                        </div>
+
+                                        <div class="certificate-footer">
+                                            <div class="certificate-date-area">
+                                                <span class="certificate-date-val" id="previewCertDate">28/06/2026</span>
+                                                <span class="certificate-date-lbl">Date of Issue</span>
+                                            </div>
+
+                                            <div class="certificate-badge-area">
+                                                <div class="certificate-ribbon-l"></div>
+                                                <div class="certificate-ribbon-r"></div>
+                                                <div class="certificate-gold-seal"></div>
+                                            </div>
+
+                                            <div class="certificate-sig-area">
+                                                <div id="previewCertSigTextWrapper">
+                                                    <span class="certificate-sig-text" id="previewCertSigText">A.R Qureshi</span>
+                                                </div>
+                                                <img id="previewCertSigImg" class="certificate-sig-img" style="display:none;" src="" alt="Signature">
+                                                <span class="certificate-sig-line"></span>
+                                                <span class="certificate-sig-title" id="previewCertSigTitle">Director</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Card: Log History -->
+                    <div class="admin-card" style="padding: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                            <h3 style="margin: 0; color: #0f172a;"><i class="fas fa-history" style="color: #64748b; margin-right: 8px;"></i> Issued Certificates Log</h3>
+                            <span id="totalCertCountBadge" style="background: #fef3c7; color: #b45309; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">0 Total</span>
+                        </div>
+                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem;">
+                                <thead style="background: #f8fafc; position: sticky; top: 0; border-bottom: 2px solid #cbd5e1; z-index: 2;">
+                                    <tr>
+                                        <th style="padding: 12px 15px;">Student Name</th>
+                                        <th style="padding: 12px 15px;">Class</th>
+                                        <th style="padding: 12px 15px;">Certificate Title</th>
+                                        <th style="padding: 12px 15px;">Date Issued</th>
+                                        <th style="padding: 12px 15px; text-align: center;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="certHistoryTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 20px; color: #64748b;">No certificates issued yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -2584,6 +3045,9 @@
         function setupDynamicStats() {
             setupStudentAnalytics();
             setupRegisteredStudentsListener();
+            if (typeof setupCertificatesLog === 'function') {
+                setupCertificatesLog();
+            }
             db.ref('ideal_student_users').on('value', snap => {
                 statsData.students = snap.val() ? Object.keys(snap.val()).length : 0;
                 document.getElementById('statTotalStudents').innerText = statsData.students;
@@ -2692,6 +3156,8 @@
             } else if (text === 'Bulk SMS Blaster') {
                 count = statsData.students;
             } else if (text === 'Student Analytics') {
+                count = statsData.students;
+            } else if (text === 'Certificate Maker') {
                 count = statsData.students;
             }
             const countEl = document.getElementById('statActiveTabCount');
@@ -2850,6 +3316,9 @@
                 renderRegisteredStudentsTable();
                 populateBirthdayStudentsDropdown();
                 updateWishesTableAndCounter();
+                if (typeof onCertClassChange === 'function') {
+                    onCertClassChange();
+                }
                 if (typeof loadBlasterRecipientPreview === 'function' && document.getElementById('section-bulk-blaster') && document.getElementById('section-bulk-blaster').classList.contains('active')) {
                     loadBlasterRecipientPreview();
                 }
@@ -2949,6 +3418,39 @@
             }
         }
 
+        window.prefillBirthdayWish = function(mobile, date, message) {
+            const student = allRegisteredStudentsList.find(s => s.mobile === mobile);
+            if (!student) return;
+            
+            const classSelect = document.getElementById('birthdayClassSelect');
+            if (classSelect) {
+                classSelect.value = student.cls;
+                filterBirthdayStudentsByClass();
+            }
+            
+            const studentSelect = document.getElementById('birthdayStudentSelect');
+            if (studentSelect) {
+                studentSelect.value = mobile;
+            }
+            
+            const dateInput = document.getElementById('birthdayWishDate');
+            if (dateInput) {
+                dateInput.value = date;
+            }
+            
+            const msgText = document.getElementById('birthdayWishText');
+            if (msgText) {
+                msgText.value = message;
+            }
+            
+            const formBox = document.getElementById('birthdayClassSelect');
+            if (formBox) {
+                formBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            showToast("Form prefilled! You can customize and save the wish message. 🎂");
+        };
+
         function updateWishesTableAndCounter() {
             db.ref('ideal_birthdays').once('value', snap => {
                 const wishes = snap.val() || {};
@@ -2956,20 +3458,94 @@
                 const counterEl = document.getElementById('birthdayCountToday');
                 const analyticCounter = document.getElementById('analyticsBirthdaysToday');
                 
-                if (!tableBody) return;
-                
-                tableBody.innerHTML = '';
-                
                 const todayObj = new Date();
                 const yyyy = todayObj.getFullYear();
                 const mm = String(todayObj.getMonth() + 1).padStart(2, '0');
                 const dd = String(todayObj.getDate()).padStart(2, '0');
                 const todayFormatted = `${yyyy}-${mm}-${dd}`;
+                const todayMD = `${mm}-${dd}`;
+                
+                // Calculate today's birthdays from profiles
+                let todayDobBirthdays = [];
+                allRegisteredStudentsList.forEach(s => {
+                    if (s.dob && s.dob !== 'N/A') {
+                        const dobParts = s.dob.split('-');
+                        if (dobParts.length === 3) {
+                            const studentMD = `${dobParts[1]}-${dobParts[2]}`;
+                            if (studentMD === todayMD) {
+                                todayDobBirthdays.push(s);
+                            }
+                        }
+                    }
+                });
+                
+                // Update Today's Birthdays Counter Card
+                const dobCounterEl = document.getElementById('birthdayDobCountToday');
+                if (dobCounterEl) dobCounterEl.innerText = todayDobBirthdays.length;
+                
+                // Update Birthday Reminder Banner at top of page
+                const reminderBanner = document.getElementById('birthdayReminderBanner');
+                const reminderText = document.getElementById('birthdayReminderText');
+                if (reminderBanner && reminderText) {
+                    if (todayDobBirthdays.length > 0) {
+                        reminderBanner.style.display = 'flex';
+                        const namesStr = todayDobBirthdays.map(s => `<strong>${s.name}</strong> (${s.cls})`).join(', ');
+                        reminderText.innerHTML = `Today is the birthday of: ${namesStr}. Don't forget to wish them!`;
+                    } else {
+                        reminderBanner.style.display = 'none';
+                    }
+                }
+                
+                // Render Today's Birthday Students Section
+                const todaySection = document.getElementById('todayBirthdaysSection');
+                const todayList = document.getElementById('todayBirthdaysList');
+                if (todaySection && todayList) {
+                    if (todayDobBirthdays.length > 0) {
+                        todaySection.style.display = 'block';
+                        let listHtml = '';
+                        todayDobBirthdays.forEach(s => {
+                            const wishSent = wishes[s.mobile] && wishes[s.mobile].date === todayFormatted;
+                            const statusColor = wishSent ? '#059669' : '#ca8a04';
+                            const statusBg = wishSent ? '#ecfdf5' : '#fef9c3';
+                            const statusText = wishSent ? 'Custom Wish Sent ✅' : 'Default Wish active ⚠️';
+                            
+                            const defaultMsg = `Wishing you a day filled with laughter, joy, and wonderful surprises! May this year bring you closer to all your dreams. Happy Birthday from Ideal Public School! 🎉`;
+                            
+                            listHtml += `
+                                <tr style="border-bottom: 1px solid #f1f5f9; text-align: left;">
+                                    <td style="padding: 10px; font-weight: 600; color: #0f172a;">
+                                        ${s.name}<br>
+                                        <small style="color: #64748b; font-weight: normal;">${s.mobile}</small>
+                                    </td>
+                                    <td style="padding: 10px; color: #334155;">${s.cls}</td>
+                                    <td style="padding: 10px; color: #475569; font-weight: 500;">${s.dob}</td>
+                                    <td style="padding: 10px;">
+                                        <span style="background: ${statusBg}; color: ${statusColor}; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem;">
+                                            ${statusText}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 10px; text-align: center;">
+                                        <button class="btn" style="background: #0d9488; color: white; padding: 6px 12px; margin: 0; font-size: 0.8rem; border-radius: 6px; width: auto; font-weight: bold;" onclick="prefillBirthdayWish('${s.mobile}', '${todayFormatted}', \`${defaultMsg.replace(/'/g, "\\'")}\`)">
+                                            <i class="fas fa-edit"></i> Write Custom Wish
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        todayList.innerHTML = listHtml;
+                    } else {
+                        todaySection.style.display = 'none';
+                        todayList.innerHTML = '';
+                    }
+                }
+                
+                if (!tableBody) return;
+                tableBody.innerHTML = '';
                 
                 let activeTodayCount = 0;
                 let rowsHtml = '';
-                
                 const keys = Object.keys(wishes);
+                
                 if (keys.length === 0) {
                     tableBody.innerHTML = `<tr><td colspan="5" style="padding: 20px; text-align: center; color: #94a3b8; font-style: italic;">No active birthday wishes found.</td></tr>`;
                     if (counterEl) counterEl.innerText = '0';
@@ -2991,7 +3567,7 @@
                             </td>
                             <td style="padding: 12px 10px; color: #334155;">${w.cls}</td>
                             <td style="padding: 12px 10px;">
-                                <span style="background: ${w.date === todayFormatted ? '#fef08a' : '#f1f5f9'}; color: ${w.date === todayFormatted ? '#854d0e' : '#475569'}; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem;">
+                                <span style="background: ${w.date === todayFormatted ? '#fef08a' : '#fef9c3'}; color: ${w.date === todayFormatted ? '#854d0e' : '#475569'}; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem;">
                                     ${w.date}
                                 </span>
                             </td>
@@ -3036,8 +3612,18 @@
                 );
             }
             
+            // Apply Date Filter
+            const dateFilter = document.getElementById('regStudentDateFilter') ? document.getElementById('regStudentDateFilter').value : '';
+            if (dateFilter) {
+                const parts = dateFilter.split('-');
+                if (parts.length === 3) {
+                    const formattedDateFilter = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    filtered = filtered.filter(s => s.date === formattedDateFilter);
+                }
+            }
+            
             if (filtered.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 25px; color: #64748b; font-weight: 500;">No registered students found.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 25px; color: #64748b; font-weight: 500;">No registered students found.</td></tr>`;
                 return;
             }
             
@@ -3082,6 +3668,7 @@
         window.exportRegisteredStudents = function() {
             const classFilter = document.getElementById('regStudentClassFilter').value;
             const searchVal = document.getElementById('regStudentSearch').value.toLowerCase().trim();
+            const dateFilter = document.getElementById('regStudentDateFilter') ? document.getElementById('regStudentDateFilter').value : '';
             
             let filtered = allRegisteredStudentsList;
             
@@ -3097,6 +3684,15 @@
                     (s.mobile && s.mobile.toLowerCase().includes(searchVal)) ||
                     (s.email && s.email.toLowerCase().includes(searchVal))
                 );
+            }
+            
+            // Apply Date Filter
+            if (dateFilter) {
+                const parts = dateFilter.split('-');
+                if (parts.length === 3) {
+                    const formattedDateFilter = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    filtered = filtered.filter(s => s.date === formattedDateFilter);
+                }
             }
             
             if (filtered.length === 0) {
@@ -4634,6 +5230,19 @@
                 .then(() => db.ref('ideal_students_by_class/' + cls + '/' + mobile).remove())
                 .then(() => db.ref('ideal_student_photos/' + mobile).remove())
                 .then(() => {
+                    // Send delete request to Google Sheets
+                    const GOOGLE_SHEET_URL_1 = "https://script.google.com/macros/s/AKfycby-395zeIEHWjK559Je8MdDGmMYtsIl54U5p-6-rtiUdWV1xHN17tWeyMig8fOmAHcQ7Q/exec";
+                    const GOOGLE_SHEET_URL_2 = "https://script.google.com/macros/s/AKfycbzsN3Lvh4XcHl1zGe-B43244tRIL0-sRpFXwECXE_N76daKMxhRcSOwoOUgyqzANpqy/exec";
+                    const GOOGLE_SHEET_URL_3 = "https://script.google.com/macros/s/AKfycbxNoleGjR9Tb4GrF4S7NVOIRH_PstTvvEqu2gBwlM_PbfvARlJGOx3U26M9hB2eMHTJsg/exec";
+
+                    let formBody = new URLSearchParams();
+                    formBody.append("action", "delete");
+                    formBody.append("mobile", mobile);
+
+                    fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                    fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                    fetch(GOOGLE_SHEET_URL_3, { method: 'POST', body: formBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+
                     showToast("Student deleted successfully!");
                     loadClassStudentsForManagement();
                 });
@@ -5294,7 +5903,7 @@
                             <th>Mobile</th>
                             <th>Email</th>
                             <th>Class</th>
-                            <th>Age</th>
+                            <th>DOB (Age)</th>
                             <th>Gender</th>
                             <th>Address</th>
                             <th style="text-align:center;">Action</th>
@@ -5314,7 +5923,7 @@
                         <td><a href="tel:${item.mobile}" style="color:#0d9488; text-decoration:none; font-weight:600;"><i class="fas fa-phone-alt"></i> ${item.mobile || '-'}</a></td>
                         <td>${item.email || '-'}</td>
                         <td><span style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:6px; font-weight:600; font-size:12px;">Class ${item.class || '-'}</span></td>
-                        <td>${item.age || '-'} Yrs</td>
+                        <td>${item.dob || 'N/A'}<br><small style="color: #64748b; font-weight: 500;">(${item.age || '-'} Yrs)</small></td>
                         <td>${item.gender || '-'}</td>
                         <td style="white-space:normal; max-width:180px; word-break:break-word;">${item.address || '-'}</td>
                         <td style="text-align:center;"><button onclick="deleteAdmission('${item.key}')" class="delete-btn-sm"><i class="fas fa-trash"></i></button></td>
@@ -6862,10 +7471,404 @@
             });
         };
 
+        // --- 🏆 ADMIN CERTIFICATE MAKER FUNCTIONS 🏆 ---
+        window.customCertLogoBase64 = null;
+        window.customCertSigBase64 = null;
+
+        window.onCertClassChange = function() {
+            const classSelect = document.getElementById('certClassSelect');
+            const studentSelect = document.getElementById('certStudentSelect');
+            if (!classSelect || !studentSelect) return;
+            
+            const selectedClass = classSelect.value;
+            studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
+            
+            if (!selectedClass) {
+                const sorted = [...allRegisteredStudentsList].sort((a, b) => a.name.localeCompare(b.name));
+                sorted.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.mobile;
+                    option.text = `${s.name} (${s.cls}) - ID: ${s.studentId || 'N/A'}`;
+                    studentSelect.appendChild(option);
+                });
+                updateCertPreview();
+                return;
+            }
+            
+            const filtered = allRegisteredStudentsList.filter(s => s.cls === selectedClass);
+            const sorted = filtered.sort((a, b) => a.name.localeCompare(b.name));
+            
+            if (sorted.length === 0) {
+                studentSelect.innerHTML = '<option value="">-- No students registered --</option>';
+                updateCertPreview();
+                return;
+            }
+            
+            sorted.forEach(s => {
+                const option = document.createElement('option');
+                option.value = s.mobile;
+                option.text = `${s.name} - ID: ${s.studentId || 'N/A'}`;
+                studentSelect.appendChild(option);
+            });
+            updateCertPreview();
+        };
+
+        window.onCertStudentSelect = function() {
+            const studentSelect = document.getElementById('certStudentSelect');
+            const mobile = studentSelect.value;
+            if (!mobile) {
+                document.getElementById('certRecipientName').value = '';
+                updateCertPreview();
+                return;
+            }
+            const student = allRegisteredStudentsList.find(s => s.mobile === mobile);
+            if (student) {
+                document.getElementById('certRecipientName').value = student.name;
+            }
+            updateCertPreview();
+        };
+
+        window.updateCertPreview = function() {
+            const titleInput = document.getElementById('certTitle');
+            const recipientInput = document.getElementById('certRecipientName');
+            const descInput = document.getElementById('certDescription');
+            const dateInput = document.getElementById('certDate');
+            const sigNameInput = document.getElementById('certSignatoryName');
+            const sigTitleInput = document.getElementById('certSignatoryTitle');
+
+            if (!titleInput) return; // UI not loaded yet
+
+            const title = titleInput.value || 'Certificate of Excellence';
+            const recipient = recipientInput.value || 'Student Name';
+            const desc = descInput.value || '';
+            const dateVal = dateInput.value;
+            const sigName = sigNameInput.value || 'A.R Qureshi';
+            const sigTitle = sigTitleInput.value || 'Director';
+
+            document.getElementById('previewCertTitle').innerText = title;
+            document.getElementById('previewCertRecipient').innerText = recipient;
+            document.getElementById('previewCertDescription').innerText = desc;
+
+            // Render Details (Class & ID)
+            const studentSelect = document.getElementById('certStudentSelect');
+            const mobile = studentSelect.value;
+            let detailsText = '';
+            if (mobile) {
+                const student = allRegisteredStudentsList.find(s => s.mobile === mobile);
+                if (student) {
+                    detailsText = `of ${student.cls} (Student ID: ${student.studentId || 'N/A'})`;
+                }
+            } else {
+                const classVal = document.getElementById('certClassSelect').value;
+                detailsText = classVal ? `of ${classVal}` : '';
+            }
+            document.getElementById('previewCertRecipientDetails').innerText = detailsText;
+
+            // Issue Date
+            let formattedDate = '';
+            if (dateVal) {
+                const d = new Date(dateVal);
+                formattedDate = d.toLocaleDateString('en-GB'); // dd/mm/yyyy
+            } else {
+                formattedDate = new Date().toLocaleDateString('en-GB');
+            }
+            document.getElementById('previewCertDate').innerText = formattedDate;
+
+            // Signatory Text & Title
+            document.getElementById('previewCertSigTitle').innerText = sigTitle;
+            
+            const previewSigImg = document.getElementById('previewCertSigImg');
+            const previewSigTextWrapper = document.getElementById('previewCertSigTextWrapper');
+            const previewSigText = document.getElementById('previewCertSigText');
+
+            if (window.customCertSigBase64) {
+                previewSigImg.src = window.customCertSigBase64;
+                previewSigImg.style.display = 'block';
+                previewSigTextWrapper.style.display = 'none';
+            } else {
+                previewSigImg.style.display = 'none';
+                previewSigTextWrapper.style.display = 'block';
+                previewSigText.innerText = sigName;
+            }
+
+            // Logo
+            const previewLogo = document.getElementById('previewCertLogo');
+            if (window.customCertLogoBase64) {
+                previewLogo.src = window.customCertLogoBase64;
+            } else {
+                previewLogo.src = 'logo.jpeg';
+            }
+        };
+
+        window.handleCertSigUpload = function(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const scale = 250 / img.width;
+                        canvas.width = 250;
+                        canvas.height = img.height * scale;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        window.customCertSigBase64 = canvas.toDataURL('image/png');
+                        updateCertPreview();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.handleCertLogoUpload = function(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 120;
+                        canvas.height = 120;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, 120, 120);
+                        window.customCertLogoBase64 = canvas.toDataURL('image/png');
+                        updateCertPreview();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.resetCertImages = function() {
+            window.customCertLogoBase64 = null;
+            window.customCertSigBase64 = null;
+            document.getElementById('certSigUpload').value = '';
+            document.getElementById('certLogoUpload').value = '';
+            updateCertPreview();
+        };
+
+        window.awardCertificate = function() {
+            const mobile = document.getElementById('certStudentSelect').value;
+            if (!mobile) {
+                alert("Please select a student!");
+                return;
+            }
+
+            const name = document.getElementById('certRecipientName').value.trim();
+            if (!name) {
+                alert("Please enter recipient name!");
+                return;
+            }
+
+            const title = document.getElementById('certTitle').value.trim();
+            const desc = document.getElementById('certDescription').value.trim();
+            const dateVal = document.getElementById('certDate').value;
+            const sigName = document.getElementById('certSignatoryName').value.trim();
+            const sigTitle = document.getElementById('certSignatoryTitle').value.trim();
+
+            const student = allRegisteredStudentsList.find(s => s.mobile === mobile);
+            const studentId = student ? student.studentId : '';
+            const studentClass = student ? student.cls : '';
+
+            const certData = {
+                title: title,
+                recipientName: name,
+                description: desc,
+                date: dateVal || new Date().toISOString().split('T')[0],
+                signatoryName: sigName,
+                signatoryTitle: sigTitle,
+                studentId: studentId,
+                studentClass: studentClass,
+                customLogo: window.customCertLogoBase64 || '',
+                customSignature: window.customCertSigBase64 || '',
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            const btn = document.getElementById('btnAwardCert');
+            btn.disabled = true;
+            btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Issuing...";
+
+            db.ref('ideal_student_certificates/' + mobile).push(certData)
+                .then(() => {
+                    showToast("Certificate successfully awarded! 🏆");
+                    btn.disabled = false;
+                    btn.innerHTML = "<i class='fas fa-paper-plane'></i> AWARD CERTIFICATE";
+                    
+                    // Clear form values
+                    document.getElementById('certRecipientName').value = '';
+                    document.getElementById('certTitle').value = 'Certificate of Excellence';
+                    document.getElementById('certDescription').value = 'for demonstrating exceptional dedication, outstanding academic performance, and exemplary character during the academic session.';
+                    resetCertImages();
+                    document.getElementById('certStudentSelect').value = '';
+                    updateCertPreview();
+                })
+                .catch(err => {
+                    showToast("Error awarding certificate: " + err.message, true);
+                    btn.disabled = false;
+                    btn.innerHTML = "<i class='fas fa-paper-plane'></i> AWARD CERTIFICATE";
+                });
+        };
+
+        window.setupCertificatesLog = function() {
+            db.ref('ideal_student_certificates').on('value', snap => {
+                const tableBody = document.getElementById('certHistoryTableBody');
+                const countBadge = document.getElementById('totalCertCountBadge');
+                if (!tableBody) return;
+
+                tableBody.innerHTML = '';
+                const certsVal = snap.val() || {};
+                let totalCount = 0;
+                let html = '';
+
+                Object.keys(certsVal).forEach(mobile => {
+                    const studentCerts = certsVal[mobile];
+                    Object.keys(studentCerts).forEach(certKey => {
+                        totalCount++;
+                        const cert = studentCerts[certKey];
+                        
+                        const student = allRegisteredStudentsList.find(s => s.mobile === mobile);
+                        const studentName = student ? student.name : cert.recipientName;
+                        const studentClass = student ? student.cls : cert.studentClass;
+                        const displayDate = cert.date ? new Date(cert.date).toLocaleDateString('en-GB') : '';
+
+                        html += `
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 12px 15px; font-weight:600; color:#1e293b;">${studentName}</td>
+                                <td style="padding: 12px 15px;">${studentClass}</td>
+                                <td style="padding: 12px 15px; color:#b45309; font-weight:600;">${cert.title}</td>
+                                <td style="padding: 12px 15px;">${displayDate}</td>
+                                <td style="padding: 12px 15px; text-align: center;">
+                                    <div style="display:flex; gap:8px; justify-content:center;">
+                                        <button class="btn" style="background:#0d9488; font-size:0.75rem; padding:6px 12px; margin:0; width:auto; height:auto;" onclick="viewCertificateAdmin('${mobile}', '${certKey}')"><i class="fas fa-eye"></i> View</button>
+                                        <button class="btn" style="background:#ef4444; font-size:0.75rem; padding:6px 12px; margin:0; width:auto; height:auto;" onclick="deleteCertificateAdmin('${mobile}', '${certKey}')"><i class="fas fa-trash"></i> Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+
+                if (totalCount === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #64748b;">No certificates issued yet.</td></tr>';
+                } else {
+                    tableBody.innerHTML = html;
+                }
+
+                if (countBadge) {
+                    countBadge.innerText = `${totalCount} Total`;
+                }
+            });
+        };
+
+        window.viewCertificateAdmin = function(mobile, certKey) {
+            db.ref(`ideal_student_certificates/${mobile}/${certKey}`).once('value', snap => {
+                const cert = snap.val();
+                if (!cert) return;
+
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'fixed';
+                tempDiv.style.left = '-9999px';
+                tempDiv.style.top = '-9999px';
+                tempDiv.style.width = '800px';
+                tempDiv.style.height = '565px';
+                
+                const displayDate = cert.date ? new Date(cert.date).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB');
+
+                tempDiv.innerHTML = `
+                    <div class="certificate-preview-container" style="width: 800px; height: 565px; box-shadow: none;">
+                        <div class="certificate-card" style="padding: 25px; border-width: 12px; height: 565px;">
+                            <div class="certificate-inner-border" style="padding: 15px 20px;">
+                                <div class="certificate-corner corner-tl"></div>
+                                <div class="certificate-corner corner-tr"></div>
+                                <div class="certificate-corner corner-bl"></div>
+                                <div class="certificate-corner corner-br"></div>
+
+                                <div class="certificate-header">
+                                    <img src="${cert.customLogo || 'logo.jpeg'}" class="certificate-logo" alt="School Logo">
+                                    <h1 class="certificate-school-name">Ideal Public School</h1>
+                                    <p class="certificate-school-sub">Chandori, Waraseoni (M.P.)</p>
+                                </div>
+
+                                <div class="certificate-title-section">
+                                    <h2 class="certificate-main-title">${cert.title}</h2>
+                                    <p class="certificate-present-text">This is proudly presented to</p>
+                                    <div class="certificate-recipient-name">${cert.recipientName}</div>
+                                    <p class="certificate-recipient-details">of ${cert.studentClass} (Student ID: ${cert.studentId || 'N/A'})</p>
+                                </div>
+
+                                <div class="certificate-description">
+                                    ${cert.description}
+                                </div>
+
+                                <div class="certificate-footer">
+                                    <div class="certificate-date-area">
+                                        <span class="certificate-date-val">${displayDate}</span>
+                                        <span class="certificate-date-lbl">Date of Issue</span>
+                                    </div>
+
+                                    <div class="certificate-badge-area">
+                                        <div class="certificate-ribbon-l"></div>
+                                        <div class="certificate-ribbon-r"></div>
+                                        <div class="certificate-gold-seal"></div>
+                                    </div>
+
+                                    <div class="certificate-sig-area">
+                                        ${cert.customSignature ? 
+                                            `<img class="certificate-sig-img" src="${cert.customSignature}" alt="Signature">` : 
+                                            `<span class="certificate-sig-text">${cert.signatoryName}</span>`
+                                        }
+                                        <span class="certificate-sig-line"></span>
+                                        <span class="certificate-sig-title">${cert.signatoryTitle}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(tempDiv);
+                
+                setTimeout(() => {
+                    html2canvas(tempDiv, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true
+                    }).then(canvas => {
+                        const imgData = canvas.toDataURL('image/png');
+                        document.getElementById('fullSizeImage').src = imgData;
+                        document.getElementById('imageViewerModal').style.display = 'flex';
+                        document.body.removeChild(tempDiv);
+                    });
+                }, 500);
+            });
+        };
+
+        window.deleteCertificateAdmin = function(mobile, certKey) {
+            if (confirm("Are you sure you want to delete this awarded certificate? It will be removed from the student's portal immediately.")) {
+                db.ref(`ideal_student_certificates/${mobile}/${certKey}`).remove()
+                    .then(() => {
+                        showToast("Certificate deleted successfully.");
+                    })
+                    .catch(err => {
+                        showToast("Error deleting certificate: " + err.message, true);
+                    });
+            }
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 initMetricsListener();
             }, 600);
+            // Default Issuing date to today
+            const certDateInput = document.getElementById('certDate');
+            if (certDateInput) {
+                certDateInput.valueAsDate = new Date();
+                updateCertPreview();
+            }
         });
     </script>
 </body>

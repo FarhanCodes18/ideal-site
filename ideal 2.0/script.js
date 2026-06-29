@@ -723,13 +723,27 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerText = "Submitting Application... ⏳";
             submitBtn.disabled = true;
 
+            const dobVal = document.getElementById('admDob').value;
+            let calculatedAge = '';
+            if (dobVal) {
+                const birthDate = new Date(dobVal);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                calculatedAge = age;
+            }
+
             let formBody = new URLSearchParams();
             formBody.append("date", new Date().toLocaleDateString('en-GB'));
             formBody.append("name", document.getElementById('admName').value.trim());
             formBody.append("mobile", mobile);
             formBody.append("email", document.getElementById('admEmail').value.trim());
             formBody.append("class", document.getElementById('admClass').value);
-            formBody.append("age", document.getElementById('admAge').value);
+            formBody.append("age", calculatedAge);
+            formBody.append("dob", dobVal);
             formBody.append("gender", document.getElementById('admGender').value);
             formBody.append("address", document.getElementById('admAddress').value.trim());
 
@@ -758,7 +772,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 mobile: mobile,
                 email: document.getElementById('admEmail').value.trim(),
                 class: document.getElementById('admClass').value,
-                age: document.getElementById('admAge').value,
+                age: calculatedAge,
+                dob: dobVal,
                 gender: document.getElementById('admGender').value,
                 address: document.getElementById('admAddress').value.trim(),
                 timestamp: Date.now()
@@ -1344,7 +1359,7 @@ function initSlider(banners) {
     if (!banners || banners.length === 0) {
         banners = [
             {
-                image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=80',
+                image: 'slider1.png',
                 title: 'Welcome to Ideal Public School',
                 subtitle: 'CBSE Affiliated | Chandori, Waraseoni | Affiliation No. 1030815',
                 btnText: '✨ Discover Our School',

@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XKY1GVTNV8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-XKY1GVTNV8');
+    </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Computer Lab | Ideal Public School</title>
@@ -11,6 +20,414 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* --- TECHLAB SANDBOX STYLES (LIGHT THEME) --- */
+    .tech-sandbox-section {
+      background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+      border-top: 3px solid #2563eb;
+      padding: 80px 0;
+      color: #1e293b;
+    }
+    .text-white { color: #0f172a !important; }
+    .text-muted { color: #475569 !important; }
+    .text-teal { color: #0d9488 !important; }
+    .text-yellow { color: #b45309 !important; }
+
+    .sandbox-container {
+      display: flex;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      margin-top: 20px;
+    }
+
+    .sandbox-tabs {
+      width: 250px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #cbd5e1;
+      flex-shrink: 0;
+    }
+
+    .sandbox-tab-btn {
+      background: transparent;
+      border: none;
+      color: #64748b;
+      padding: 20px 25px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      outline: none;
+    }
+    .sandbox-tab-btn i {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+    .sandbox-tab-btn:hover {
+      color: #0f172a;
+      background: #e2e8f0;
+    }
+    .sandbox-tab-btn.active {
+      color: #2563eb;
+      background: #ffffff;
+      border-left: 3px solid #2563eb;
+    }
+
+    .sandbox-content {
+      flex-grow: 1;
+      padding: 30px;
+    }
+
+    .sandbox-panel {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .sandbox-panel.active {
+      display: block;
+    }
+
+    .sandbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 991px) {
+      .sandbox-container {
+        flex-direction: column;
+      }
+      .sandbox-tabs {
+        width: 100%;
+        flex-direction: row;
+        border-right: none;
+        border-bottom: 1px solid #cbd5e1;
+        overflow-x: auto;
+      }
+      .sandbox-tab-btn {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        justify-content: center;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+      }
+      .sandbox-tab-btn.active {
+        border-bottom: 3px solid #2563eb;
+      }
+      .sandbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-group {
+      margin-bottom: 20px;
+    }
+    .control-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .control-group input[type="range"] {
+      width: 100%;
+      accent-color: #2563eb;
+      cursor: pointer;
+      background: #cbd5e1;
+      height: 6px;
+      border-radius: 4px;
+      border: none;
+      outline: none;
+    }
+
+    .stats-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 25px;
+    }
+    .stat-mini-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .stat-mini-card .label {
+      font-size: 0.72rem;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .stat-mini-card .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Motherboard Visualizer */
+    .panel-visualization {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9; /* Workbench gray */
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+    .motherboard {
+      width: 280px;
+      height: 280px;
+      background: #0f172a; /* Sleek Dark Slate PCB board */
+      border: 4px solid #1e293b;
+      border-radius: 16px;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 20px rgba(0,0,0,0.15);
+      background-image: radial-gradient(circle, #334155 1px, transparent 1px);
+      background-size: 10px 10px;
+    }
+    .motherboard::before {
+      content: "";
+      position: absolute;
+      top: 10%; left: 10%; right: 10%; bottom: 10%;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      pointer-events: none;
+    }
+
+    /* CPU Fan */
+    .fan-cpu {
+      width: 90px;
+      height: 90px;
+      background: #1e293b;
+      border-radius: 50%;
+      border: 3px solid #d4af37;
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s;
+    }
+    .fan-cpu:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+    }
+    .fan-blade {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: repeating-conic-gradient(from 0deg, #0f172a 0deg 30deg, #334155 30deg 60deg);
+      animation: spin var(--fan-spin-duration, 0.8s) linear infinite;
+    }
+    .fan-center {
+      width: 24px;
+      height: 24px;
+      background: radial-gradient(circle, #fcd34d 0%, #aa7c11 100%);
+      border-radius: 50%;
+      position: absolute;
+      border: 2px solid #1e293b;
+    }
+
+    /* RAM modules */
+    .ram-module {
+      width: 15px;
+      height: 70px;
+      background: #334155;
+      border: 1px solid #475569;
+      position: absolute;
+      top: 30px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ram-module span {
+      font-size: 8px;
+      color: #38bdf8;
+      font-weight: bold;
+      transform: rotate(-90deg);
+      white-space: nowrap;
+    }
+    .ram-module::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 6px;
+      background: #aa7c11;
+      bottom: 5px;
+    }
+    .ram-1 { left: 140px; }
+    .ram-2 { left: 162px; }
+
+    .ram-module:hover {
+      transform: scale(1.05);
+      background: #475569;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      border-color: #38bdf8;
+    }
+
+    /* GPU */
+    .gpu-module {
+      width: 110px;
+      height: 65px;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 4px;
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    }
+    .gpu-module span {
+      font-size: 9px;
+      color: #38bdf8;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .gpu-module:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+      border-color: #38bdf8;
+    }
+
+    /* SSD */
+    .ssd-module {
+      width: 75px;
+      height: 25px;
+      background: #1e293b;
+      border: 1px solid #aa7c11;
+      position: absolute;
+      bottom: 50px;
+      right: 35px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ssd-module span {
+      font-size: 8px;
+      color: #f59e0b;
+      font-weight: bold;
+    }
+    .ssd-module:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(245,158,11,0.5);
+      border-color: #fcd34d;
+    }
+
+    .hw-desc-box {
+      position: absolute;
+      bottom: -45px;
+      left: 0; right: 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Binary Encryptor styles */
+    textarea#binary-input {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      color: #0f172a;
+      font-family: inherit;
+      font-size: 0.9rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    textarea#binary-input:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.15);
+    }
+
+    .binary-output-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 15px;
+      min-height: 80px;
+      color: #0d9488;
+      font-family: monospace;
+      font-size: 0.88rem;
+      word-break: break-all;
+      overflow-y: auto;
+      max-height: 120px;
+      box-sizing: border-box;
+    }
+
+    /* Interactive Playground styles */
+    .color-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 3px solid #e2e8f0;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .color-btn.active {
+      border-color: #0f172a;
+      transform: scale(1.15);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse-red 1.5s infinite;
+    }
+    @keyframes pulse-red {
+      0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+  </style>
 </head>
 <body>
 
@@ -198,6 +615,184 @@
   </div>
 </section>
 
+<!-- TECHLAB INTERACTIVE SANDBOX -->
+<section class="section tech-sandbox-section" id="tech-sandbox">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:40px;">
+      <div class="section-badge"><i class="fas fa-terminal"></i> INTERACTIVE ZONE</div>
+      <h2 class="section-title text-white">Ideal TechLab Sandbox</h2>
+      <p class="section-subtitle text-muted" style="max-width: 600px; margin: 10px auto 0;">
+        Explore hardware cooling dynamics, translate text into binary code, and play with interactive rendering parameters in our virtual computer laboratory sandbox.
+      </p>
+    </div>
+
+    <div class="sandbox-container">
+      <!-- Tabs Sidebar -->
+      <div class="sandbox-tabs">
+        <button class="sandbox-tab-btn active" onclick="switchSandboxTab('hardware')">
+          <i class="fas fa-microchip"></i>
+          <span>Hardware Inspector</span>
+        </button>
+        <button class="sandbox-tab-btn" onclick="switchSandboxTab('binary')">
+          <i class="fas fa-barcode"></i>
+          <span>Binary &amp; Matrix Code</span>
+        </button>
+        <button class="sandbox-tab-btn" onclick="switchSandboxTab('playground')">
+          <i class="fas fa-shapes"></i>
+          <span>Visual Sandbox</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="sandbox-content">
+        
+        <!-- Tab 1: Hardware Inspector -->
+        <div id="sandbox-hardware" class="sandbox-panel active">
+          <div class="sandbox-grid">
+            <div class="panel-controls">
+              <h3><i class="fas fa-tachometer-alt"></i> Cooling &amp; Overclocking Simulator</h3>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:20px;">Adjust CPU clock speed and fan cooling levels. Watch how thermals, power draw, and graph metrics react in real time.</p>
+              
+              <div class="control-group">
+                <label>CPU Clock Speed: <span id="val-cpu-clock">3.5 GHz</span></label>
+                <input type="range" id="slider-cpu-clock" min="2.0" max="5.0" step="0.1" value="3.5" oninput="updateHardwareSim()">
+              </div>
+              
+              <div class="control-group">
+                <label>Cooling Fan Speed: <span id="val-fan-speed">60%</span></label>
+                <input type="range" id="slider-fan-speed" min="10" max="100" step="1" value="60" oninput="updateHardwareSim()">
+              </div>
+
+              <div class="stats-card-grid">
+                <div class="stat-mini-card">
+                  <span class="label">CPU Temperature</span>
+                  <div class="dial-container">
+                    <span class="value" id="val-cpu-temp">45°C</span>
+                    <div class="progress-bar-container" style="background:#1e293b; height:6px; border-radius:3px; overflow:hidden;"><div id="bar-cpu-temp" class="progress-bar-fill" style="width: 45%; background: #00ffcc; height:100%;"></div></div>
+                  </div>
+                </div>
+                <div class="stat-mini-card">
+                  <span class="label">Power Usage</span>
+                  <span class="value text-yellow" id="val-power">95 W</span>
+                </div>
+                <div class="stat-mini-card">
+                  <span class="label">System Load</span>
+                  <span class="value text-teal" id="val-load">32%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Virtual Computer Board Visualizer -->
+            <div class="panel-visualization">
+              <div class="motherboard">
+                <div class="fan-cpu" id="visual-fan" onclick="highlightHardware('cpu', 'Intel Core i7 Processor Fan. Cooling speed prevents CPU throttling at overclock limits.')">
+                  <div class="fan-blade"></div>
+                  <div class="fan-center"></div>
+                </div>
+                <div class="ram-module ram-1" onclick="highlightHardware('ram', '16GB Dual-Channel DDR4 RAM modules. Holds temporary runtime files and codes execution states.')"><span>RAM 1</span></div>
+                <div class="ram-module ram-2" onclick="highlightHardware('ram', '16GB Dual-Channel DDR4 RAM modules. Holds temporary runtime files and codes execution states.')"><span>RAM 2</span></div>
+                <div class="gpu-module" onclick="highlightHardware('gpu', 'Intel UHD / NVIDIA Dedicated GPU. Responsible for scaling interactive rendering, graphics computing, and AI calculations.')"><span>GPU CORE</span></div>
+                <div class="ssd-module" onclick="highlightHardware('ssd', '1TB NVMe PCIe SSD. Hyper-speed loading storage that transfers data at up to 3500MB/s.')"><span>NVMe SSD</span></div>
+              </div>
+              <div id="hardware-desc-box" class="hw-desc-box">
+                <i class="fas fa-info-circle" style="color:#00ffcc; margin-right:8px;"></i>
+                <span id="hardware-desc-text">Click on any motherboard component (CPU Fan, RAM, GPU, SSD) to inspect its hardware profile and specs.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Binary & Matrix Code -->
+        <div id="sandbox-binary" class="sandbox-panel">
+          <div class="sandbox-grid">
+            <div class="panel-controls">
+              <h3><i class="fas fa-barcode"></i> Real-time Binary Code Encryptor</h3>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:20px;">Type message to translate into binary code (8-bit ASCII representations). Key clicks generate synthesizer sounds!</p>
+              
+              <div class="control-group">
+                <label>Enter Message:</label>
+                <textarea id="binary-input" placeholder="Type text here..." rows="4" oninput="translateTextToBinary()"></textarea>
+              </div>
+
+              <div class="control-group">
+                <label>Binary Output:</label>
+                <div class="binary-output-box" id="binary-output">01010100 01111001 01110000 01100101 00100000 01110011 01101111 01101101 01100101 01110100 01101000 01101001 01101110 01100111 00100001</div>
+              </div>
+            </div>
+
+            <!-- Falling Code Matrix screen -->
+            <div class="panel-visualization font-mono" style="background:#020617; border:2px solid #1e293b; padding:15px; border-radius:12px; position:relative; overflow:hidden; min-height:300px; display:flex; flex-direction:column; justify-content:space-between; align-items: stretch;">
+              <canvas id="matrixCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0.35; z-index:1;"></canvas>
+              <div style="position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:space-between; flex: 1;">
+                <div style="color:#00ffcc; border-bottom:1px solid #1e293b; padding-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                  <span><i class="fas fa-terminal"></i> BINARY DECRYPTION TERMINAL</span>
+                  <span class="pulse-dot"></span>
+                </div>
+                <div id="matrix-display-box" style="flex:1; overflow-y:auto; padding:10px 0; font-size:0.82rem; color:#34d399; line-height:1.6; text-align: left;">
+                  [SYS] Initialization successful.<br>
+                  [SYS] Matrix decoder online.<br>
+                  [SYS] Waiting for user input text...
+                </div>
+                <div style="font-size:0.75rem; color:#64748b; border-top:1px solid #1e293b; padding-top:8px; text-align: left;">
+                  Matrix streams dynamically speed up as you type!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Visual Particle Sandbox -->
+        <div id="sandbox-playground" class="sandbox-panel">
+          <div class="sandbox-grid">
+            <div class="panel-controls">
+              <h3><i class="fas fa-wave-square"></i> Graphics Processing Sandbox</h3>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:20px;">Adjust rendering variables and see how graphics engine draws particle physics on the hardware canvas.</p>
+              
+              <div class="control-group">
+                <label>Animation Style:</label>
+                <select id="select-anim-style" onchange="resetSandboxPlayground()" style="background:#1e293b; color:white; border:1px solid #334155; padding:10px; border-radius:8px; width:100%; outline: none; cursor: pointer;">
+                  <option value="particles">Interactive Cosmic Particles</option>
+                  <option value="neon-ripple">Interactive Neon Ripple</option>
+                  <option value="gravity">Orbiting Gravity Fields</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label>Particle Count / Density: <span id="val-particle-count">50</span></label>
+                <input type="range" id="slider-particle-count" min="10" max="150" step="5" value="50" oninput="updatePlaygroundParams()">
+              </div>
+
+              <div class="control-group">
+                <label>Flow Velocity / Speed: <span id="val-flow-speed">1.5x</span></label>
+                <input type="range" id="slider-flow-speed" min="0.2" max="4.0" step="0.1" value="1.5" oninput="updatePlaygroundParams()">
+              </div>
+
+              <div class="control-group">
+                <label>Neon Color Palette:</label>
+                <div style="display:flex; gap:10px; margin-top:8px;">
+                  <button class="color-btn active" style="background:#00ffcc;" onclick="changePlaygroundColor('#00ffcc', this)" title="Neon Cyan"></button>
+                  <button class="color-btn" style="background:#ec4899;" onclick="changePlaygroundColor('#ec4899', this)" title="Neon Pink"></button>
+                  <button class="color-btn" style="background:#22c55e;" onclick="changePlaygroundColor('#22c55e', this)" title="Neon Green"></button>
+                  <button class="color-btn" style="background:#eab308;" onclick="changePlaygroundColor('#eab308', this)" title="Golden Gold"></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Canvas Visualization -->
+            <div class="panel-visualization" style="background:#020617; border:2px solid #1e293b; padding:0; border-radius:12px; position:relative; overflow:hidden; min-height:300px; align-items: stretch;">
+              <canvas id="playgroundCanvas" style="display:block; width:100%; height:100%; min-height: 300px;"></canvas>
+              <div style="position:absolute; bottom:12px; left:12px; z-index:10; background:rgba(15,23,42,0.85); padding:8px 12px; border-radius:6px; border:1px solid #1e293b; color:#94a3b8; font-size:0.75rem; font-family:monospace;">
+                Active Engine: <span id="active-engine-lbl" style="color:#00ffcc; font-weight:bold;">Particles</span> | FPS: <span id="engine-fps" style="color:#22c55e;">60</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- HELPDESK SECTION -->
 <section class="section bg-off" id="helpdesk">
   <div class="container" style="text-align:center;">
@@ -298,6 +893,402 @@
   </div>
 </footer>
 
+<script>
+  // --- 🏆 TECHLAB SANDBOX JAVASCRIPT CONTROLLERS 🏆 ---
+  window.customCertLogoBase64 = null;
+  
+  // Sound Synthesizer Click Sound
+  function playClickSound() {
+      try {
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800 + Math.random() * 400, audioCtx.currentTime); // click frequency
+          
+          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); // decay
+          
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.05);
+      } catch (e) {
+          // audio context blocked or not supported
+      }
+  }
+
+  // Switch tabs
+  window.switchSandboxTab = function(tabId) {
+      playClickSound();
+      document.querySelectorAll('.sandbox-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.sandbox-panel').forEach(panel => panel.classList.remove('active'));
+      
+      const clickedBtn = document.querySelector(`.sandbox-tab-btn[onclick*="${tabId}"]`);
+      if (clickedBtn) clickedBtn.classList.add('active');
+      
+      const targetPanel = document.getElementById('sandbox-' + tabId);
+      if (targetPanel) targetPanel.classList.add('active');
+
+      if (tabId === 'binary') {
+          startMatrixRain();
+          stopPlayground();
+      } else if (tabId === 'playground') {
+          stopMatrixRain();
+          startPlayground();
+      } else {
+          stopMatrixRain();
+          stopPlayground();
+      }
+  };
+
+  // 💻 Hardware simulation controller
+  window.updateHardwareSim = function() {
+      playClickSound();
+      const clock = parseFloat(document.getElementById('slider-cpu-clock').value);
+      const fan = parseInt(document.getElementById('slider-fan-speed').value);
+      
+      document.getElementById('val-cpu-clock').innerText = clock.toFixed(1) + ' GHz';
+      document.getElementById('val-fan-speed').innerText = fan + '%';
+      
+      const temp = Math.round(30 + (clock * 16.5) - (fan * 0.35));
+      document.getElementById('val-cpu-temp').innerText = temp + '°C';
+      
+      const tempBar = document.getElementById('bar-cpu-temp');
+      tempBar.style.width = Math.min(100, Math.max(10, temp)) + '%';
+      if (temp > 80) {
+          tempBar.style.background = '#ef4444';
+      } else if (temp > 60) {
+          tempBar.style.background = '#f59e0b';
+      } else {
+          tempBar.style.background = '#00ffcc';
+      }
+      
+      const power = Math.round(40 + (clock * clock * 8.5) - (fan * 0.1));
+      document.getElementById('val-power').innerText = power + ' W';
+      
+      const load = Math.round(((clock - 2.0) / 3.0) * 80 + 10 + Math.random() * 8);
+      document.getElementById('val-load').innerText = Math.min(100, Math.max(5, load)) + '%';
+      
+      const spinSpeed = 1.2 - (fan / 100); 
+      document.getElementById('visual-fan').style.setProperty('--fan-spin-duration', spinSpeed + 's');
+  };
+
+  window.highlightHardware = function(type, desc) {
+      playClickSound();
+      document.getElementById('hardware-desc-text').innerText = desc;
+      const descBox = document.getElementById('hardware-desc-box');
+      descBox.style.borderColor = '#00ffcc';
+      descBox.style.boxShadow = '0 0 10px rgba(0,255,204,0.3)';
+      setTimeout(() => {
+          descBox.style.borderColor = '#1e293b';
+          descBox.style.boxShadow = 'none';
+      }, 800);
+  };
+
+  // 👾 Matrix rain logic
+  let matrixInterval = null;
+  let matrixCanvas = null;
+  let matrixCtx = null;
+  let matrixCols = [];
+  let matrixTypingSpeedBoost = 1;
+
+  function startMatrixRain() {
+      if (matrixInterval) return;
+      matrixCanvas = document.getElementById('matrixCanvas');
+      if (!matrixCanvas) return;
+      matrixCtx = matrixCanvas.getContext('2d');
+      
+      const resize = () => {
+          matrixCanvas.width = matrixCanvas.parentElement.clientWidth;
+          matrixCanvas.height = matrixCanvas.parentElement.clientHeight || 300;
+          const colsCount = Math.floor(matrixCanvas.width / 16) + 1;
+          matrixCols = Array(colsCount).fill(0);
+      };
+      resize();
+      window.addEventListener('resize', resize);
+      
+      const font = '14px monospace';
+      const chars = '01';
+      
+      const draw = () => {
+          matrixCtx.fillStyle = 'rgba(2, 6, 23, 0.08)';
+          matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+          
+          matrixCtx.fillStyle = '#00ffcc';
+          matrixCtx.font = font;
+          
+          for (let i = 0; i < matrixCols.length; i++) {
+              const char = chars.charAt(Math.floor(Math.random() * chars.length));
+              const x = i * 16;
+              const y = matrixCols[i] * 16;
+              
+              matrixCtx.fillText(char, x, y);
+              
+              if (y > matrixCanvas.height && Math.random() > 0.975) {
+                  matrixCols[i] = 0;
+              }
+              matrixCols[i] += (1 + (matrixTypingSpeedBoost - 1) * 0.15);
+          }
+      };
+      matrixInterval = setInterval(draw, 33);
+  }
+
+  function stopMatrixRain() {
+      if (matrixInterval) {
+          clearInterval(matrixInterval);
+          matrixInterval = null;
+      }
+  }
+
+  window.translateTextToBinary = function() {
+      playClickSound();
+      const input = document.getElementById('binary-input').value;
+      const output = document.getElementById('binary-output');
+      const logBox = document.getElementById('matrix-display-box');
+      if (!output) return;
+
+      if (!input) {
+          output.innerText = '00000000';
+          logBox.innerHTML = 'Waiting for input...';
+          matrixTypingSpeedBoost = 1;
+          return;
+      }
+
+      matrixTypingSpeedBoost = 5;
+      setTimeout(() => { matrixTypingSpeedBoost = 1; }, 500);
+
+      let binaryStr = '';
+      for (let i = 0; i < input.length; i++) {
+          let bin = input[i].charCodeAt(0).toString(2);
+          binaryStr += ('00000000' + bin).slice(-8) + ' ';
+      }
+      output.innerText = binaryStr.trim();
+      
+      logBox.innerHTML = `
+          [DECODE] Stream: "${input}"<br>
+          [DECODE] Bits processed: ${input.length * 8}<br>
+          [DECODE] Binary payload generated.<br>
+          <span style="color:#00ffcc; font-weight:bold;">[SUCCESS] Encoding complete.</span>
+      `;
+  };
+
+  // 🎨 Visual Canvas Particle Sandbox
+  let playgroundInterval = null;
+  let playgroundCanvas = null;
+  let playgroundCtx = null;
+  let particles = [];
+  let rippleX = 0, rippleY = 0, rippleRadius = 0;
+  let pgColor = '#00ffcc';
+  let lastFrameTime = performance.now();
+  let mousePos = { x: 0, y: 0 };
+  let engine = 'particles';
+  let countParam = 50;
+  let speedParam = 1.5;
+
+  function startPlayground() {
+      if (playgroundInterval) return;
+      playgroundCanvas = document.getElementById('playgroundCanvas');
+      if (!playgroundCanvas) return;
+      playgroundCtx = playgroundCanvas.getContext('2d');
+      
+      const resize = () => {
+          const parent = playgroundCanvas.parentElement;
+          playgroundCanvas.width = parent.clientWidth || 400;
+          playgroundCanvas.height = parent.clientHeight || 300;
+      };
+      resize();
+      window.addEventListener('resize', resize);
+
+      playgroundCanvas.addEventListener('mousemove', (e) => {
+          const rect = playgroundCanvas.getBoundingClientRect();
+          mousePos.x = e.clientX - rect.left;
+          mousePos.y = e.clientY - rect.top;
+          if (engine === 'neon-ripple' && Math.random() > 0.6) {
+              rippleX = mousePos.x;
+              rippleY = mousePos.y;
+              rippleRadius = 1;
+          }
+      });
+
+      playgroundCanvas.addEventListener('click', (e) => {
+          const rect = playgroundCanvas.getBoundingClientRect();
+          rippleX = e.clientX - rect.left;
+          rippleY = e.clientY - rect.top;
+          rippleRadius = 1;
+      });
+
+      initPlaygroundParticles();
+
+      const loop = (timestamp) => {
+          if (!playgroundCanvas) return;
+          const delta = timestamp - lastFrameTime;
+          lastFrameTime = timestamp;
+          const fps = Math.round(1000 / delta);
+          const fpsEl = document.getElementById('engine-fps');
+          if (fpsEl && timestamp % 10 < 1) fpsEl.innerText = isNaN(fps) ? '60' : fps;
+
+          drawPlayground();
+          playgroundInterval = requestAnimationFrame(loop);
+      };
+      playgroundInterval = requestAnimationFrame(loop);
+  }
+
+  function stopPlayground() {
+      if (playgroundInterval) {
+          cancelAnimationFrame(playgroundInterval);
+          playgroundInterval = null;
+      }
+  }
+
+  function initPlaygroundParticles() {
+      particles = [];
+      for (let i = 0; i < 150; i++) {
+          particles.push({
+              x: Math.random() * (playgroundCanvas ? playgroundCanvas.width : 500),
+              y: Math.random() * (playgroundCanvas ? playgroundCanvas.height : 300),
+              vx: (Math.random() - 0.5) * 2,
+              vy: (Math.random() - 0.5) * 2,
+              radius: 2 + Math.random() * 3,
+              angle: Math.random() * Math.PI * 2,
+              orbitRadius: 40 + Math.random() * 80,
+              orbitSpeed: (Math.random() - 0.5) * 0.05
+          });
+      }
+  }
+
+  window.updatePlaygroundParams = function() {
+      countParam = parseInt(document.getElementById('slider-particle-count').value);
+      speedParam = parseFloat(document.getElementById('slider-flow-speed').value);
+      
+      document.getElementById('val-particle-count').innerText = countParam;
+      document.getElementById('val-flow-speed').innerText = speedParam.toFixed(1) + 'x';
+  };
+
+  window.changePlaygroundColor = function(color, btn) {
+      playClickSound();
+      pgColor = color;
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+  };
+
+  window.resetSandboxPlayground = function() {
+      playClickSound();
+      engine = document.getElementById('select-anim-style').value;
+      document.getElementById('active-engine-lbl').innerText = engine === 'particles' ? 'Particles' : (engine === 'neon-ripple' ? 'Ripple' : 'Gravity');
+      initPlaygroundParticles();
+  };
+
+  function drawPlayground() {
+      if (!playgroundCtx) return;
+      const ctx = playgroundCtx;
+      const width = playgroundCanvas.width;
+      const height = playgroundCanvas.height;
+      
+      ctx.fillStyle = 'rgba(2, 6, 23, 0.2)'; 
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = pgColor;
+      ctx.fillStyle = pgColor;
+
+      if (engine === 'particles') {
+          for (let i = 0; i < countParam; i++) {
+              const p = particles[i];
+              p.x += p.vx * speedParam;
+              p.y += p.vy * speedParam;
+
+              if (p.x < 0 || p.x > width) p.vx *= -1;
+              if (p.y < 0 || p.y > height) p.vy *= -1;
+
+              const dx = mousePos.x - p.x;
+              const dy = mousePos.y - p.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 100) {
+                  p.x += (dx / dist) * 0.5 * speedParam;
+                  p.y += (dy / dist) * 0.5 * speedParam;
+              }
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+              ctx.fill();
+
+              for (let j = i + 1; j < countParam; j++) {
+                  const p2 = particles[j];
+                  const dx2 = p.x - p2.x;
+                  const dy2 = p.y - p2.y;
+                  const d2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                  if (d2 < 65) {
+                      ctx.beginPath();
+                      ctx.strokeStyle = hexToRgba(pgColor, (1 - d2 / 65) * 0.35);
+                      ctx.lineWidth = 1;
+                      ctx.moveTo(p.x, p.y);
+                      ctx.lineTo(p2.x, p2.y);
+                      ctx.stroke();
+                  }
+              }
+          }
+      } else if (engine === 'neon-ripple') {
+          if (rippleRadius > 0) {
+              ctx.beginPath();
+              ctx.arc(rippleX, rippleY, rippleRadius, 0, Math.PI * 2);
+              ctx.strokeStyle = hexToRgba(pgColor, 1 - (rippleRadius / 150));
+              ctx.lineWidth = 3;
+              ctx.stroke();
+              rippleRadius += 2.5 * speedParam;
+              if (rippleRadius > 150) rippleRadius = 0;
+          }
+
+          for (let i = 0; i < countParam; i += 2) {
+              if (!particles[i]) continue;
+              const p = particles[i];
+              p.angle += 0.05 * speedParam;
+              const rippleVal = Math.sin(p.angle) * 5;
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.radius + rippleVal, 0, Math.PI * 2);
+              ctx.fillStyle = hexToRgba(pgColor, 0.15);
+              ctx.fill();
+          }
+      } else if (engine === 'gravity') {
+          const centerX = mousePos.x || width / 2;
+          const centerY = mousePos.y || height / 2;
+
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
+          ctx.fillStyle = pgColor;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = pgColor;
+          ctx.fill();
+          ctx.shadowBlur = 0; 
+
+          for (let i = 0; i < countParam; i++) {
+              const p = particles[i];
+              p.angle += p.orbitSpeed * speedParam;
+              
+              const orbitX = centerX + Math.cos(p.angle) * p.orbitRadius;
+              const orbitY = centerY + Math.sin(p.angle) * p.orbitRadius;
+
+              ctx.beginPath();
+              ctx.arc(orbitX, orbitY, p.radius, 0, Math.PI * 2);
+              ctx.fill();
+
+              ctx.beginPath();
+              ctx.strokeStyle = hexToRgba(pgColor, 0.1);
+              ctx.moveTo(orbitX, orbitY);
+              ctx.lineTo(centerX, centerY);
+              ctx.stroke();
+          }
+      }
+  }
+
+  function hexToRgba(hex, alpha) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+</script>
 <script src="../script.js?v=3.3"></script>
 </body>
 </html>
