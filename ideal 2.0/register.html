@@ -141,6 +141,10 @@
         .box-doc:hover { box-shadow: 0 16px 36px rgba(249, 115, 22, 0.12); }
         .box-doc .icon-bg { background: #fff7ed; color: #f97316; }
 
+        .box-settings::before { background: #64748b; } 
+        .box-settings:hover { box-shadow: 0 16px 36px rgba(100, 116, 139, 0.12); }
+        .box-settings .icon-bg { background: #f1f5f9; color: #64748b; }
+
         .icon-bg { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 -2px 4px rgba(0,0,0,0.03); }
         .feature-box:hover .icon-bg { transform: scale(1.1) rotate(5deg); }
         .feature-text h4 { color: #0f172a; font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.2px; }
@@ -591,8 +595,86 @@
             <div class="feature-box box-time" onclick="openModal('timeModal')"><div class="icon-bg"><i class="far fa-clock"></i></div><div class="feature-text"><h4>Timetable</h4><p>Daily schedule</p></div></div>
             <div class="feature-box box-assign" onclick="openModal('assignModal')"><div class="icon-bg"><i class="fas fa-book-open"></i></div><div class="feature-text"><h4>Assignments</h4><p>Pending homework</p></div></div>
             <div class="feature-box box-doc" onclick="openModal('docModal')"><div class="icon-bg"><i class="fas fa-folder-open"></i></div><div class="feature-text"><h4>My Documents</h4><p>Upload & View Documents</p></div></div>
+            <div class="feature-box box-settings locked-feature" onclick="showToast('Account Settings is currently locked by Administrator.', true)"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-cog"></i></div><div class="feature-text"><h4>Account Settings</h4><p style="color: #ef4444; font-weight: 600;">Locked by Admin</p></div></div>
             <div class="feature-box box-fee locked-feature" onclick="openModal('feeModal')"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-rupee-sign"></i></div><div class="feature-text"><h4>Fee Record</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
             <div class="feature-box box-progress locked-feature" onclick="openProgressModal()"><span class="lock-badge"><i class="fas fa-lock"></i></span><div class="icon-bg"><i class="fas fa-chart-line"></i></div><div class="feature-text"><h4>My Progress</h4><p style="color: #ef4444; font-weight: 600;">Coming Soon</p></div></div>
+        </div>
+    </div>
+
+    <!-- ⚙️ ACCOUNT SETTINGS MODAL ⚙️ -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; border-radius: 24px; border-top: 6px solid #64748b;">
+            <span class="close-btn" onclick="closeModal('settingsModal')"><i class="fas fa-times"></i></span>
+            <h2 style="color: #0f172a; margin-bottom: 20px; text-align: center; font-weight: 800;"><i class="fas fa-cog" style="color: #64748b; margin-right: 8px;"></i> Account Settings</h2>
+            
+            <!-- Tab buttons inside Settings Modal -->
+            <div style="display: flex; gap: 10px; border-bottom: 2.5px solid #f1f5f9; margin-bottom: 25px; padding-bottom: 12px;">
+                <button class="btn" id="btn-tab-email" onclick="switchSettingsTab('email')" style="margin:0; flex:1; font-size:0.9rem; background:#64748b; padding:10px 15px; border-radius:10px;">Change Email</button>
+                <button class="btn" id="btn-tab-password" onclick="switchSettingsTab('password')" style="margin:0; flex:1; font-size:0.9rem; background:#cbd5e1; color:#334155; padding:10px 15px; border-radius:10px;">Change Password</button>
+            </div>
+            
+            <!-- Email Change Section -->
+            <div id="settings-email-section">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 6px; text-align: left; padding-left: 5px;"><i class="fas fa-envelope-open-text" style="color: #94a3b8; margin-right: 5px;"></i> Current Email Address:</div>
+                <div class="input-group">
+                    <i class="fas fa-envelope" style="color:#64748b;"></i>
+                    <input type="email" id="settingsCurrentEmail" placeholder="Current Email" readonly style="background:#f1f5f9; color:#64748b; cursor:not-allowed; font-weight:500;">
+                </div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 6px; text-align: left; padding-left: 5px;"><i class="fas fa-plus-circle" style="color: #94a3b8; margin-right: 5px;"></i> New Email Address:</div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="settingsNewEmail" placeholder="Enter New Email" required>
+                </div>
+                <div id="emailReauthContainer" style="display:none; margin-top: 10px;">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #b91c1c; margin-bottom: 6px; text-align: left; padding-left: 5px;"><i class="fas fa-shield-alt" style="color: #ef4444; margin-right: 5px;"></i> Confirm Current Password:</div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="emailConfirmPassword" placeholder="Enter your password to confirm">
+                    </div>
+                </div>
+                <button class="btn" style="background: #3b82f6; margin-top: 15px; border-radius: 12px; font-weight: 700; height: 50px; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="updateStudentEmail()">
+                    <i class="fas fa-check-circle"></i> Save Email Address
+                </button>
+            </div>
+            
+            <!-- Password Change Section -->
+            <div id="settings-password-section" style="display:none;">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 6px; text-align: left; padding-left: 5px;"><i class="fas fa-key" style="color: #94a3b8; margin-right: 5px;"></i> New Password:</div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="settingsNewPassword" placeholder="Enter New Password" required>
+                </div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 6px; text-align: left; padding-left: 5px;"><i class="fas fa-lock" style="color: #94a3b8; margin-right: 5px;"></i> Confirm New Password:</div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="settingsConfirmPassword" placeholder="Confirm New Password" required>
+                </div>
+                
+                <!-- OTP trigger section -->
+                <div id="settings-otp-trigger-area">
+                    <button class="btn" style="background: #f97316; margin-top: 15px; border-radius: 12px; font-weight: 700; height: 50px; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="sendPasswordChangeOTP()">
+                        <i class="fas fa-paper-plane"></i> Send OTP to Email
+                    </button>
+                </div>
+                
+                <!-- OTP input section -->
+                <div id="settings-otp-input-area" style="display:none; margin-top: 20px; border-top: 1.5px dashed #cbd5e1; padding-top: 20px;">
+                    <div style="background:#fffbeb; color:#b45309; border:1.5px solid #fde68a; padding:12px 18px; border-radius:12px; font-size:0.88rem; font-weight:600; margin-bottom:15px; line-height:1.5;">
+                        <i class="fas fa-shield-alt" style="color:#d97706; margin-right:6px;"></i> An OTP has been sent to your registered email address: <strong id="settingsOtpEmailMask" style="color:#b45309; font-family: monospace;">XXXXXX@domain.com</strong>. Enter it below to confirm your password change.
+                    </div>
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 6px; text-align: left; padding-left: 5px;"><i class="fas fa-shield-virus" style="color: #94a3b8; margin-right: 5px;"></i> Verification Code (OTP):</div>
+                    <div class="input-group">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="settingsOtpCode" placeholder="Enter 6-Digit OTP" maxlength="6" style="letter-spacing:4px; font-weight:700; text-align:center;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    </div>
+                    <button class="btn" style="background: #22c55e; margin-top: 15px; border-radius: 12px; font-weight: 700; height: 50px; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="verifyOtpAndUpdatePassword()">
+                        <i class="fas fa-check-double"></i> Verify & Change Password
+                    </button>
+                    <p style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+                        <a href="javascript:void(0)" onclick="sendPasswordChangeOTP()" style="color: #3b82f6; font-weight:700; text-decoration:none; display: inline-flex; align-items: center; gap: 5px;"><i class="fas fa-redo"></i> Resend OTP</a>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1847,9 +1929,358 @@
             document.getElementById('docViewModal').style.display = 'flex';
         }
 
-        function openModal(id) { let user = JSON.parse(sessionStorage.getItem("ideal_active_student")); if(user) { loadStudentData(user); if(id === 'calModal') { renderCalendar(calCurrentMonth, calCurrentYear, user.cls); } if(id === 'leaveModal') { loadMyLeaves(user); } if(id === 'transModal') { loadTransportForStudent(); } if(id === 'docModal') { loadStudentDocuments(user.mobile); } } document.getElementById(id).style.display = 'flex'; }
+        function openModal(id) { 
+            let user = JSON.parse(sessionStorage.getItem("ideal_active_student")); 
+            if(user) { 
+                loadStudentData(user); 
+                if(id === 'calModal') { renderCalendar(calCurrentMonth, calCurrentYear, user.cls); } 
+                if(id === 'leaveModal') { loadMyLeaves(user); } 
+                if(id === 'transModal') { loadTransportForStudent(); } 
+                if(id === 'docModal') { loadStudentDocuments(user.mobile); } 
+                if(id === 'settingsModal') {
+                    document.getElementById('settingsCurrentEmail').value = user.email || 'No email registered';
+                    document.getElementById('settingsNewEmail').value = '';
+                    document.getElementById('emailConfirmPassword').value = '';
+                    document.getElementById('emailReauthContainer').style.display = 'none';
+                    document.getElementById('settingsNewPassword').value = '';
+                    document.getElementById('settingsConfirmPassword').value = '';
+                    document.getElementById('settingsOtpCode').value = '';
+                    document.getElementById('settings-otp-input-area').style.display = 'none';
+                    document.getElementById('settings-otp-trigger-area').style.display = 'block';
+                    switchSettingsTab('email');
+                }
+            } 
+            document.getElementById(id).style.display = 'flex'; 
+        }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         function logout() { sessionStorage.removeItem("ideal_active_student"); window.location.href = "index.html"; }
+
+        // 🌟 ACCOUNT SETTINGS & PASSWORD CHANGE FUNCTIONS 🌟
+        window.switchSettingsTab = function(tab) {
+            const btnEmail = document.getElementById('btn-tab-email');
+            const btnPassword = document.getElementById('btn-tab-password');
+            const emailSec = document.getElementById('settings-email-section');
+            const passSec = document.getElementById('settings-password-section');
+            
+            if (tab === 'email') {
+                btnEmail.style.background = '#64748b';
+                btnEmail.style.color = 'white';
+                btnPassword.style.background = '#cbd5e1';
+                btnPassword.style.color = '#334155';
+                emailSec.style.display = 'block';
+                passSec.style.display = 'none';
+            } else {
+                btnEmail.style.background = '#cbd5e1';
+                btnEmail.style.color = '#334155';
+                btnPassword.style.background = '#64748b';
+                btnPassword.style.color = 'white';
+                emailSec.style.display = 'none';
+                passSec.style.display = 'block';
+            }
+        };
+
+        window.updateStudentEmail = function() {
+            const newEmail = document.getElementById('settingsNewEmail').value.trim();
+            if (!newEmail || !newEmail.includes('@')) {
+                alert("Please enter a valid email address!");
+                return;
+            }
+            
+            let user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+            if (!user) return;
+
+            if (newEmail === user.email) {
+                alert("New email cannot be the same as your current email!");
+                return;
+            }
+
+            const confirmPassContainer = document.getElementById('emailReauthContainer');
+            const confirmPassInput = document.getElementById('emailConfirmPassword');
+
+            if (confirmPassContainer.style.display === 'block') {
+                const password = confirmPassInput.value;
+                if (!password) {
+                    alert("Please enter your current password to confirm!");
+                    return;
+                }
+                
+                showToast("Verifying password...");
+                const authUser = firebase.auth().currentUser;
+                const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+                
+                authUser.reauthenticateWithCredential(credential).then(() => {
+                    performEmailUpdate(authUser, newEmail, user);
+                }).catch(err => {
+                    console.error(err);
+                    alert("Authentication failed: " + err.message);
+                });
+            } else {
+                showToast("Updating email...");
+                const authUser = firebase.auth().currentUser;
+                if (authUser) {
+                    performEmailUpdate(authUser, newEmail, user);
+                } else {
+                    updateEmailInRTDBAndSheets(newEmail, user);
+                }
+            }
+        };
+
+        function performEmailUpdate(authUser, newEmail, user) {
+            authUser.updateEmail(newEmail).then(() => {
+                updateEmailInRTDBAndSheets(newEmail, user);
+            }).catch(err => {
+                if (err.code === 'auth/requires-recent-login') {
+                    document.getElementById('emailReauthContainer').style.display = 'block';
+                    alert("For security, please enter your current password below to confirm this change.");
+                } else {
+                    alert("Error updating Auth email: " + err.message);
+                }
+            });
+        }
+
+        function updateEmailInRTDBAndSheets(newEmail, user) {
+            const updates = {};
+            updates[`ideal_student_users/${user.mobile}/email`] = newEmail;
+            updates[`ideal_students_by_class/${user.cls}/${user.mobile}/email`] = newEmail;
+            
+            db.ref().update(updates).then(() => {
+                user.email = newEmail;
+                sessionStorage.setItem("ideal_active_student", JSON.stringify(user));
+                document.getElementById('settingsCurrentEmail').value = newEmail;
+                document.getElementById('emailReauthContainer').style.display = 'none';
+                document.getElementById('emailConfirmPassword').value = '';
+                document.getElementById('settingsNewEmail').value = '';
+                
+                // Sync to Google Sheets
+                syncStudentToGoogleSheets(user);
+                
+                showToast("Email updated successfully! ✅");
+            }).catch(err => {
+                alert("Database error: " + err.message);
+            });
+        }
+
+        let generatedOtp = null;
+        let otpExpiryTime = null;
+
+        const Email = {
+            send: function (a) {
+                return new Promise(function (resolve, reject) {
+                    a.nocache = Math.random() * 1e6;
+                    a.Action = "Send";
+                    var jsonStr = JSON.stringify(a);
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "https://smtpjs.com/v3/smtpjs.aspx", true);
+                    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhr.onload = function () {
+                        resolve(xhr.responseText);
+                    };
+                    xhr.onerror = function (e) {
+                        reject(e);
+                    };
+                    xhr.send(jsonStr);
+                });
+            }
+        };
+
+        function maskEmail(email) {
+            if (!email) return 'N/A';
+            const parts = email.split('@');
+            if (parts.length !== 2) return email;
+            const name = parts[0];
+            const domain = parts[1];
+            if (name.length <= 3) {
+                return name[0] + '***@' + domain;
+            }
+            return name.substring(0, 3) + '****' + name.substring(name.length - 1) + '@' + domain;
+        }
+
+        window.sendPasswordChangeOTP = function() {
+            const newPassword = document.getElementById('settingsNewPassword').value;
+            const confirmPassword = document.getElementById('settingsConfirmPassword').value;
+            
+            if (!newPassword || newPassword.length < 6) {
+                alert("New password must be at least 6 characters long!");
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            let user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+            if (!user) return;
+
+            if (!user.email) {
+                alert("No registered email address found for your profile! Please contact the administrator to set your email address first.");
+                return;
+            }
+
+            // Generate 6 digit OTP
+            generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
+            otpExpiryTime = Date.now() + (5 * 60 * 1000); // 5 minutes expiry
+
+            const email = user.email;
+            const maskedEmail = maskEmail(email);
+            const maskEl = document.getElementById('settingsOtpEmailMask');
+            if (maskEl) maskEl.innerText = maskedEmail;
+
+            document.getElementById('settings-otp-trigger-area').style.display = 'none';
+            document.getElementById('settings-otp-input-area').style.display = 'block';
+
+            showToast("Sending OTP to " + maskedEmail + "...");
+
+            // Send actual email using SmtpJS directly from idealpublicschool47@gmail.com
+            const emailBodyText = `Verification Code for Password Change:\n\nHello ${user.name},\n\nYour OTP for changing password at Ideal Public School Student Portal is: <strong>${generatedOtp}</strong>.\n\nThis OTP is valid for 5 minutes. Please do not share this code with anyone.\n\nThank you,\nIdeal Public School\n\n--\nRegards,\nAdmin - Ideal Public School`;
+            
+            try {
+                Email.send({
+                    Host : "smtp.gmail.com",
+                    Username : "idealpublicschool47@gmail.com",
+                    Password : "ujlhmqjxwskkqowy",
+                    To : email,
+                    From : "idealpublicschool47@gmail.com",
+                    Subject : "🚨 URGENT NOTICE: Ideal Public School Verification Code",
+                    Body : emailBodyText.replace(/\n/g, "<br>")
+                }).then(message => {
+                    if (message === "OK") {
+                        showToast("OTP sent to your registered email! 📧");
+                    } else {
+                        console.error("SmtpJS send error: " + message);
+                        if (confirm("⚠️ SMTP Mail Error: " + message + "\n\nStandard Google logins are blocked. Would you like to use the fallback server to send the OTP instead? (Note: Fallback emails will be sent from qureshifarhaan84@gmail.com)")) {
+                            sendOtpViaFallback(email, user.name);
+                        } else {
+                            showToast("Failed to send OTP email.", true);
+                        }
+                    }
+                }).catch(err => {
+                    console.error("SMTP error: ", err);
+                    if (confirm("⚠️ SMTP Connection Error: " + err.message + "\n\nWould you like to use the fallback server to send the OTP instead? (Note: Fallback emails will be sent from qureshifarhaan84@gmail.com)")) {
+                        sendOtpViaFallback(email, user.name);
+                    } else {
+                        showToast("Failed to send email", true);
+                    }
+                });
+            } catch (syncErr) {
+                console.error("Synchronous SMTP error: ", syncErr);
+                if (confirm("⚠️ SMTP Client Error: " + syncErr.message + "\n\nSMTP service failed to initialize. Would you like to use the fallback server to send the OTP instead? (Note: Fallback emails will be sent from qureshifarhaan84@gmail.com)")) {
+                    sendOtpViaFallback(email, user.name);
+                } else {
+                    showToast("Failed to send email", true);
+                }
+            }
+        };
+
+        function sendOtpViaFallback(email, name) {
+            showToast("Sending via fallback server...");
+            let mailBody = new URLSearchParams();
+            mailBody.append("action", "send_bulk_email");
+            mailBody.append("message", `Verification Code for Password Change:\n\nHello ${name},\n\nYour OTP for changing password at Ideal Public School Student Portal is: ${generatedOtp}.\n\nThis OTP is valid for 5 minutes. Please do not share this code with anyone.\n\nThank you,\nIdeal Public School\n\n--\nRegards,\nAdmin - Ideal Public School`);
+            mailBody.append("emails", email);
+            
+            fetch(GOOGLE_SHEET_URL_1, { 
+                method: 'POST', 
+                body: mailBody, 
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' } 
+            }).then(() => {
+                showToast("OTP sent via fallback server! 📧");
+            }).catch(err => {
+                console.error("Fallback error: ", err);
+                showToast("Fallback failed to send", true);
+            });
+        }
+
+        window.verifyOtpAndUpdatePassword = function() {
+            const enteredOtp = document.getElementById('settingsOtpCode').value.trim();
+            const newPassword = document.getElementById('settingsNewPassword').value;
+
+            if (!enteredOtp) {
+                alert("Please enter the 6-Digit OTP!");
+                return;
+            }
+
+            if (Date.now() > otpExpiryTime) {
+                alert("OTP has expired! Please request a new one.");
+                return;
+            }
+
+            if (enteredOtp !== generatedOtp) {
+                alert("Invalid OTP! Please try again.");
+                return;
+            }
+
+            let user = JSON.parse(sessionStorage.getItem("ideal_active_student"));
+            if (!user) return;
+
+            showToast("Changing password...");
+
+            const updates = {};
+            updates[`ideal_student_users/${user.mobile}/password`] = newPassword;
+            updates[`ideal_students_by_class/${user.cls}/${user.mobile}/password`] = newPassword;
+
+            db.ref().update(updates).then(() => {
+                user.password = newPassword;
+                sessionStorage.setItem("ideal_active_student", JSON.stringify(user));
+
+                syncStudentToGoogleSheets(user);
+
+                const authUser = firebase.auth().currentUser;
+                if (authUser) {
+                    authUser.updatePassword(newPassword).then(() => {
+                        completePasswordChange();
+                    }).catch(authErr => {
+                        console.error(authErr);
+                        completePasswordChange();
+                    });
+                } else {
+                    completePasswordChange();
+                }
+            }).catch(err => {
+                alert("Error updating password in database: " + err.message);
+            });
+        };
+
+        function completePasswordChange() {
+            generatedOtp = null;
+            otpExpiryTime = null;
+            document.getElementById('settingsNewPassword').value = '';
+            document.getElementById('settingsConfirmPassword').value = '';
+            document.getElementById('settingsOtpCode').value = '';
+            document.getElementById('settings-otp-input-area').style.display = 'none';
+            document.getElementById('settings-otp-trigger-area').style.display = 'block';
+            closeModal('settingsModal');
+            showToast("Password updated successfully! ✅");
+        }
+
+        function syncStudentToGoogleSheets(sData) {
+            let deleteBody = new URLSearchParams();
+            deleteBody.append("action", "delete");
+            deleteBody.append("mobile", sData.mobile);
+
+            const p1 = fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: deleteBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+            const p2 = fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: deleteBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+            const p3 = fetch(GOOGLE_SHEET_URL_3, { method: 'POST', body: deleteBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+
+            Promise.all([p1, p2, p3]).then(() => {
+                setTimeout(() => {
+                    let appendBody = new URLSearchParams();
+                    appendBody.append("date", sData.date || new Date().toLocaleDateString('en-GB'));
+                    appendBody.append("name", sData.name);
+                    appendBody.append("mobile", sData.mobile);
+                    appendBody.append("email", sData.email);
+                    appendBody.append("gender", sData.gender || 'Male');
+                    appendBody.append("class", sData.cls);
+                    appendBody.append("password", sData.password);
+                    appendBody.append("studentId", sData.studentId || '');
+                    appendBody.append("dob", sData.dob || '');
+
+                    fetch(GOOGLE_SHEET_URL_1, { method: 'POST', body: appendBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                    fetch(GOOGLE_SHEET_URL_2, { method: 'POST', body: appendBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                    fetch(GOOGLE_SHEET_URL_3, { method: 'POST', body: appendBody, mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }});
+                }, 1000);
+            }).catch(err => console.error("Error syncing to Google Sheets:", err));
+        }
     </script>
 
     <!-- Fee Breakdown Modal -->
