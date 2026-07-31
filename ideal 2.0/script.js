@@ -1,10 +1,10 @@
-// ==========================================
-// 🚨 GOOGLE SHEETS & FIREBASE LIVE CONFIGS 🚨
+﻿// ==========================================
+// ðŸš¨ GOOGLE SHEETS & FIREBASE LIVE CONFIGS ðŸš¨
 // ==========================================
 const ADMISSION_SHEET_URL = "https://script.google.com/macros/s/AKfycby_9thAYsdn2AgSPlhtZnW7Tla05_Hs5fpsz3u0S2pXlCJod9f5mofspBvnzw0Bh4pU/exec";
 const COMPLAINT_SHEET_URL = "https://script.google.com/macros/s/AKfycbxYI6vgpQDtoMlAz-3nQFEC1zrzxuNrALciCIDzR14K5D5LUCt-y7MO46BiqEx3JTMlqg/exec";
 
-// 🌟 1. FIREBASE SETUP 🌟
+// ðŸŒŸ 1. FIREBASE SETUP ðŸŒŸ
 const firebaseConfig = {
     apiKey: "AIzaSyCK-PK_YPHMdTfhTOR-MVJjY3Fodqq5K_g",
     authDomain: "ideal-public-school-59070.firebaseapp.com",
@@ -28,19 +28,19 @@ if (typeof firebase !== 'undefined') {
     console.warn("Firebase SDK is not loaded. Live database features will be disabled.");
 }
 
-// 🌟 2. TOAST NOTIFICATIONS 🌟
+// ðŸŒŸ 2. TOAST NOTIFICATIONS ðŸŒŸ
 function showToast(message, isError = false) {
     const toast = document.getElementById("toastMessage"); 
     const toastText = document.getElementById("toastText");
     if (toast && toastText) { 
         toastText.innerText = message; 
-        toast.style.backgroundColor = isError ? "#ef4444" : "#10b981"; 
+        toast.style.backgroundColor = isError ? "#a94040" : "#b8860b"; 
         toast.classList.add("show"); 
         setTimeout(() => toast.classList.remove("show"), 3000); 
     }
 }
 
-// 🌟 3. MODAL LOGIC & CONTROLS 🌟
+// ðŸŒŸ 3. MODAL LOGIC & CONTROLS ðŸŒŸ
 function openAdmissionForm() { document.getElementById('admissionModal').style.display = 'flex'; } 
 function closeAdmissionForm() { document.getElementById('admissionModal').style.display = 'none'; }
 function openELibrary() { document.getElementById('eLibraryModal').style.display = 'flex'; } 
@@ -60,7 +60,7 @@ function openPublicFeeModal() {
     if (!db) {
         let container = document.getElementById('publicFeeContainer');
         if (container) {
-            container.innerHTML = '<p style="color:#ef4444; font-weight:600; margin-top:15px; background:#fee2e2; padding:15px; border-radius:8px; border:1px solid #fca5a5;">Offline Mode: Fee structure is not available.</p>';
+            container.innerHTML = '<p style="color:#a94040; font-weight:600; margin-top:15px; background:#fee2e2; padding:15px; border-radius:8px; border:1px solid #fca5a5;">Offline Mode: Fee structure is not available.</p>';
         }
         document.getElementById('publicFeeModal').style.display = 'flex';
         return;
@@ -70,10 +70,10 @@ function openPublicFeeModal() {
         let container = document.getElementById('publicFeeContainer'); 
         let keys = Object.keys(classFees);
         if(keys.length > 0) {
-            let html = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:15px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"><tr style="background: #f8fafc;"><th style="border-bottom:2px solid #e2e8f0; padding:15px; color:#475569;">Class Name</th><th style="border-bottom:2px solid #e2e8f0; padding:15px; text-align:right; color:#475569;">Total Fee (₹)</th></tr>';
-            keys.forEach(cls => { html += `<tr><td style="padding:15px; border-bottom:1px solid #e2e8f0; font-weight:600; color:#334155;">${cls}</td><td style="padding:15px; border-bottom:1px solid #e2e8f0; color:#10b981; font-weight:bold; font-size:1.1rem; text-align:right;">₹${classFees[cls]}</td></tr>`; });
+            let html = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:15px; border: 1px solid #e8d5c4; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05);"><tr style="background: #fdf8f5;"><th style="border-bottom:2px solid #e8d5c4; padding:15px; color:#6b4040;">Class Name</th><th style="border-bottom:2px solid #e8d5c4; padding:15px; text-align:right; color:#6b4040;">Total Fee (â‚¹)</th></tr>';
+            keys.forEach(cls => { html += `<tr><td style="padding:15px; border-bottom:1px solid #e8d5c4; font-weight:600; color:#5a2d2d;">${cls}</td><td style="padding:15px; border-bottom:1px solid #e8d5c4; color:#b8860b; font-weight:bold; font-size:1.1rem; text-align:right;">â‚¹${classFees[cls]}</td></tr>`; });
             container.innerHTML = html + '</table>';
-        } else { container.innerHTML = '<p style="color:#ef4444; font-weight:600; margin-top:15px; background:#fee2e2; padding:15px; border-radius:8px; border:1px solid #fca5a5;">Fee structure is not published yet.</p>'; }
+        } else { container.innerHTML = '<p style="color:#a94040; font-weight:600; margin-top:15px; background:#fee2e2; padding:15px; border-radius:8px; border:1px solid #fca5a5;">Fee structure is not published yet.</p>'; }
         document.getElementById('publicFeeModal').style.display = 'flex';
     });
 }
@@ -88,7 +88,7 @@ window.onclick = function(event) {
     });
 }
 
-// 🌟 4. DIGITAL ID CARD GENERATION & DOWNLOAD 🌟
+// ðŸŒŸ 4. DIGITAL ID CARD GENERATION & DOWNLOAD ðŸŒŸ
 function resetIdForm() { 
     document.getElementById('idGenForm').reset(); 
     document.getElementById('photoFileName').innerText = "Click to Upload Passport Photo"; 
@@ -106,11 +106,25 @@ function downloadIdCard() {
         link.href = canvas.toDataURL('image/png'); 
         link.click(); 
         card.style.borderRadius = "16px"; 
-        showToast("ID Card Downloaded! ✅"); 
+        showToast("ID Card Downloaded! âœ…"); 
     }); 
 }
 
-// 🌟 5. LIVE FIREBASE DATA LISTENERS (DOMContentLoaded) 🌟
+// ðŸŒŸ 5. LIVE FIREBASE DATA LISTENERS (DOMContentLoaded) ðŸŒŸ
+// ðŸ”’ DISABLE RIGHT-CLICK & INSPECT / DEVTOOLS
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+document.addEventListener('keydown', function(e) {
+    // Block F12
+    if (e.key === 'F12') { e.preventDefault(); return false; }
+    // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) { e.preventDefault(); return false; }
+    // Block Ctrl+U (View Source)
+    if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) { e.preventDefault(); return false; }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('js-active');
     
@@ -171,11 +185,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     let html = '';
                     const photos = Object.keys(data).map(key => data[key]).reverse();
                     photos.forEach(item => { 
-                        html += `<div class="card gallery-item" style="padding:10px; text-align:center;"><img src="${item.image}" alt="${item.title || 'Event Photo'}" style="width:100%; height:200px; object-fit:cover; border-radius:8px;"><p style="margin-top:10px; font-weight:600; color:#334155;">${item.title || 'Event Photo'}</p></div>`; 
+                        html += `<div class="card gallery-item" style="padding:10px; text-align:center;"><img src="${item.image}" alt="${item.title || 'Event Photo'}" style="width:100%; height:200px; object-fit:cover; border-radius:8px;"><p style="margin-top:10px; font-weight:600; color:#5a2d2d;">${item.title || 'Event Photo'}</p></div>`; 
                     });
                     galleryContainer.innerHTML = html;
                 } else { 
-                    galleryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No new photos uploaded yet.</p>'; 
+                    galleryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No new photos uploaded yet.</p>'; 
                 }
             }
 
@@ -205,10 +219,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         campusContainer.innerHTML = html;
                     } else {
-                        campusContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No campus photos uploaded yet.</p>';
+                        campusContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No campus photos uploaded yet.</p>';
                     }
                 } else {
-                    campusContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No campus photos uploaded yet.</p>';
+                    campusContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No campus photos uploaded yet.</p>';
                 }
             }
 
@@ -239,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     galleryPageContainer.innerHTML = html;
                     initGalleryFilters();
                 } else {
-                    galleryPageContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No photos uploaded yet.</p>';
+                    galleryPageContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No photos uploaded yet.</p>';
                 }
             }
 
@@ -261,10 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         sportsContainer.innerHTML = html;
                     } else {
-                        sportsContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No sports photos uploaded yet.</p>';
+                        sportsContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No sports photos uploaded yet.</p>';
                     }
                 } else {
-                    sportsContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No sports photos uploaded yet.</p>';
+                    sportsContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No sports photos uploaded yet.</p>';
                 }
             }
 
@@ -290,10 +304,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         libraryContainer.innerHTML = html;
                     } else {
-                        libraryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No library photos uploaded yet.</p>';
+                        libraryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No library photos uploaded yet.</p>';
                     }
                 } else {
-                    libraryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No library photos uploaded yet.</p>';
+                    libraryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No library photos uploaded yet.</p>';
                 }
             }
 
@@ -318,10 +332,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         transportContainer.innerHTML = html;
                     } else {
-                        transportContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No transport photos uploaded yet.</p>';
+                        transportContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No transport photos uploaded yet.</p>';
                     }
                 } else {
-                    transportContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No transport photos uploaded yet.</p>';
+                    transportContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No transport photos uploaded yet.</p>';
                 }
             }
 
@@ -363,10 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                             c.el.innerHTML = html;
                         } else {
-                            c.el.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No campus photos uploaded yet.</p>';
+                            c.el.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No campus photos uploaded yet.</p>';
                         }
                     } else {
-                        c.el.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">No campus photos uploaded yet.</p>';
+                        c.el.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">No campus photos uploaded yet.</p>';
                     }
                 }
             });
@@ -380,10 +394,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (libs.length > 0) {
                     let html = '<div style="display:grid; gap:15px;">';
                     libs.reverse().forEach(l => {
-                        let icon = l.type === 'PDF' ? '<i class="fas fa-file-pdf" style="color:#ef4444; font-size:2rem;"></i>' : (l.type === 'Video' ? '<i class="fas fa-video" style="color:#3b82f6; font-size:2rem;"></i>' : '<i class="fas fa-link" style="color:#10b981; font-size:2rem;"></i>');
-                        html += `<a href="${l.link}" target="_blank" style="display:flex; align-items:center; gap:15px; background:#f8fafc; padding:15px; border-radius:10px; text-decoration:none; color:#0f172a; border:1px solid #e2e8f0; transition:0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">${icon}<div><h4 style="margin:0;">${l.title}</h4><span style="font-size:0.8rem; color:#64748b; background:#e2e8f0; padding:2px 8px; border-radius:4px;">${l.type}</span></div></a>`;
+                        let icon = l.type === 'PDF' ? '<i class="fas fa-file-pdf" style="color:#a94040; font-size:2rem;"></i>' : (l.type === 'Video' ? '<i class="fas fa-video" style="color:#c0392b; font-size:2rem;"></i>' : '<i class="fas fa-link" style="color:#b8860b; font-size:2rem;"></i>');
+                        html += `<a href="${l.link}" target="_blank" style="display:flex; align-items:center; gap:15px; background:#fdf8f5; padding:15px; border-radius:10px; text-decoration:none; color:#6b1a1a; border:1px solid #e8d5c4; transition:0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">${icon}<div><h4 style="margin:0;">${l.title}</h4><span style="font-size:0.8rem; color:#7a5c5c; background:#e8d5c4; padding:2px 8px; border-radius:4px;">${l.type}</span></div></a>`;
                     }); html += '</div>'; libContainer.innerHTML = html;
-                } else { libContainer.innerHTML = '<p style="text-align:center; color:#64748b;">No resources available right now.</p>'; }
+                } else { libContainer.innerHTML = '<p style="text-align:center; color:#7a5c5c;">No resources available right now.</p>'; }
             }
         });
 
@@ -395,9 +409,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (notices.length > 0) {
                     let html = '';
                     [...notices].reverse().forEach(n => {
-                        html += `<div style="background:#f8fafc; border-left:4px solid #dc2626; padding:15px; margin-bottom:15px; border-radius:8px;"><strong style="color:#0f172a; font-size:1.1rem;">${n.title}</strong><div style="font-size:0.8rem; color:#64748b; margin-bottom:8px;">${n.date}</div><p style="font-size:0.95rem; color:#334155; margin:0;">${n.content}</p></div>`;
+                        html += `<div style="background:#fdf8f5; border-left:4px solid #8b1a1a; padding:15px; margin-bottom:15px; border-radius:8px;"><strong style="color:#6b1a1a; font-size:1.1rem;">${n.title}</strong><div style="font-size:0.8rem; color:#7a5c5c; margin-bottom:8px;">${n.date}</div><p style="font-size:0.95rem; color:#5a2d2d; margin:0;">${n.content}</p></div>`;
                     }); noticeContainer.innerHTML = html;
-                } else { noticeContainer.innerHTML = '<p style="text-align:center; color:#64748b;">No new notices.</p>'; }
+                } else { noticeContainer.innerHTML = '<p style="text-align:center; color:#7a5c5c;">No new notices.</p>'; }
             }
             updateMarquee(notices);
         });
@@ -497,19 +511,19 @@ document.addEventListener('DOMContentLoaded', () => {
             initNewsSlider(newsItems);
         });
 
-        // H. Live Announcement Popup
-        db.ref('ideal_popup').on('value', snap => {
-            let popupText = snap.val();
-            if (popupText && !sessionStorage.getItem('popup_shown')) {
-                let noticeModal = document.getElementById('noticeModal');
-                if (noticeModal) { 
-                    noticeModal.querySelector('h2').innerText = "Important Announcement"; 
-                    document.getElementById('noticeModalText').innerText = popupText; 
-                    noticeModal.style.display = 'flex'; 
-                    sessionStorage.setItem('popup_shown', 'true'); 
-                }
-            }
-        });
+        // H. Live Announcement Popup â€” DISABLED (popup band kar diya gaya hai)
+        // db.ref('ideal_popup').on('value', snap => {
+        //     let popupText = snap.val();
+        //     if (popupText && !sessionStorage.getItem('popup_shown')) {
+        //         let noticeModal = document.getElementById('noticeModal');
+        //         if (noticeModal) { 
+        //             noticeModal.querySelector('h2').innerText = "Important Announcement"; 
+        //             document.getElementById('noticeModalText').innerText = popupText; 
+        //             noticeModal.style.display = 'flex'; 
+        //             sessionStorage.setItem('popup_shown', 'true'); 
+        //         }
+        //     }
+        // });
 
         // I. Live Toppers List
         db.ref('ideal_toppers').on('value', (snapshot) => {
@@ -521,9 +535,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     toppers.forEach((t, index) => {
                         let rankClass = index === 0 ? 'rank-1' : (index === 1 ? 'rank-2' : (index === 2 ? 'rank-3' : 'rank-1'));
                         let rankText = index === 0 ? '1ST RANK' : (index === 1 ? '2ND RANK' : (index === 2 ? '3RD RANK' : 'TOPPER'));
-                        html += `<div class="topper-card"><div class="topper-rank ${rankClass}"><i class="fas fa-medal"></i> ${rankText}</div><img src="${t.photo}" class="topper-photo" alt="Topper"><h3 style="color: #0f172a; margin: 0; font-size: 1.2rem;">${t.name}</h3><p style="color: #64748b; margin: 5px 0; font-size: 0.9rem;">${t.cls}</p><div class="topper-score">${t.score}</div></div>`;
+                        html += `<div class="topper-card"><div class="topper-rank ${rankClass}"><i class="fas fa-medal"></i> ${rankText}</div><img src="${t.photo}" class="topper-photo" alt="Topper"><h3 style="color: #6b1a1a; margin: 0; font-size: 1.2rem;">${t.name}</h3><p style="color: #7a5c5c; margin: 5px 0; font-size: 0.9rem;">${t.cls}</p><div class="topper-score">${t.score}</div></div>`;
                     }); toppersContainer.innerHTML = html;
-                } else { toppersContainer.innerHTML = '<p style="text-align:center; color:#64748b; width: 100%; grid-column: 1 / -1; margin-top:20px;">Results are being compiled. Toppers will be announced soon!</p>'; }
+                } else { toppersContainer.innerHTML = '<p style="text-align:center; color:#7a5c5c; width: 100%; grid-column: 1 / -1; margin-top:20px;">Results are being compiled. Toppers will be announced soon!</p>'; }
             }
         });
 
@@ -535,44 +549,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } else {
         const galleryContainer = document.getElementById('dynamicGalleryContainer');
-        if (galleryContainer) galleryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+        if (galleryContainer) galleryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         const campusContainer = document.getElementById('campusGalleryContainer');
-        if (campusContainer) campusContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+        if (campusContainer) campusContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         const galleryPageContainer = document.getElementById('galleryPageContainer');
-        if (galleryPageContainer) galleryPageContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+        if (galleryPageContainer) galleryPageContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         const sportsContainer = document.getElementById('sportsGalleryContainer');
-        if (sportsContainer) sportsContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+        if (sportsContainer) sportsContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         const libraryContainer = document.getElementById('libraryGalleryContainer');
-        if (libraryContainer) libraryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+        if (libraryContainer) libraryContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         const transportContainer = document.getElementById('transportGalleryContainer');
-        if (transportContainer) transportContainer.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+        if (transportContainer) transportContainer.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         
         ['overviewGalleryContainer', 'principalGalleryContainer', 'directorGalleryContainer', 'missionGalleryContainer'].forEach(id => {
             const el = document.getElementById(id);
-            if (el) el.innerHTML = '<p style="text-align:center; width:100%; color:#64748b;">Gallery photos will load when online.</p>';
+            if (el) el.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c;">Gallery photos will load when online.</p>';
         });
 
         const libContainer = document.getElementById('userLibraryContainer');
-        if (libContainer) libContainer.innerHTML = '<p style="text-align:center; color:#64748b;">Digital resources will load when online.</p>';
+        if (libContainer) libContainer.innerHTML = '<p style="text-align:center; color:#7a5c5c;">Digital resources will load when online.</p>';
         const noticeContainer = document.getElementById('userNoticeContainer');
-        if (noticeContainer) noticeContainer.innerHTML = '<p style="text-align:center; color:#64748b;">Notice board will load when online.</p>';
+        if (noticeContainer) noticeContainer.innerHTML = '<p style="text-align:center; color:#7a5c5c;">Notice board will load when online.</p>';
         const toppersContainer = document.getElementById('toppersContainer');
-        if (toppersContainer) toppersContainer.innerHTML = '<p style="text-align:center; color:#64748b; width: 100%; grid-column: 1 / -1; margin-top:20px;">Toppers will load when online.</p>';
+        if (toppersContainer) toppersContainer.innerHTML = '<p style="text-align:center; color:#7a5c5c; width: 100%; grid-column: 1 / -1; margin-top:20px;">Toppers will load when online.</p>';
     }
 
     // J. Scrolling news updater
     function updateMarquee(notices = []) {
         if (!db) {
             let marqueeText = document.getElementById('mainMarquee');
-            if (marqueeText) marqueeText.innerText = "⭐ Welcome to Ideal Public School | Admissions Open for Session 2026-27!";
+            if (marqueeText) marqueeText.innerText = "â­ Welcome to Ideal Public School | Admissions Open for Session 2026-27!";
             return;
         }
         db.ref('ideal_scrolling').once('value', snap => {
             let scrollingNews = snap.val(); 
             let marqueeText = document.getElementById('mainMarquee'); 
             let marqueeString = "";
-            if (scrollingNews) marqueeString += `🚨 ${scrollingNews} | `;
-            if (notices.length > 0) { marqueeString += notices.map(n => `⭐ ${n.title}`).join(' | '); }
+            if (scrollingNews) marqueeString += `ðŸš¨ ${scrollingNews} | `;
+            if (notices.length > 0) { marqueeString += notices.map(n => `â­ ${n.title}`).join(' | '); }
             if (marqueeString && marqueeText) { marqueeText.innerText = marqueeString; }
         });
     }
@@ -635,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 }).then(() => {
-                    showToast("Complaint Submitted To Admin! ✅"); 
+                    showToast("Complaint Submitted To Admin! âœ…"); 
                     this.reset();
                 }).catch(err => {
                     showToast("Submission failed. Please check network.", true);
@@ -666,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 });
             }).then(() => {
-                showToast("Complaint Submitted To Admin! ✅"); 
+                showToast("Complaint Submitted To Admin! âœ…"); 
                 this.reset();
             }).catch(err => {
                 console.error("Complaint error:", err);
@@ -696,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({ name: inputs[0].value.trim(), email: inputs[1].value.trim(), message: inputs[2].value.trim() })
                 });
                 if (response.ok) {
-                    showToast("Message Sent Successfully! ✅");
+                    showToast("Message Sent Successfully! âœ…");
                     this.reset();
                 } else {
                     showToast("Error sending message. Try again!", true);
@@ -720,7 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const submitBtn = document.getElementById('admSubmitBtn') || this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerText;
-            submitBtn.innerText = "Submitting Application... ⏳";
+            submitBtn.innerText = "Submitting Application... â³";
             submitBtn.disabled = true;
 
             const dobVal = document.getElementById('admDob').value;
@@ -754,7 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 }).then(() => {
-                    showToast('Application submitted successfully! ✅');
+                    showToast('Application submitted successfully! âœ…');
                     this.reset();
                     closeAdmissionForm();
                 }).catch(err => {
@@ -789,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             })
             .then(() => {
-                showToast('Application submitted successfully! ✅');
+                showToast('Application submitted successfully! âœ…');
                 this.reset();
                 closeAdmissionForm();
             })
@@ -829,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('idCardPhoto').src = e.target.result; 
                 document.getElementById('idGenFormBox').style.display = 'none'; 
                 document.getElementById('idCardDisplay').style.display = 'block'; 
-                showToast("ID Card Generated Successfully! ✅"); 
+                showToast("ID Card Generated Successfully! âœ…"); 
             }; 
             reader.readAsDataURL(photoFile);
         });
@@ -952,13 +966,13 @@ document.addEventListener('DOMContentLoaded', () => {
             navOverlay.addEventListener('click', closeMenu);
         }
 
-        // Close on dedicated ✕ close button click
+        // Close on dedicated âœ• close button click
         if (navCloseBtn) {
             navCloseBtn.addEventListener('click', closeMenu);
         }
         
         // Close menu when clicking on any navigation link
-        // (Exclude the dropdown trigger — it should toggle, not close the drawer)
+        // (Exclude the dropdown trigger â€” it should toggle, not close the drawer)
         navMenu.querySelectorAll('a:not(.nav-dropdown-trigger)').forEach(link => {
             link.addEventListener('click', closeMenu);
         });
@@ -970,7 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================================
-    // 🔽 ABOUT US DROPDOWN — Desktop hover + Mobile accordion
+    // ðŸ”½ ABOUT US DROPDOWN â€” Desktop hover + Mobile accordion
     // ============================================================
     const aboutDropdown = document.getElementById('aboutDropdown');
     const aboutTrigger  = document.getElementById('aboutTrigger');
@@ -980,7 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isMobile = () => window.innerWidth <= 1024;
 
-        // ── Helper: open / close ──────────────────────────────
+        // â”€â”€ Helper: open / close â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         const openDropdown = () => {
             aboutDropdown.classList.add('open');
             aboutTrigger.setAttribute('aria-expanded', 'true');
@@ -993,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', () => {
             aboutDropdown.classList.contains('open') ? closeDropdown() : openDropdown();
         };
 
-        // ── DESKTOP: hover with small delay so fast mouse-pass doesn't flash ──
+        // â”€â”€ DESKTOP: hover with small delay so fast mouse-pass doesn't flash â”€â”€
         let hoverTimer = null;
 
         aboutDropdown.addEventListener('mouseenter', () => {
@@ -1007,14 +1021,14 @@ document.addEventListener('DOMContentLoaded', () => {
             hoverTimer = setTimeout(closeDropdown, 120);
         });
 
-        // ── MOBILE / CLICK: toggle accordion on trigger click ──
+        // â”€â”€ MOBILE / CLICK: toggle accordion on trigger click â”€â”€
         aboutTrigger.addEventListener('click', (e) => {
             if (!isMobile()) return; // desktop handled by hover
             e.preventDefault();
             toggleDropdown();
         });
 
-        // ── KEYBOARD NAVIGATION ────────────────────────────────
+        // â”€â”€ KEYBOARD NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         // Enter / Space on trigger: open & focus first item
         aboutTrigger.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -1052,14 +1066,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ── Close on outside click ─────────────────────────────
+        // â”€â”€ Close on outside click â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         document.addEventListener('click', (e) => {
             if (!aboutDropdown.contains(e.target)) {
                 closeDropdown();
             }
         });
 
-        // ── Close on Escape from anywhere ─────────────────────
+        // â”€â”€ Close on Escape from anywhere â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && aboutDropdown.classList.contains('open')) {
                 closeDropdown();
@@ -1067,10 +1081,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ── End About Us Dropdown ──────────────────────────────────────
+    // â”€â”€ End About Us Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     // ============================================================
-    // 🔽 OUR CAMPUS DROPDOWN — Desktop hover + Mobile accordion
+    // ðŸ”½ OUR CAMPUS DROPDOWN â€” Desktop hover + Mobile accordion
     // ============================================================
     const campusDropdown = document.getElementById('campusDropdown');
     const campusTrigger  = document.getElementById('campusTrigger');
@@ -1080,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isMobile = () => window.innerWidth <= 1024;
 
-        // ── Helper: open / close ──────────────────────────────
+        // â”€â”€ Helper: open / close â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         const openCampusDropdown = () => {
             campusDropdown.classList.add('open');
             campusTrigger.setAttribute('aria-expanded', 'true');
@@ -1093,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             campusDropdown.classList.contains('open') ? closeCampusDropdown() : openCampusDropdown();
         };
 
-        // ── DESKTOP: hover with small delay so fast mouse-pass doesn't flash ──
+        // â”€â”€ DESKTOP: hover with small delay so fast mouse-pass doesn't flash â”€â”€
         let campusHoverTimer = null;
 
         campusDropdown.addEventListener('mouseenter', () => {
@@ -1107,14 +1121,14 @@ document.addEventListener('DOMContentLoaded', () => {
             campusHoverTimer = setTimeout(closeCampusDropdown, 120);
         });
 
-        // ── MOBILE / CLICK: toggle accordion on trigger click ──
+        // â”€â”€ MOBILE / CLICK: toggle accordion on trigger click â”€â”€
         campusTrigger.addEventListener('click', (e) => {
             if (!isMobile()) return; // desktop handled by hover
             e.preventDefault();
             toggleCampusDropdown();
         });
 
-        // ── KEYBOARD NAVIGATION ────────────────────────────────
+        // â”€â”€ KEYBOARD NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         // Enter / Space on trigger: open & focus first item
         campusTrigger.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -1152,14 +1166,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // ── Close on outside click ─────────────────────────────
+        // â”€â”€ Close on outside click â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         document.addEventListener('click', (e) => {
             if (!campusDropdown.contains(e.target)) {
                 closeCampusDropdown();
             }
         });
 
-        // ── Close on Escape from anywhere ─────────────────────
+        // â”€â”€ Close on Escape from anywhere â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && campusDropdown.classList.contains('open')) {
                 closeCampusDropdown();
@@ -1167,7 +1181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ── End Our Campus Dropdown ────────────────────────────────────
+    // â”€â”€ End Our Campus Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
     // Scroll hide/show navbar header logic
@@ -1200,13 +1214,13 @@ document.addEventListener('DOMContentLoaded', () => {
         lastScrollY = currentScrollY;
     }, { passive: true });
 
-    // Show quick callback popup after 1.5 seconds on page load
-    setTimeout(() => {
-        const callbackModal = document.getElementById('callbackModal');
-        if (callbackModal) {
-            callbackModal.style.display = 'flex';
-        }
-    }, 1500);
+    // Show quick callback popup after 1.5 seconds on page load â€” DISABLED
+    // setTimeout(() => {
+    //     const callbackModal = document.getElementById('callbackModal');
+    //     if (callbackModal) {
+    //         callbackModal.style.display = 'flex';
+    //     }
+    // }, 1500);
 
     // Callback Form Submit Handler
     const callbackForm = document.getElementById('callbackForm');
@@ -1225,11 +1239,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerText;
-            submitBtn.innerText = "Requesting... ⏳";
+            submitBtn.innerText = "Requesting... â³";
             submitBtn.disabled = true;
 
             if (!db) {
-                showToast("Callback Requested! We will contact you soon. ✅");
+                showToast("Callback Requested! We will contact you soon. âœ…");
                 callbackForm.reset();
                 closeCallbackModal();
                 submitBtn.innerText = originalText;
@@ -1248,7 +1262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             db.ref('ideal_callbacks').push(callbackData).then(() => {
-                showToast("Callback Requested! We will contact you soon. ✅");
+                showToast("Callback Requested! We will contact you soon. âœ…");
                 callbackForm.reset();
                 closeCallbackModal();
             }).catch(err => {
@@ -1262,7 +1276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================================
-    // 🔽 INTERACTIVE CORRIDOR MAP LOGIC
+    // ðŸ”½ INTERACTIVE CORRIDOR MAP LOGIC
     // ============================================================
     const mapStopNodes = document.querySelectorAll('.map-stop-node');
     const selectedRouteNum = document.getElementById('selectedRouteNum');
@@ -1309,23 +1323,23 @@ function findMyResult() {
     let roll = document.getElementById('searchRollNumber').value.trim();
     if(!roll) return showToast("Please enter Roll Number", true);
     if (!db) {
-        document.getElementById('singleResultContainer').innerHTML = '<p style="color:#ef4444; font-weight:600; margin-top:15px;">Result lookup is only available when online.</p>';
+        document.getElementById('singleResultContainer').innerHTML = '<p style="color:#a94040; font-weight:600; margin-top:15px;">Result lookup is only available when online.</p>';
         return;
     }
-    document.getElementById('singleResultContainer').innerHTML = '<p style="color:#3b82f6;">Searching Database... ⏳</p>';
+    document.getElementById('singleResultContainer').innerHTML = '<p style="color:#c0392b;">Searching Database... â³</p>';
     
     db.ref('ideal_results').once('value', snap => {
         let results = []; snap.forEach(child => { results.push(child.val()); });
         let myRes = results.filter(r => r.roll.toLowerCase() === roll.toLowerCase());
         if(myRes.length > 0) {
-            let html = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:15px;"><tr><th style="border-bottom:2px solid #e2e8f0; padding:10px;">Exam</th><th style="border-bottom:2px solid #e2e8f0; padding:10px;">Name</th><th style="border-bottom:2px solid #e2e8f0; padding:10px;">Score</th></tr>';
-            myRes.forEach(r => { html += `<tr><td style="padding:10px; border-bottom:1px solid #e2e8f0;">${r.exam}</td><td style="padding:10px; border-bottom:1px solid #e2e8f0;">${r.name}</td><td style="padding:10px; border-bottom:1px solid #e2e8f0; color:#10b981; font-weight:bold; font-size:1.1rem;">${r.score}</td></tr>`; });
+            let html = '<table style="width:100%; text-align:left; border-collapse:collapse; margin-top:15px;"><tr><th style="border-bottom:2px solid #e8d5c4; padding:10px;">Exam</th><th style="border-bottom:2px solid #e8d5c4; padding:10px;">Name</th><th style="border-bottom:2px solid #e8d5c4; padding:10px;">Score</th></tr>';
+            myRes.forEach(r => { html += `<tr><td style="padding:10px; border-bottom:1px solid #e8d5c4;">${r.exam}</td><td style="padding:10px; border-bottom:1px solid #e8d5c4;">${r.name}</td><td style="padding:10px; border-bottom:1px solid #e8d5c4; color:#b8860b; font-weight:bold; font-size:1.1rem;">${r.score}</td></tr>`; });
             document.getElementById('singleResultContainer').innerHTML = html + '</table>';
-        } else { document.getElementById('singleResultContainer').innerHTML = '<p style="color:#ef4444; font-weight:600; margin-top:15px;">No result found.</p>'; }
+        } else { document.getElementById('singleResultContainer').innerHTML = '<p style="color:#a94040; font-weight:600; margin-top:15px;">No result found.</p>'; }
     });
 }
 
-// 🌟 6. DARK MODE SELECTION THEME 🌟
+// ðŸŒŸ 6. DARK MODE SELECTION THEME ðŸŒŸ
 const themeToggleBtn = document.getElementById('themeToggle');
 if (themeToggleBtn) {
     const themeIcon = themeToggleBtn.querySelector('i');
@@ -1345,7 +1359,7 @@ if (themeToggleBtn) {
     });
 }
 
-// 🌟 7. HOMEPAGE SLIDER ENGINE 🌟
+// ðŸŒŸ 7. HOMEPAGE SLIDER ENGINE ðŸŒŸ
 let sliderCurrent = 0;
 let sliderTotal = 0;
 let sliderAutoTimer = null;
@@ -1362,21 +1376,21 @@ function initSlider(banners) {
                 image: 'slider1.png',
                 title: 'Welcome to Ideal Public School',
                 subtitle: 'CBSE Affiliated | Chandori, Waraseoni | Affiliation No. 1030815',
-                btnText: '✨ Discover Our School',
+                btnText: 'âœ¨ Discover Our School',
                 btnUrl: '#about'
             },
             {
                 image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1600&q=80',
                 title: 'Admissions Open 2026-27',
                 subtitle: 'Nursery to Class XII - Enroll Your Child Today!',
-                btnText: '📝 Apply for Admission',
+                btnText: 'ðŸ“ Apply for Admission',
                 btnUrl: 'javascript:openAdmissionForm()'
             },
             {
                 image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=1600&q=80',
                 title: 'Excellence in Education',
-                subtitle: 'Smart Classrooms · Experienced Faculty · Holistic Development',
-                btnText: '🏫 Explore Facilities',
+                subtitle: 'Smart Classrooms Â· Experienced Faculty Â· Holistic Development',
+                btnText: 'ðŸ« Explore Facilities',
                 btnUrl: '#activities'
             }
         ];
@@ -1459,7 +1473,7 @@ function restartProgress() {
     bar.classList.add('running');
 }
 
-// 🌟 8. PLACEMENT SPOTLIGHT CAROUSEL ENGINE 🌟
+// ðŸŒŸ 8. PLACEMENT SPOTLIGHT CAROUSEL ENGINE ðŸŒŸ
 let pcCurrent  = 0;
 let pcData     = [];
 let pcAutoTimer = null;
@@ -1513,7 +1527,7 @@ function createPCard(d, idx) {
     el.dataset.slot = '99'; 
     const imgHtml = d.photo
         ? `<img src="${d.photo}" alt="${d.name}">`
-        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1e293b;"><i class="fas fa-user" style="font-size:5rem;color:rgba(255,255,255,0.2);"></i></div>`;
+        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#4a1010;"><i class="fas fa-user" style="font-size:5rem;color:rgba(255,255,255,0.2);"></i></div>`;
     el.innerHTML = `
         <div class="card-bg-logo"><img src="logo.jpeg" alt="Logo"></div>
         <div class="p-img-wrap">${imgHtml}</div>
@@ -1614,7 +1628,7 @@ function updatePcDots(index) {
     );
 }
 
-// 🌟 9. NEWS & EVENTS SLIDER ENGINE 🌟
+// ðŸŒŸ 9. NEWS & EVENTS SLIDER ENGINE ðŸŒŸ
 let newsCurrent = 0;
 let newsTotal = 0;
 let newsData = [];
@@ -1629,7 +1643,7 @@ function initNewsSlider(newsItems) {
     clearInterval(newsAutoTimer);
 
     if (!newsItems || newsItems.length === 0) {
-        track.innerHTML = '<p style="text-align:center; width:100%; color:#64748b; padding:40px 0; font-style:italic;">No news or events available right now.</p>';
+        track.innerHTML = '<p style="text-align:center; width:100%; color:#7a5c5c; padding:40px 0; font-style:italic;">No news or events available right now.</p>';
         if (dotsEl) dotsEl.innerHTML = '';
         const prevBtn = document.getElementById('newsPrev');
         const nextBtn = document.getElementById('newsNext');
@@ -1647,7 +1661,7 @@ function initNewsSlider(newsItems) {
         const tagClass = n.tag ? `tag-${n.tag.toLowerCase()}` : 'tag-news';
         const imgHtml = n.photo 
             ? `<img src="${n.photo}" alt="${n.title}">` 
-            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f1f5f9;"><i class="far fa-image" style="font-size:3rem;color:#cbd5e1;"></i></div>`;
+            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f9f0e8;"><i class="far fa-image" style="font-size:3rem;color:#d4b8a0;"></i></div>`;
         
         html += `
             <div class="news-card-wrapper">
@@ -1777,7 +1791,7 @@ window.addEventListener('resize', () => {
 });
 
 // ==============================================================
-// 🌟 10. PREMIUM FACULTY CAROUSEL ENGINE 🌟
+// ðŸŒŸ 10. PREMIUM FACULTY CAROUSEL ENGINE ðŸŒŸ
 // ==============================================================
 function handleFacultyImageError(img) {
     img.onerror = null; // Prevent infinite loop
@@ -2049,7 +2063,7 @@ function resetVideoCard() {
 
 
 // ============================================================
-// 🏫 SCHOOL WEBSITE PAGES NAVIGATION & DROPDOWNS (MOBILE)
+// ðŸ« SCHOOL WEBSITE PAGES NAVIGATION & DROPDOWNS (MOBILE)
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Mobile Hamburger Menu Toggle
@@ -2197,7 +2211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ============================================================
-// 🌟 STUDENT REVIEWS CAROUSEL ENGINE 🌟
+// ðŸŒŸ STUDENT REVIEWS CAROUSEL ENGINE ðŸŒŸ
 // ============================================================
 let reviewsOffset = 0;
 let reviewsTotal = 0;
@@ -2221,7 +2235,7 @@ function renderReviews(reviews) {
     clearInterval(reviewsAutoTimer);
 
     if (reviewsTotal === 0) {
-        carousel.innerHTML = '<p style="text-align: center; width: 100%; color: #64748b; padding: 40px 0;">No student reviews yet. Be the first to share your feedback!</p>';
+        carousel.innerHTML = '<p style="text-align: center; width: 100%; color: #7a5c5c; padding: 40px 0;">No student reviews yet. Be the first to share your feedback!</p>';
         return;
     }
 
@@ -2235,15 +2249,15 @@ function renderReviews(reviews) {
         html += `
             <div class="review-card">
                 <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px;">
-                    <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${initial}</div>
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #c0392b, #1d4ed8); color: white; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${initial}</div>
                     <div>
-                        <h4 style="margin: 0; color: #0f172a; font-size: 1rem; font-weight: 700;">${r.name || 'Student'}</h4>
-                        <p style="margin: 2px 0 5px; color: #64748b; font-size: 0.8rem;">${r.class || ''}</p>
+                        <h4 style="margin: 0; color: #6b1a1a; font-size: 1rem; font-weight: 700;">${r.name || 'Student'}</h4>
+                        <p style="margin: 2px 0 5px; color: #7a5c5c; font-size: 0.8rem;">${r.class || ''}</p>
                         <div>${starsHtml}</div>
                     </div>
                 </div>
-                <p style="color: #334155; font-size: 0.93rem; line-height: 1.65; font-style: italic; flex-grow: 1;">"${r.text || ''}"</p>
-                <div style="position: absolute; top: 15px; right: 20px; font-size: 2.5rem; color: #e2e8f0; font-family: serif; line-height: 1;">"</div>
+                <p style="color: #5a2d2d; font-size: 0.93rem; line-height: 1.65; font-style: italic; flex-grow: 1;">"${r.text || ''}"</p>
+                <div style="position: absolute; top: 15px; right: 20px; font-size: 2.5rem; color: #e8d5c4; font-family: serif; line-height: 1;">"</div>
             </div>`;
     });
     carousel.innerHTML = html;
@@ -2293,7 +2307,7 @@ window.addEventListener('resize', () => {
 });
 
 // ============================================================
-// 🌟 STUDENT FEEDBACK MODAL ENGINE 🌟
+// ðŸŒŸ STUDENT FEEDBACK MODAL ENGINE ðŸŒŸ
 // ============================================================
 let selectedRating = 5;
 
@@ -2305,7 +2319,7 @@ function openFeedbackModal() {
     // Pre-fill stars to 5
     document.querySelectorAll('.rating-stars-interactive i').forEach((star, i) => {
         star.className = i < 5 ? 'fas fa-star' : 'far fa-star';
-        star.style.color = i < 5 ? '#f59e0b' : '#cbd5e1';
+        star.style.color = i < 5 ? '#f59e0b' : '#d4b8a0';
     });
 }
 
@@ -2320,14 +2334,14 @@ function setRating(val) {
     if (ratingInput) ratingInput.value = val;
     document.querySelectorAll('.rating-stars-interactive i').forEach((star, i) => {
         star.className = i < val ? 'fas fa-star' : 'far fa-star';
-        star.style.color = i < val ? '#f59e0b' : '#cbd5e1';
+        star.style.color = i < val ? '#f59e0b' : '#d4b8a0';
     });
 }
 
 function hoverRating(val) {
     document.querySelectorAll('.rating-stars-interactive i').forEach((star, i) => {
         star.className = i < val ? 'fas fa-star' : 'far fa-star';
-        star.style.color = i < val ? '#f59e0b' : '#cbd5e1';
+        star.style.color = i < val ? '#f59e0b' : '#d4b8a0';
     });
 }
 
@@ -2346,7 +2360,7 @@ function submitFeedback(e) {
 
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerText;
-    submitBtn.innerText = 'Submitting... ⏳';
+    submitBtn.innerText = 'Submitting... â³';
     submitBtn.disabled = true;
 
     const reviewData = {
@@ -2369,7 +2383,7 @@ function submitFeedback(e) {
 
     db.ref('ideal_reviews_pending').push(reviewData)
         .then(() => {
-            showToast('Thank you! Your feedback has been submitted for review. 🌟');
+            showToast('Thank you! Your feedback has been submitted for review. ðŸŒŸ');
             closeFeedbackModal();
             e.target.reset();
             selectedRating = 5;
@@ -2383,3 +2397,4 @@ function submitFeedback(e) {
             submitBtn.disabled = false;
         });
 }
+
