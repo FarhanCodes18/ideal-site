@@ -208,7 +208,7 @@ ul {
    HERO SECTION (school pages)
    ============================================================ */
 .page-hero {
-  background: var(--off-white);
+  background: linear-gradient(135deg, var(--off-white) 0%, #e2e8f0 100%);
   padding: 80px 0 60px;
   position: relative;
   overflow: hidden;
@@ -349,10 +349,10 @@ ul {
 .feature-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
 .feature-card {
   background: var(--white); border: 1px solid var(--grey-mid);
-  border-radius: var(--radius-md); padding: 18px 16px;
+  border-radius: var(--radius-lg); padding: 22px 18px;
   transition: var(--transition); box-shadow: var(--shadow-sm);
 }
-.feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--accent-blue); }
+.feature-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--red); }
 .feature-card .fc-icon { font-size: 1.4rem; color: var(--accent-blue); margin-bottom: 10px; }
 .feature-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--navy); line-height: 1.3; }
 
@@ -379,9 +379,11 @@ ul {
 .ex-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
 .ex-card p  { font-size: 0.82rem; color: var(--text-light); line-height: 1.5; }
 .stats-bar {
-  background: var(--gradient-dark); border-radius: var(--radius-xl);
-  padding: 40px; display: grid; grid-template-columns: repeat(4, 1fr);
+  background: linear-gradient(135deg, var(--navy) 0%, var(--red) 150%);
+  border-radius: var(--radius-xl);
+  padding: 45px 40px; display: grid; grid-template-columns: repeat(4, 1fr);
   gap: 20px; text-align: center;
+  box-shadow: var(--shadow-xl);
 }
 .stat-number { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 6px; }
 .stat-label { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 1.5px; text-transform: uppercase; }
@@ -766,4 +768,372 @@ ul {
   .message-signature-block .sig-handwritten {
     font-size: 2.2rem;
   }
+}
+
+/* ============================================================
+   IMMERSIVE DESIGN OVERRIDES (School Overview & Our Campus)
+   ============================================================ */
+
+/* 1. Immersive Hero */
+.hero-immersive {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  min-height: 550px;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-immersive::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(220,38,38,0.2) 100%);
+}
+.hero-immersive-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+  padding: 0 20px;
+}
+.glass-card-hero {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
+  padding: 60px 50px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+}
+.hero-immersive .hero-badge {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  margin-bottom: 24px;
+  box-shadow: none;
+}
+.hero-immersive .hero-badge i {
+  color: #f87171;
+}
+.hero-immersive .hero-heading {
+  color: #fff;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
+  line-height: 1.1;
+}
+.hero-immersive .hero-subtitle {
+  color: rgba(255,255,255,0.85);
+  font-size: 1.15rem;
+  max-width: 100%;
+  margin: 0 auto 30px;
+}
+.hero-immersive .breadcrumb {
+  justify-content: center;
+  color: rgba(255,255,255,0.6);
+  margin-top: 0;
+}
+.hero-immersive .breadcrumb a {
+  color: rgba(255,255,255,0.8);
+}
+.hero-immersive .breadcrumb a:hover {
+  color: #fff;
+}
+.hero-immersive .breadcrumb .current {
+  color: #fff;
+}
+
+/* 2. Overlap Section */
+.overlap-section {
+  position: relative;
+  margin-top: -80px;
+  z-index: 10;
+  padding-bottom: 80px;
+}
+.glass-content-card {
+  background: #fff;
+  border-radius: 40px;
+  padding: 80px 60px;
+  box-shadow: 0 30px 60px rgba(15,23,42,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.overlap-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--red);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.overlap-tag i {
+  color: var(--navy);
+}
+.overlap-title {
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.15;
+  margin-bottom: 30px;
+  max-width: 900px;
+  letter-spacing: -0.5px;
+}
+.overlap-title span {
+  background: var(--gradient-red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.overlap-desc {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.8;
+  max-width: 800px;
+  margin-bottom: 0;
+}
+
+/* 3. Bento Immersive Grid */
+.bento-section {
+  padding: 40px 0 100px;
+  background: var(--off-white);
+}
+.bento-immersive-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 280px;
+  gap: 24px;
+}
+.bento-card-imm {
+  background: #fff;
+  border-radius: 30px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+.bento-card-imm:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-xl);
+}
+.bento-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.bento-tall {
+  grid-row: span 2;
+  grid-column: span 1;
+}
+.bento-wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+/* Bento Styling details */
+.bento-img-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+.bento-card-imm:hover .bento-img-bg {
+  transform: scale(1.08);
+}
+.bento-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0) 100%);
+  z-index: 1;
+}
+.bento-content-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  padding: 35px;
+  color: #fff;
+}
+.bento-content-overlay h3 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.bento-content-overlay p {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85);
+}
+
+.bento-content-solid {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+.bento-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bento-f-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.bento-f-icon {
+  width: 55px;
+  height: 55px;
+  background: var(--grey-light);
+  color: var(--navy);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+.bento-f-text h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.bento-f-text p {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.bento-stat-card {
+  background: var(--gradient-dark);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+.bento-stat-card.red-stat {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+}
+.bento-stat-num {
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.bento-stat-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.8);
+}
+
+@media (max-width: 1024px) {
+  .bento-immersive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .bento-immersive-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(250px, auto);
+  }
+  .bento-large, .bento-tall, .bento-wide {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+  .glass-content-card {
+    padding: 40px 24px;
+    border-radius: 24px;
+  }
+  .glass-card-hero {
+    padding: 40px 24px;
+    border-radius: 20px;
+  }
+  .overlap-title {
+    font-size: 1.8rem;
+  }
+  .hero-immersive {
+    min-height: 400px;
+  }
+}
+
+
+/* ============================================================
+   ANIMATED HELPDESK BANNER (Corrected Path)
+   ============================================================ */
+.helpdesk-immersive {
+  background: linear-gradient(135deg, #6b1a1a, #2b0a0a);
+  border-radius: 24px;
+  padding: 60px 20px;
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(107, 26, 26, 0.25);
+  margin: 60px auto;
+  max-width: 1000px;
+  z-index: 1;
+}
+.helpdesk-immersive::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 60%);
+  animation: pulseRotate 20s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+@keyframes pulseRotate {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.helpdesk-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.15);
+  padding: 8px 20px; border-radius: 30px;
+  font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px;
+  margin-bottom: 25px; backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.helpdesk-title {
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 20px; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+.helpdesk-subtitle {
+  font-size: 1.15rem; opacity: 0.9; max-width: 650px; margin: 0 auto 35px; line-height: 1.6;
+}
+.helpdesk-btn {
+  background: #a0522d; color: white; border: none;
+  padding: 16px 40px; border-radius: 40px; font-size: 1.2rem;
+  font-weight: 700; cursor: pointer; display: inline-flex;
+  align-items: center; gap: 12px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(160, 82, 45, 0.4);
+  position: relative;
+}
+.helpdesk-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  background: #ffffff; color: #6b1a1a;
+  box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+}
+.helpdesk-btn i { animation: bounceRight 2s infinite; }
+@keyframes bounceRight {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
 }
