@@ -1,4 +1,4 @@
-﻿// ==========================================
+// ==========================================
 // ðŸš¨ GOOGLE SHEETS & FIREBASE LIVE CONFIGS ðŸš¨
 // ==========================================
 const ADMISSION_SHEET_URL = "https://script.google.com/macros/s/AKfycby_9thAYsdn2AgSPlhtZnW7Tla05_Hs5fpsz3u0S2pXlCJod9f5mofspBvnzw0Bh4pU/exec";
@@ -1239,7 +1239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerText;
-            submitBtn.innerText = "Requesting... â³";
+            submitBtn.innerText = "Requesting... â ³";
             submitBtn.disabled = true;
 
             if (!db) {
@@ -1276,45 +1276,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================================
-    // ðŸ”½ INTERACTIVE CORRIDOR MAP LOGIC
+    // INTERACTIVE TRANSIT SYSTEM LOGIC
     // ============================================================
-    const mapStopNodes = document.querySelectorAll('.map-stop-node');
-    const selectedRouteNum = document.getElementById('selectedRouteNum');
-    const selectedRouteName = document.getElementById('selectedRouteName');
+    const routeTabs = document.querySelectorAll('.route-tab');
+    const transitMap = document.getElementById('mainTransitMap');
+    const busMotion = document.getElementById('bus-motion');
+    const tooltip = document.getElementById('transit-tooltip');
+    const stopNodes = document.querySelectorAll('.transit-stop-node');
 
-    if (mapStopNodes.length > 0 && selectedRouteNum && selectedRouteName) {
-        mapStopNodes.forEach(node => {
-            const updatePanel = () => {
-                if (node.classList.contains('active')) return;
+    if (routeTabs.length > 0 && transitMap && busMotion) {
+        // Path definitions matching the SVG paths for each route
+        const routePaths = {
+            'route-01': 'M 100,280 C 250,280 350,200 450,200 C 600,200 700,200 900,140',
+            'route-02': 'M 100,100 C 250,100 400,120 500,150 C 600,180 700,200 900,140',
+            'route-03': 'M 100,350 C 300,350 450,300 600,280 C 750,260 800,200 900,140',
+            'route-04': 'M 850,380 C 700,380 650,250 750,200 C 800,180 850,160 900,140'
+        };
+
+        // Handle Route Selection
+        routeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetRoute = tab.getAttribute('data-target-route');
                 
-                // Remove active class from all nodes
-                mapStopNodes.forEach(n => n.classList.remove('active'));
-                
-                // Add active class to current node
-                node.classList.add('active');
+                // Update active tab
+                routeTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
 
-                const routeId = node.getAttribute('data-route');
-                const stopName = node.getAttribute('data-name');
+                // Update map container class to highlight the specific route group
+                transitMap.className = `interactive-map-card reveal zoom-in map-active-${targetRoute}`;
 
-                // Animate text transition
-                selectedRouteName.classList.add('update-animate');
-                setTimeout(() => {
-                    selectedRouteNum.textContent = routeId;
-                    selectedRouteName.textContent = stopName;
-                    selectedRouteName.classList.remove('update-animate');
-                }, 200);
-            };
-
-            // Trigger on click
-            node.addEventListener('click', updatePanel);
-
-            // Trigger on hover (desktop only)
-            node.addEventListener('mouseenter', () => {
-                if (window.innerWidth > 1024) {
-                    updatePanel();
+                // Update Bus Animation Path
+                if (routePaths[targetRoute]) {
+                    busMotion.setAttribute('path', routePaths[targetRoute]);
+                    
+                    // Force restart animation on WebKit (Safari/Chrome fix)
+                    const busGroup = document.getElementById('animated-bus');
+                    if (busGroup) {
+                        const newBus = busGroup.cloneNode(true);
+                        busGroup.parentNode.replaceChild(newBus, busGroup);
+                    }
                 }
             });
         });
+
+        // Interactive Tooltips on Hover
+        if (tooltip) {
+            const mapContainer = document.querySelector('.map-canvas-container');
+            
+            stopNodes.forEach(node => {
+                node.addEventListener('mouseenter', (e) => {
+                    const name = node.getAttribute('data-name');
+                    const time = node.getAttribute('data-time');
+                    
+                    if(name && time) {
+                        tooltip.querySelector('.tt-name').textContent = name;
+                        tooltip.querySelector('.tt-time span').textContent = time;
+                        
+                        // Position tooltip relative to container
+                        const svgRect = mapContainer.getBoundingClientRect();
+                        const nodeRect = node.getBoundingClientRect();
+                        
+                        const left = (nodeRect.left - svgRect.left) + (nodeRect.width / 2);
+                        const top = (nodeRect.top - svgRect.top) - 10;
+                        
+                        tooltip.style.left = `${left}px`;
+                        tooltip.style.top = `${top}px`;
+                        tooltip.classList.add('active');
+                        
+                        // Highlight node
+                        node.classList.add('hover-glow');
+                    }
+                });
+
+                node.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('active');
+                    node.classList.remove('hover-glow');
+                });
+            });
+        }
     }
 });
 

@@ -15,15 +15,19 @@
     <title>Ideal Public School | Chandori, Waraseoni</title>
     <link rel="icon" type="image/png" href="logo.jpeg">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=3.3">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css?v=3.4">
 
 </head>
 <body>
@@ -268,7 +272,7 @@
     <div class="nav-overlay" id="navOverlay"></div>
 
     <header>
-        <div class="logo"><img src="logo.jpeg" alt="Logo" class="logo-img"> Ideal Public School</div>
+        <div class="logo"><img src="logo.jpeg" alt="Logo" class="logo-img" width="50" height="50"> Ideal Public School</div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
                 <span></span>
@@ -374,7 +378,16 @@
 
     <!-- Ã°Å¸Å’Å¸ HOMEPAGE HERO SLIDER Ã°Å¸Å’Å¸ -->
     <div class="hero-slider-section" id="heroSliderSection">
-        <div class="slider-track" id="sliderTrack"></div>
+        <div class="slider-track" id="sliderTrack">
+            <!-- FALLBACK LCP IMAGE -->
+            <div class="slide active" style="background-image: url('school-website/001.JPG');">
+                <div class="slide-content fade-in-up">
+                    <div class="cbse-badge"><i class="fas fa-certificate"></i> Affiliated to C.B.S.E <span>| Affiliation No - 1030815</span></div>
+                    <h1><span style="color:#8b1a1a; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Welcome to Ideal Public School</span></h1>
+                    <p>Empowering Minds, Shaping the Future.</p>
+                </div>
+            </div>
+        </div>
         <button class="slider-arrow slider-prev" id="sliderPrev" onclick="sliderPrev()" aria-label="Previous Banner"><i class="fas fa-chevron-left"></i></button>
         <button class="slider-arrow slider-next" id="sliderNext" onclick="sliderNext()" aria-label="Next Banner"><i class="fas fa-chevron-right"></i></button>
         <div class="slider-dots" id="sliderDots"></div>
@@ -445,7 +458,7 @@
                     <div class="od-hero-image-wrapper">
                         <div class="od-hero-wave-gold"></div>
                         <div class="od-hero-wave"></div>
-                        <img src="school-website/003.JPG" alt="School Building" class="od-hero-img" loading="lazy">
+                        <img src="school-website/003.JPG" alt="School Building" class="od-hero-img" loading="lazy" width="800" height="600">
                         <div class="od-trust-badge">
                             <div class="od-tb-stars">
                                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -1104,9 +1117,10 @@
 
         <!-- Copyright Bar -->
         <div style="max-width: 1200px; margin: 0 auto; padding: 22px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-            <p style="margin: 0; font-size: 0.83rem; color: #a08080;">
-                &copy; 2026 <strong style="color: #c9956a;">Ideal Public School</strong>, Chandori, Waraseoni. All Rights Reserved.
-            </p>
+            <div style="margin: 0; font-size: 0.83rem; color: #a08080;">
+                &copy; 2026 <strong style="color: #c9956a;">Ideal Public School</strong>, Chandori, Waraseoni. All Rights Reserved.<br>
+                Designed and developed by <a href="https://cloudnovaa.in" target="_blank" style="color: #c9956a; text-decoration: none; font-weight: bold;">cloudnovaa</a>
+            </div>
             <p style="margin: 0; font-size: 0.80rem; color: #7a5c5c;">
                 CBSE Affiliation No. <strong style="color: #c9956a;">1030815</strong> &nbsp;|&nbsp; School Code: <strong style="color: #c9956a;">50780</strong>
             </p>
@@ -1169,7 +1183,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=3.3"></script>
+    <script defer src="script.js?v=3.5"></script>
 
 </body>
 </html>
